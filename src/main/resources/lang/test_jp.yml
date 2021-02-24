@@ -1,0 +1,5 @@
+enter_server: '&こんにちは, %name%!'
+leave_server: '&さようなら, %name%.'
+lang_command: '&cこのボタンをクリックしてコマンドを実行します!'
+lang_command_execute: '&aコマンドをクリックしました！'
+hover_message: '&6これはホバーメッセージです！'

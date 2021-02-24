@@ -1,0 +1,5 @@
+enter_server: '&aHello, %name%!'
+leave_server: '&9Goodbye, %name%.'
+lang_command: '&cClick this button to execute a command!'
+lang_command_execute: '&aYou clicked the command!'
+hover_message: '&6This is a hover message!'
