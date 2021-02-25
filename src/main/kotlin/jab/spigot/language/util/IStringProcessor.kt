@@ -1,6 +1,6 @@
 package jab.spigot.language.util
 
-import jab.spigot.language.LangField
+import jab.spigot.language.LangArg
 import jab.spigot.language.LangPackage
 import jab.spigot.language.Language
 
@@ -24,9 +24,9 @@ interface IStringProcessor {
      * TODO: Document
      *
      * @param string
-     * @param fields
+     * @param args
      */
-    fun process(string: String, vararg fields: LangField): String
+    fun process(string: String, vararg args: LangArg): String
 
     /**
      * TODO: Document
@@ -34,7 +34,7 @@ interface IStringProcessor {
      * @param string
      * @param pkg
      * @param lang
-     * @param fields
+     * @param args
      *
      * @return
      */
@@ -42,6 +42,6 @@ interface IStringProcessor {
         string: String,
         pkg: LangPackage,
         lang: Language = Language.ENGLISH,
-        vararg fields: LangField
+        vararg args: LangArg
     ): String
 }

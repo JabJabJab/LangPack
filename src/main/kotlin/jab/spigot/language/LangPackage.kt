@@ -8,6 +8,7 @@ import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import java.io.File
 import java.util.*
 
@@ -35,13 +36,13 @@ class LangPackage(val dir: File, val name: String) {
     var processor: IStringProcessor = StringProcessor()
 
     /** The language file to default to if a raw string cannot be located with another language. */
-    private var defaultLanguage: Language = Language.ENGLISH
+    var defaultLanguage: Language = Language.ENGLISH
 
     /** The Map for LanguageFiles, assigned with their Languages. */
     private val mapLanguageFiles: EnumMap<Language, LangFile> = EnumMap(Language::class.java)
 
     init {
-        if (dir.exists()) {
+        if (!dir.exists()) {
             throw IllegalArgumentException("""The directory "$dir" doesn't exist.""")
         } else if (!dir.isDirectory) {
             throw IllegalArgumentException("""The path "$dir" is not a valid directory.""")
@@ -65,7 +66,7 @@ class LangPackage(val dir: File, val name: String) {
      */
     fun append(name: String) {
         for (file in dir.listFiles()!!) {
-            if (file.nameWithoutExtension.equals(name, true)
+            if (file.nameWithoutExtension.startsWith(name, true)
                 && file.extension.equals("yml", true)
             ) {
                 val langAbbrev = file.nameWithoutExtension.split("_")[1]
@@ -76,8 +77,34 @@ class LangPackage(val dir: File, val name: String) {
                 }
                 val langFile = LangFile(file, language)
                 langFile.load()
+
                 mapLanguageFiles[language] = langFile
             }
+        }
+    }
+
+    /**
+     * TODO: Document.
+     *
+     * @param lang
+     * @param field
+     * @param value
+     */
+    fun set(lang: Language, field: String, value: Any?) {
+        val file: LangFile = mapLanguageFiles.computeIfAbsent(lang) { LangFile(lang) }
+        file.set(field, value)
+    }
+
+    /**
+     * TODO: Document.
+     *
+     * @param lang
+     * @param args
+     */
+    fun set(lang: Language, vararg args: LangArg) {
+        val file: LangFile = mapLanguageFiles.computeIfAbsent(lang) { LangFile(lang) }
+        for (field in args) {
+            file.set(field.key, field.value)
         }
     }
 
@@ -89,21 +116,25 @@ class LangPackage(val dir: File, val name: String) {
      *
      * @return
      */
-    fun getList(field: String, lang: Language? = defaultLanguage, vararg fields: LangField): ArrayList<String?>? {
+    fun getList(field: String, lang: Language? = defaultLanguage, vararg args: LangArg): List<String?>? {
         var llang = lang
         if (llang == null) {
             llang = defaultLanguage
         }
-        val rawList = getRawList(field, llang)
+        var rawList = getRawList(field, llang)
+        if (rawList == null && llang != defaultLanguage) {
+            rawList = getRawList(field, defaultLanguage)
+        }
         if (rawList != null) {
             val processedList = ArrayList<String>()
             for (raw in rawList) {
                 if (raw != null) {
-                    processedList.add(processor.process(raw, this, llang, *fields))
+                    processedList.add(processor.process(raw, this, llang, *args))
                 } else {
                     processedList.add(null.toString())
                 }
             }
+            return processedList
         }
         return null
     }
@@ -116,14 +147,14 @@ class LangPackage(val dir: File, val name: String) {
      *
      * @return
      */
-    fun get(field: String, lang: Language? = defaultLanguage, vararg fields: LangField): String? {
+    fun get(field: String, lang: Language? = defaultLanguage, vararg args: LangArg): String? {
         var llang = lang
         if (llang == null) {
             llang = defaultLanguage
         }
         val rawText = getRaw(field, llang)
         return if (rawText != null) {
-            processor.process(rawText, this, llang, *fields)
+            processor.process(rawText, this, llang, *args)
         } else {
             null
         }
@@ -137,12 +168,13 @@ class LangPackage(val dir: File, val name: String) {
      *
      * @return
      */
-    fun getRawList(field: String, lang: Language): ArrayList<String?>? {
+    fun getRawList(field: String, lang: Language): List<String?>? {
         val rawText = getRaw(field, lang)
-        if (rawText != null) {
-            return toAList(rawText)
+        println("rawText: $rawText")
+        return if (rawText != null) {
+            toAList(rawText)
         } else {
-            return null
+            null
         }
     }
 
@@ -154,40 +186,90 @@ class LangPackage(val dir: File, val name: String) {
      *
      * @return
      */
-    fun getRaw(field: String, lang: Language): String? {
+    fun getRaw(field: String, lang: Language, vararg args: LangArg): String? {
         val langFile = mapLanguageFiles[lang]
         var raw: String? = null
 
         if (langFile != null) {
-            raw = langFile.get(field)
+            raw = langFile.get(field, this, lang, *args)
             if (raw == null) {
                 // Check thew fallback language. (If set)
                 val fallbackLang = lang.getFallback()
                 if (fallbackLang != null) {
                     val fallbackLangFile = mapLanguageFiles[fallbackLang]
-                    raw = fallbackLangFile?.get(field)
+                    raw = fallbackLangFile?.get(field, this, lang, *args)
                 }
             }
         } else {
             // Check the fallback language. (If set)
             val fallbackLang = lang.getFallback()
             if (fallbackLang != null) {
-                raw = mapLanguageFiles[fallbackLang]?.get(field)
+                raw = mapLanguageFiles[fallbackLang]?.get(field, this, lang, *args)
             }
         }
 
         // Check default language set by the package.
         if (raw == null && lang != defaultLanguage) {
-            raw = mapLanguageFiles[defaultLanguage]?.get(field)
+            raw = mapLanguageFiles[defaultLanguage]?.get(field, this, lang, *args)
         }
 
         return raw
     }
 
+    /**
+     * Broadcasts a message to all online players, checking their locales and sending the corresponding dialog.
+     *
+     * @param field The ID of the dialog to send.
+     * @param args The variables to apply to the dialog sent.
+     */
+    fun broadcastDynamic(field: String, vararg args: LangArg) {
+
+        val cache: EnumMap<Language, String> = EnumMap(Language::class.java)
+
+        for (player in Bukkit.getOnlinePlayers()) {
+
+            // Grab the players language, else fallback to default.
+            var lang = Language.getLanguageAbbrev(player.locale)
+            if (lang == null) {
+                lang = defaultLanguage
+            }
+
+            // If the dialog for the language has alredy been rendered, use the cache.
+            if (cache.containsKey(lang)) {
+                player.sendMessage(cache[lang]!!)
+                continue
+            }
+
+            // Grab the message and send it through Bukkit.
+            val message = get(field, lang, *args)
+            if (message != null) {
+                player.sendMessage(message)
+            }
+
+            // Set the language result in the cache to avoid wasted calculations.
+            cache[lang] = message
+        }
+    }
+
+    fun messageDynamic(player: Player, field: String, vararg args: LangArg) {
+
+        // Grab the players language, else fallback to default.
+        var lang = Language.getLanguageAbbrev(player.locale)
+        if (lang == null) {
+            lang = defaultLanguage
+        }
+
+        // Grab the message and send it through Bukkit.
+        val message = get(field, lang, *args)
+        if (message != null) {
+            player.sendMessage(message)
+        }
+    }
+
     companion object {
 
         /** The standard 'line.separator' for most Java Strings. */
-        private const val NEW_LINE: String = "\n"
+        const val NEW_LINE: String = "\n"
 
         var DEFAULT_RANDOM: Random = Random()
 
@@ -247,12 +329,36 @@ class LangPackage(val dir: File, val name: String) {
         }
 
         /**
+         * TODO: Document.
+         *
+         * @param text
+         * @param lines
+         */
+        @Suppress("DEPRECATION")
+        fun createHoverComponent(text: String, lines: List<String>): TextComponent {
+            val component = TextComponent(text)
+
+            var list: Array<TextComponent> = emptyArray()
+            for (arg in lines) {
+                list = list.plus(TextComponent(arg))
+            }
+
+            component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, list)
+            return component
+        }
+
+        /**
          * @param value The value to partition as a string with the [NEW_LINE] operator.
          *
          * @return Returns a List of Strings, partitioned by the [NEW_LINE] operator.
          */
-        fun toAList(value: Any): ArrayList<String?> {
-            return ArrayList(value.toString().split(NEW_LINE))
+        fun toAList(value: Any): List<String?> {
+            val string = value.toString()
+            return if (string.contains(NEW_LINE)) {
+                string.split(NEW_LINE)
+            } else {
+                listOf(string)
+            }
         }
 
         /**

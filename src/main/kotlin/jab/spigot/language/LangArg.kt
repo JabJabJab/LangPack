@@ -8,4 +8,4 @@ package jab.spigot.language
  *
  * @author Jab
  */
-class LangField(val key: String, val value: Any?)
+class LangArg(val key: String, val value: Any?)

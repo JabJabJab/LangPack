@@ -8,10 +8,10 @@ import org.bukkit.configuration.ConfigurationSection
  *
  * @author Jab
  *
- * @param type
+ * @param mode
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class StringPool(val type: Type) {
+class StringPool(val mode: Mode) {
 
     var random = LangPackage.DEFAULT_RANDOM
     private var strings: Array<String> = emptyArray()
@@ -31,18 +31,18 @@ class StringPool(val type: Type) {
             return ""
         }
 
-        when (type) {
-            Type.RANDOM -> {
+        when (mode) {
+            Mode.RANDOM -> {
                 return strings[random.nextInt(strings.size)]
             }
-            Type.SEQUENTIAL -> {
+            Mode.SEQUENTIAL -> {
                 val result: String = strings[index++]
                 if (index == strings.size) {
                     index = 0
                 }
                 return result
             }
-            Type.SEQUENTIAL_REVERSED -> {
+            Mode.SEQUENTIAL_REVERSED -> {
                 val result: String = strings[index--]
                 if (index == -1) {
                     index = strings.lastIndex
@@ -67,7 +67,7 @@ class StringPool(val type: Type) {
 
         strings = strings.plus(string)
 
-        index = if (type == Type.SEQUENTIAL_REVERSED) {
+        index = if (mode == Mode.SEQUENTIAL_REVERSED) {
             strings.lastIndex
         } else {
             0
@@ -92,25 +92,26 @@ class StringPool(val type: Type) {
     companion object {
 
         /**
+         * TODO: Document.
          *
          * @param cfg
          *
          * @return
          */
         fun read(cfg: ConfigurationSection): StringPool {
-            var type: Type = Type.RANDOM
+            var mode: Mode = Mode.RANDOM
 
-            // Load the type if defined.
-            if (cfg.contains("type")) {
-                val typeCheck: Type? = Type.getType(cfg.getString("type")!!)
-                if (typeCheck == null) {
-                    System.err.println("""The type "$type" is an invalid StringPool type. Using ${type.name}.""")
+            // Load the mode if defined.
+            if (cfg.contains("mode")) {
+                val modeCheck: Mode? = Mode.getType(cfg.getString("mode")!!)
+                if (modeCheck == null) {
+                    System.err.println("""The mode "$mode" is an invalid StringPool mode. Using ${mode.name}.""")
                 } else {
-                    type = typeCheck
+                    mode = modeCheck
                 }
             }
 
-            val pool = StringPool(type)
+            val pool = StringPool(mode)
             val list = cfg.getList("pool")!!
             if (list.isNotEmpty()) {
                 for (o in list) {
@@ -126,11 +127,11 @@ class StringPool(val type: Type) {
     }
 
     /**
-     *
+     * TODO: Document.
      *
      * @author Jab
      */
-    enum class Type {
+    enum class Mode {
         RANDOM,
         SEQUENTIAL,
         SEQUENTIAL_REVERSED;
@@ -140,12 +141,12 @@ class StringPool(val type: Type) {
             /**
              * TODO: Document.
              *
-             * @param type
+             * @param mode
              */
-            fun getType(type: String): Type? {
-                if (type.isNotEmpty()) {
+            fun getType(mode: String): Mode? {
+                if (mode.isNotEmpty()) {
                     for (next in values()) {
-                        if (next.name.equals(type, true)) {
+                        if (next.name.equals(mode, true)) {
                             return next
                         }
                     }

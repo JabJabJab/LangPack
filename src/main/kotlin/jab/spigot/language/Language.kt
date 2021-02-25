@@ -94,6 +94,9 @@ enum class Language {
     }
 
     companion object {
+
+        val DEFAULT_LANGUAGE = Language.ENGLISH
+
         /**
          * @param name The name of the Language.
          *
@@ -129,14 +132,15 @@ enum class Language {
          *
          * @return
          */
-        fun getLanguage(player: Player): Language? {
+        fun getLanguage(player: Player): Language {
             val locale = player.locale
+            println("player ${player.name} locale: ${player.locale}")
             for (lang in values()) {
                 if (lang.abbreviation.equals(locale, true)) {
                     return lang
                 }
             }
-            return null
+            return DEFAULT_LANGUAGE
         }
     }
 }

@@ -1,5 +1,6 @@
 package jab.spigot.language
 
+import jab.spigot.language.util.LangProcessable
 import jab.spigot.language.util.StringPool
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.configuration.file.YamlConfiguration
@@ -10,23 +11,30 @@ import java.io.FileNotFoundException
  * TODO: Document.
  *
  * @author Jab
- *
- * @param file
- * @param language
  */
-class LangFile(val file: File, val language: Language) {
+class LangFile {
+
+    var file: File? = null
+    val lang: Language
 
     /** TODO: Document. */
     private val mapEntries: HashMap<String, Any> = HashMap()
 
     /** TODO: Document. */
-    var yaml: YamlConfiguration
+    var yaml: YamlConfiguration? = null
         private set
 
-    init {
+    constructor(lang: Language) {
+        this.lang = lang
+    }
+
+    constructor(file: File, lang: Language) {
         if (!file.exists()) {
             throw FileNotFoundException(file.path)
         }
+        this.file = file
+        this.lang = lang
+
         yaml = YamlConfiguration.loadConfiguration(file)
     }
 
@@ -39,16 +47,45 @@ class LangFile(val file: File, val language: Language) {
         mapEntries.clear()
         readFile()
 
-        for (key in yaml.getKeys(false)) {
-            if (yaml.isConfigurationSection(key)) {
-                set(key, StringPool.read(yaml.getConfigurationSection(key)!!))
-            } else {
-                set(key, LangPackage.toAString(yaml.get(key)!!))
+        if (yaml != null) {
+            val yaml = yaml!!
+            for (key in yaml.getKeys(false)) {
+                if (yaml.isConfigurationSection(key)) {
+                    val cfg = yaml.getConfigurationSection(key)!!
+
+                    // Make sure that the type is defined.
+                    if (!cfg.contains("type") || !cfg.isString("type")) {
+                        LPPlugin.instance?.logger?.warning("Unknown complex type: [Not defined]")
+                        continue
+                    }
+
+                    val type = cfg.getString("type")!!
+                    when {
+                        type.equals("ActionText", true) || type.equals("Action Text", true) || type.equals(
+                            "Action_Text",
+                            true
+                        ) -> {
+                            set(key, ActionText(cfg))
+                        }
+                        type.equals("StringPool", true) || type.equals("String Pool", true) || type.equals(
+                            "Pool",
+                            true
+                        ) -> {
+                            set(key, StringPool.read(cfg))
+                        }
+                        else -> {
+                            LPPlugin.instance?.logger?.warning("Unknown complex type: $type")
+                        }
+                    }
+
+                } else {
+                    set(key, LangPackage.toAString(yaml.get(key)!!))
+                }
             }
         }
 
         // Load default variables if in English.
-        if (language == Language.ENGLISH) {
+        if (lang == Language.ENGLISH) {
             setEnglishDefaults()
         }
     }
@@ -62,7 +99,33 @@ class LangFile(val file: File, val language: Language) {
         val yaml = YamlConfiguration.loadConfiguration(file)
         for (key in yaml.getKeys(false)) {
             if (yaml.isConfigurationSection(key)) {
-                set(key, StringPool.read(yaml.getConfigurationSection(key)!!))
+                val cfg = yaml.getConfigurationSection(key)!!
+
+                // Make sure that the type is defined.
+                if (!cfg.contains("type") || !cfg.isString("type")) {
+                    LPPlugin.instance?.logger?.warning("Unknown complex type: [Not defined]")
+                    continue
+                }
+
+                val type = cfg.getString("type")!!
+                when {
+                    type.equals("ActionText", true) || type.equals("Action Text", true) || type.equals(
+                        "Action_Text",
+                        true
+                    ) -> {
+                        set(key, ActionText(cfg))
+                    }
+                    type.equals("StringPool", true) || type.equals("String Pool", true) || type.equals(
+                        "Pool",
+                        true
+                    ) -> {
+                        set(key, StringPool.read(cfg))
+                    }
+                    else -> {
+                        LPPlugin.instance?.logger?.warning("Unknown complex type: $type")
+                    }
+                }
+
             } else {
                 set(key, LangPackage.toAString(yaml.get(key)!!))
             }
@@ -75,18 +138,23 @@ class LangFile(val file: File, val language: Language) {
      * @return Returns the entry with the given id. If no entry is registered with the given id, null
      *     is returned.
      */
-    fun get(key: String): String? {
+    fun get(key: String, pkg: LangPackage, lang: Language, vararg args: LangArg): String? {
         val keyLower = key.toLowerCase()
         if (mapEntries.containsKey(keyLower)) {
             val o = mapEntries[keyLower]
-            return if (o is StringPool) {
-                o.roll()
-            } else if (o is String) {
-                o
-            } else if (o != null) {
-                LangPackage.toAString(o)
-            } else {
-                null
+            return when {
+                o is String -> {
+                    o
+                }
+                o is LangProcessable -> {
+                    o.process(pkg, lang, *args)
+                }
+                o != null -> {
+                    LangPackage.toAString(o)
+                }
+                else -> {
+                    null
+                }
             }
         }
         return null
@@ -97,8 +165,10 @@ class LangFile(val file: File, val language: Language) {
      *
      * @return Returns the loaded YamlConfiguration
      */
-    fun readFile(): YamlConfiguration {
-        yaml = YamlConfiguration.loadConfiguration(file)
+    fun readFile(): YamlConfiguration? {
+        if (file != null) {
+            yaml = YamlConfiguration.loadConfiguration(file!!)
+        }
         return yaml
     }
 
@@ -108,8 +178,12 @@ class LangFile(val file: File, val language: Language) {
      * @param key The ID to assign the value.
      * @param value The value to assign to the ID.
      */
-    fun set(key: String, value: Any) {
-        mapEntries[key.toLowerCase()] = value
+    fun set(key: String, value: Any?) {
+        if (value != null) {
+            mapEntries[key.toLowerCase()] = value
+        } else {
+            mapEntries.remove(key.toLowerCase())
+        }
     }
 
     /**
