@@ -1,8 +1,7 @@
 package jab.spigot.language
 
-import jab.spigot.language.util.LangProcessable
+import jab.spigot.language.util.LangComplex
 import jab.spigot.language.util.StringPool
-import net.md_5.bungee.api.ChatColor
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.FileNotFoundException
@@ -12,6 +11,7 @@ import java.io.FileNotFoundException
  *
  * @author Jab
  */
+@Suppress("MemberVisibilityCanBePrivate")
 class LangFile {
 
     var file: File? = null
@@ -84,10 +84,10 @@ class LangFile {
             }
         }
 
-        // Load default variables if in English.
-        if (lang == Language.ENGLISH) {
-            setEnglishDefaults()
-        }
+//        // Load default variables if in English.
+//        if (lang == Language.ENGLISH) {
+//            setEnglishDefaults()
+//        }
     }
 
     /**
@@ -138,7 +138,7 @@ class LangFile {
      * @return Returns the entry with the given id. If no entry is registered with the given id, null
      *     is returned.
      */
-    fun get(key: String, pkg: LangPackage, lang: Language, vararg args: LangArg): String? {
+    fun getString(key: String, pkg: LangPackage, lang: Language, vararg args: LangArg): String? {
         val keyLower = key.toLowerCase()
         if (mapEntries.containsKey(keyLower)) {
             val o = mapEntries[keyLower]
@@ -146,7 +146,7 @@ class LangFile {
                 o is String -> {
                     o
                 }
-                o is LangProcessable -> {
+                o is LangComplex -> {
                     o.process(pkg, lang, *args)
                 }
                 o != null -> {
@@ -172,6 +172,10 @@ class LangFile {
         return yaml
     }
 
+    fun get(key: String): Any? {
+        return mapEntries[key.toLowerCase()]
+    }
+
     /**
      * Assigns a value with a ID.
      *
@@ -186,35 +190,67 @@ class LangFile {
         }
     }
 
-    /**
-     * Sets the default global variables for the [Language.ENGLISH] LangFiles.
-     */
-    private fun setEnglishDefaults() {
-        set("black", ChatColor.BLACK)
-        set("blue", ChatColor.DARK_BLUE)
-        set("green", ChatColor.DARK_GREEN)
-        set("cyan", ChatColor.DARK_AQUA)
-        set("aqua", ChatColor.DARK_AQUA)
-        set("red", ChatColor.DARK_RED)
-        set("purple", ChatColor.DARK_PURPLE)
-        set("pink", ChatColor.LIGHT_PURPLE)
-        set("gold", ChatColor.GOLD)
-        set("gray", ChatColor.DARK_GRAY)
-        set("light_gray", ChatColor.GRAY)
-        set("light_blue", ChatColor.BLUE)
-        set("light_green", ChatColor.GREEN)
-        set("light_cyan", ChatColor.AQUA)
-        set("light_aqua", ChatColor.AQUA)
-        set("light_red", ChatColor.RED)
-        set("light_purple", ChatColor.LIGHT_PURPLE)
-        set("yellow", ChatColor.YELLOW)
-        set("white", ChatColor.WHITE)
-        set("magic", ChatColor.MAGIC)
-        set("bold", ChatColor.BOLD)
-        set("strike", ChatColor.STRIKETHROUGH)
-        set("underline", ChatColor.UNDERLINE)
-        set("italic", ChatColor.ITALIC)
-        set("reset", ChatColor.RESET)
-        set("color_code", ChatColor.COLOR_CHAR)
+    fun contains(field: String): Boolean {
+        return mapEntries.containsKey(field.toLowerCase())
     }
+
+    fun isComplex(field: String): Boolean {
+        return contains(field) && mapEntries[field.toLowerCase()] is LangComplex
+    }
+
+    fun isStringPool(field: String): Boolean {
+        return contains(field) && mapEntries[field.toLowerCase()] is StringPool
+    }
+
+    fun isActionText(field: String): Boolean {
+        return contains(field) && mapEntries[field.toLowerCase()] is ActionText
+    }
+
+    fun getStringPool(field: String): StringPool {
+        val value = mapEntries[field.toLowerCase()]
+        if (value == null || value !is StringPool) {
+            throw RuntimeException("The field $field is not a StringPool.")
+        }
+        return value
+    }
+
+    fun getActionText(field: String): ActionText {
+        val value = mapEntries[field.toLowerCase()]
+        if (value == null || value !is ActionText) {
+            throw RuntimeException("The field $field is not a ActionText.")
+        }
+        return value
+    }
+
+//    /**
+//     * Sets the default global variables for the [Language.ENGLISH] LangFiles.
+//     */
+//    private fun setEnglishDefaults() {
+//        set("black", ChatColor.BLACK)
+//        set("blue", ChatColor.DARK_BLUE)
+//        set("green", ChatColor.DARK_GREEN)
+//        set("cyan", ChatColor.DARK_AQUA)
+//        set("aqua", ChatColor.DARK_AQUA)
+//        set("red", ChatColor.DARK_RED)
+//        set("purple", ChatColor.DARK_PURPLE)
+//        set("pink", ChatColor.LIGHT_PURPLE)
+//        set("gold", ChatColor.GOLD)
+//        set("gray", ChatColor.DARK_GRAY)
+//        set("light_gray", ChatColor.GRAY)
+//        set("light_blue", ChatColor.BLUE)
+//        set("light_green", ChatColor.GREEN)
+//        set("light_cyan", ChatColor.AQUA)
+//        set("light_aqua", ChatColor.AQUA)
+//        set("light_red", ChatColor.RED)
+//        set("light_purple", ChatColor.LIGHT_PURPLE)
+//        set("yellow", ChatColor.YELLOW)
+//        set("white", ChatColor.WHITE)
+//        set("magic", ChatColor.MAGIC)
+//        set("bold", ChatColor.BOLD)
+//        set("strike", ChatColor.STRIKETHROUGH)
+//        set("underline", ChatColor.UNDERLINE)
+//        set("italic", ChatColor.ITALIC)
+//        set("reset", ChatColor.RESET)
+//        set("color_code", ChatColor.COLOR_CHAR)
+//    }
 }

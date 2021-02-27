@@ -1,24 +1,85 @@
 package jab.spigot.language.util
 
+import jab.spigot.language.LangArg
+import jab.spigot.language.LangFile
 import jab.spigot.language.LangPackage
+import jab.spigot.language.Language
 import org.bukkit.configuration.ConfigurationSection
+import java.util.*
 
 /**
  * TODO: Document.
  *
  * @author Jab
- *
- * @param mode
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class StringPool(val mode: Mode) {
+class StringPool : LangComplex {
 
-    var random = LangPackage.DEFAULT_RANDOM
+    val mode: Mode
+    var random: Random
+
     private var strings: Array<String> = emptyArray()
     private var index: Int = 0
 
-    override fun toString(): String {
-        return roll()
+    /**
+     * Basic constructor.
+     *
+     * @param mode (Optional) The mode of the StringPool. (DEFAULT: [Mode.RANDOM])
+     * @param random (Optional) The random instance to use.
+     */
+    constructor(mode: Mode = Mode.RANDOM, random: Random = LangPackage.DEFAULT_RANDOM) {
+        this.mode = mode
+        this.random = random
+    }
+
+    /**
+     * [LangFile] import constructor.
+     *
+     * @param cfg The ConfigurationSection to load.
+     */
+    constructor(cfg: ConfigurationSection) {
+        var mode: Mode = Mode.RANDOM
+        this.random = LangPackage.DEFAULT_RANDOM
+
+        // Load the mode if defined.
+        if (cfg.contains("mode")) {
+            val modeCheck: Mode? = Mode.getType(cfg.getString("mode")!!)
+            if (modeCheck == null) {
+                System.err.println("""The mode "$mode" is an invalid StringPool mode. Using ${mode.name}.""")
+            } else {
+                mode = modeCheck
+            }
+        }
+        this.mode = mode
+
+        val list = cfg.getList("pool")!!
+        if (list.isNotEmpty()) {
+            for (o in list) {
+                if (o != null) {
+                    add(LangPackage.toAString(o))
+                } else {
+                    add("")
+                }
+            }
+        }
+    }
+
+    override fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): String {
+        return if (strings.isEmpty()) {
+            ""
+        } else {
+            pkg.processor.process(poll(), pkg, lang, *args)
+        }
+    }
+
+    /**
+     * @return Returns the next result in the pool.
+     */
+    fun poll(): String {
+        if (strings.isEmpty()) {
+            throw RuntimeException("The StringPool is empty and cannot poll.")
+        }
+        return strings[roll()]
     }
 
     /**
@@ -26,24 +87,24 @@ class StringPool(val mode: Mode) {
      *
      * @return
      */
-    fun roll(): String {
+    fun roll(): Int {
         if (strings.isEmpty()) {
-            return ""
+            return -1
         }
 
         when (mode) {
             Mode.RANDOM -> {
-                return strings[random.nextInt(strings.size)]
+                return random.nextInt(strings.size)
             }
             Mode.SEQUENTIAL -> {
-                val result: String = strings[index++]
+                val result = index++
                 if (index == strings.size) {
                     index = 0
                 }
                 return result
             }
             Mode.SEQUENTIAL_REVERSED -> {
-                val result: String = strings[index--]
+                val result = index--
                 if (index == -1) {
                     index = strings.lastIndex
                 }

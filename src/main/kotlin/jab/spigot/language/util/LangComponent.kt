@@ -3,14 +3,15 @@ package jab.spigot.language.util
 import jab.spigot.language.LangArg
 import jab.spigot.language.LangPackage
 import jab.spigot.language.Language
+import java.awt.TextComponent
 
 /**
- * The <i>LangProcessable</i> interface is for complex objects that requires a package
+ * The <i>LangComponent</i> interface is for complex objects that requires a package
  *   reference when processing data into a string for LangPackage use.
  *
  *   @author Jab
  */
-interface LangProcessable {
+interface LangComponent {
 
     /**
      * Processes the object into a rendered string for use in LangPackage.
@@ -19,5 +20,5 @@ interface LangProcessable {
      * @param lang The language used to process the string.
      * @param args Optional fields passed to the langPackage.
      */
-    fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): String
+    fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): TextComponent
 }

@@ -95,7 +95,7 @@ enum class Language {
 
     companion object {
 
-        val DEFAULT_LANGUAGE = Language.ENGLISH
+        var DEFAULT_LANGUAGE = ENGLISH
 
         /**
          * @param name The name of the Language.
@@ -132,7 +132,7 @@ enum class Language {
          *
          * @return
          */
-        fun getLanguage(player: Player): Language {
+        fun getLanguage(player: Player, fallBack: Language = DEFAULT_LANGUAGE): Language {
             val locale = player.locale
             println("player ${player.name} locale: ${player.locale}")
             for (lang in values()) {
@@ -140,7 +140,7 @@ enum class Language {
                     return lang
                 }
             }
-            return DEFAULT_LANGUAGE
+            return fallBack
         }
     }
 }

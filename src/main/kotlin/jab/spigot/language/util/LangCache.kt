@@ -1,0 +1,91 @@
+package jab.spigot.language.util
+
+import jab.spigot.language.LangArg
+import jab.spigot.language.LangPackage
+import jab.spigot.language.Language
+import java.util.*
+
+/**
+ * The <i>LangCache</i> class proxies the processed calls for [LangPackage], storing them as a cached result to be
+ *   referred to if called again. The purpose of the cache is to avoid wasted calculations on multiple calls that
+ *   returns the same result. If dynamic calls to the same field are passed different arguments or the arguments
+ *   referenced in the string processing are dynamic, do not use a cache to call to them, otherwise the first call to
+ *   the cache for this string will always return, regardless of successive requests. If you need to clear the cache,
+ *   [clear] will clear the cache.
+ *
+ * @author Jab
+ */
+@Suppress("unused", "MemberVisibilityCanBePrivate")
+class LangCache(val pkg: LangPackage) {
+
+    private val cache: EnumMap<Language, HashMap<String, String>> = EnumMap(Language::class.java)
+    private val cacheList: EnumMap<Language, HashMap<String, List<String?>>> = EnumMap(Language::class.java)
+
+    /**
+     * @see LangPackage.get
+     */
+    fun get(field: String, lang: Language? = pkg.defaultLanguage, vararg args: LangArg): String? {
+        val fieldLower = field.toLowerCase()
+        if (cache.containsKey(lang)) {
+            val cache = cache[lang]!!
+            if (cache.containsKey(fieldLower)) {
+                return cache[fieldLower]
+            }
+        }
+
+        val value = pkg.get(field, lang, *args)
+        if (value != null) {
+            val cache = cache.computeIfAbsent(lang) { HashMap() }
+            cache[fieldLower] = value
+        }
+        return value
+    }
+
+    /**
+     * @see LangPackage.getList
+     */
+    fun getList(field: String, lang: Language? = pkg.defaultLanguage, vararg args: LangArg): List<String?>? {
+        val fieldLower = field.toLowerCase()
+        if (cacheList.containsKey(lang)) {
+            val cacheList = cacheList[lang]!!
+            if (cacheList.containsKey(fieldLower)) {
+                return cacheList[fieldLower]
+            }
+        }
+
+        val value = pkg.getList(field, lang, *args)
+        if (value != null) {
+            val cacheList = cacheList.computeIfAbsent(lang) { HashMap() }
+            cacheList[fieldLower] = value
+        }
+        return value
+    }
+
+    /**
+     * Clears results stored in the cache. If no arguments are provided, the entire language section of the cache
+     *   is removed.
+     *
+     * @param fields The fields to clear.
+     */
+    fun clear(lang: Language, vararg fields: String) {
+        // If no args are provided, remove the language.
+        if (fields.isEmpty()) {
+            cache.remove(lang)
+            cacheList.remove(lang)
+            return
+        }
+
+        for (field in fields) {
+            cache[lang]?.remove(field)
+            cacheList[lang]?.remove(field)
+        }
+    }
+
+    /**
+     * Clears all messages stored in the cache.
+     */
+    fun clear() {
+        cache.clear()
+        cacheList.clear()
+    }
+}

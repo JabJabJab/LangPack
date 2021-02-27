@@ -52,7 +52,7 @@ class LPPlugin : JavaPlugin(), Listener {
             println(event)
             val lang = lang!!
             val player = event.player
-            lang.broadcastDynamic("enter_server", LangArg("player", player.displayName))
+            lang.broadcastField("enter_server", LangArg("player", player.displayName))
         }
 
         server.scheduler.runTaskLater(this, runnable, 20L)
@@ -74,18 +74,7 @@ class LPPlugin : JavaPlugin(), Listener {
 
         when {
             command.name.equals("hover", true) -> {
-
-                var language = Language.getLanguage(player)
-                if (language == null) {
-                    language = lang.defaultLanguage
-                }
-
-                val hoverMsg = lang.get("hover_message", language)!!
-                val hoverText = lang.getList("hover_message_text", language)!!.filterNotNull()
-                val hoverComponent = LangPackage.createHoverComponent(hoverMsg, hoverText)
-
-                player.spigot().sendMessage(hoverComponent)
-
+                lang.messageField(player, "hover_command_execute")
             }
             command.name.equals("subcommand", true) -> {
 

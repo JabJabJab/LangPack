@@ -2,103 +2,48 @@ package jab.spigot.language.util
 
 import jab.spigot.language.LangArg
 import jab.spigot.language.LangPackage
-import jab.spigot.language.LangPackage.Companion.color
 import jab.spigot.language.Language
 
-class StringProcessor : IStringProcessor {
+/**
+ * The <i>StringProcessor</i> interface is for implementing syntax formats for use in [LangPackage].
+ *
+ * @author Jab
+ */
+interface StringProcessor {
 
-    override fun getFields(string: String): Array<String> {
+    /**
+     * Processes a string, inserting arguments and fields set in the LangPackage.
+     *
+     * @param string The string to process.
+     * @param pkg The package instance.
+     * @param lang The language context.
+     * @param args (Optional) The arguments to process into the string.
+     *
+     * @return Returns the processed string.
+     */
+    fun process(
+        string: String,
+        pkg: LangPackage,
+        lang: Language = Language.ENGLISH,
+        vararg args: LangArg
+    ): String
 
-        val nextField = StringBuilder()
-        var fields: Array<String> = emptyArray()
-        var insideField = false
+    /**
+     * Processes a string, inserting provided arguments.
+     *
+     * @param string The string to process.
+     * @param args (Optional) The arguments to process into the string.
+     *
+     * @return Returns the processed string.
+     */
+    fun process(string: String, vararg args: LangArg): String
 
-        for (next in string.chars()) {
-            val c = next.toChar()
-            if (c == '%') {
-                if (insideField) {
-                    if (nextField.isNotEmpty()) {
-                        fields = fields.plus(nextField.toString())
-                    }
-                    insideField = false
-                } else {
-                    insideField = true
-                    nextField.clear()
-                }
-            } else {
-                if (insideField) {
-                    nextField.append(c)
-                }
-            }
-        }
-
-        return fields
-    }
-
-    override fun process(string: String, vararg args: LangArg): String {
-
-        val stringFields = getFields(string)
-        var processedString = string
-
-        // Process all fields in the string.
-        for (stringField in stringFields) {
-            for (field in args) {
-                if (field.key.equals(stringField, true)) {
-                    val fField = formatField(stringField)
-                    val value = field.value.toString()
-                    processedString = processedString.replace(fField, value, true)
-                }
-                break
-            }
-        }
-
-        // Remove all field characters.
-        for (stringField in stringFields) {
-            processedString = processedString.replace(stringField, stringField.replace("%", ""))
-        }
-
-        return color(processedString)
-    }
-
-    override fun process(string: String, pkg: LangPackage, lang: Language, vararg args: LangArg): String {
-
-        val stringFields = getFields(string)
-        var processedString = string
-
-        // Process all fields in the string.
-        for (stringField in stringFields) {
-
-            val fField = formatField(stringField)
-            var found = false
-
-            // Check the passed fields for the defined field.
-            for (field in args) {
-                if (field.key.equals(stringField, true)) {
-                    found = true
-                    val value = field.value.toString()
-                    processedString = processedString.replace(fField, value, true)
-                }
-                break
-            }
-
-            // Check LanguagePackage for the defined field.
-            if (!found) {
-                val field = pkg.get(stringField)
-                if (field != null) {
-                    processedString = processedString.replace(fField, field, true)
-                }
-            }
-        }
-
-        // Remove all field characters.
-        for (stringField in stringFields) {
-            processedString = processedString.replace(stringField, stringField.replace("%", ""))
-        }
-
-        return color(processedString)
-    }
-
-    override fun formatField(field: String): String {
-        return "%${field.toLowerCase()}%"
-    }
+    /**
+     * Parses a string into fields.
+     *
+     * @param string The unprocessed string to parse.
+     *
+     * @return Returns the fields in the unprocessed string.
+     */
+    fun getFields(string: String): Array<String>
 }

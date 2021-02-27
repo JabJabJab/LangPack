@@ -1,6 +1,7 @@
 package jab.spigot.language
 
-import jab.spigot.language.util.IStringProcessor
+import jab.spigot.language.util.LangComponent
+import jab.spigot.language.util.PercentStringProcessor
 import jab.spigot.language.util.StringProcessor
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
@@ -9,7 +10,8 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import java.io.File
+import java.io.*
+import java.net.URL
 import java.util.*
 
 /**
@@ -28,12 +30,14 @@ import java.util.*
  *      "{{name}}_{{language_abbreviation}}.yml"
  * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory. Thrown if
  *      the name given is empty.
+ *
+ * @property dir The directory of the folder storing the lang files.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class LangPackage(val dir: File, val name: String) {
 
     /** Handles processing of texts for the LanguageFile. */
-    var processor: IStringProcessor = StringProcessor()
+    var processor: StringProcessor = PercentStringProcessor()
 
     /** The language file to default to if a raw string cannot be located with another language. */
     var defaultLanguage: Language = Language.ENGLISH
@@ -84,11 +88,11 @@ class LangPackage(val dir: File, val name: String) {
     }
 
     /**
-     * TODO: Document.
+     * Sets a value for a language.
      *
-     * @param lang
-     * @param field
-     * @param value
+     * @param lang The language to set.
+     * @param field The field to set.
+     * @param value The value to set.
      */
     fun set(lang: Language, field: String, value: Any?) {
         val file: LangFile = mapLanguageFiles.computeIfAbsent(lang) { LangFile(lang) }
@@ -96,14 +100,19 @@ class LangPackage(val dir: File, val name: String) {
     }
 
     /**
-     * TODO: Document.
+     * Sets a value for the language.
      *
-     * @param lang
-     * @param args
+     * @param lang The language to set.
+     * @param fields The fields to set.
      */
-    fun set(lang: Language, vararg args: LangArg) {
+    fun set(lang: Language, vararg fields: LangArg) {
+        // Make sure that we have fields to set.
+        if (fields.isEmpty()) {
+            return
+        }
+
         val file: LangFile = mapLanguageFiles.computeIfAbsent(lang) { LangFile(lang) }
-        for (field in args) {
+        for (field in fields) {
             file.set(field.key, field.value)
         }
     }
@@ -170,7 +179,6 @@ class LangPackage(val dir: File, val name: String) {
      */
     fun getRawList(field: String, lang: Language): List<String?>? {
         val rawText = getRaw(field, lang)
-        println("rawText: $rawText")
         return if (rawText != null) {
             toAList(rawText)
         } else {
@@ -191,26 +199,31 @@ class LangPackage(val dir: File, val name: String) {
         var raw: String? = null
 
         if (langFile != null) {
-            raw = langFile.get(field, this, lang, *args)
+            raw = langFile.getString(field, this, lang, *args)
             if (raw == null) {
                 // Check thew fallback language. (If set)
                 val fallbackLang = lang.getFallback()
                 if (fallbackLang != null) {
                     val fallbackLangFile = mapLanguageFiles[fallbackLang]
-                    raw = fallbackLangFile?.get(field, this, lang, *args)
+                    raw = fallbackLangFile?.getString(field, this, lang, *args)
                 }
             }
         } else {
             // Check the fallback language. (If set)
             val fallbackLang = lang.getFallback()
             if (fallbackLang != null) {
-                raw = mapLanguageFiles[fallbackLang]?.get(field, this, lang, *args)
+                raw = mapLanguageFiles[fallbackLang]?.getString(field, this, lang, *args)
             }
         }
 
         // Check default language set by the package.
         if (raw == null && lang != defaultLanguage) {
-            raw = mapLanguageFiles[defaultLanguage]?.get(field, this, lang, *args)
+            raw = mapLanguageFiles[defaultLanguage]?.getString(field, this, lang, *args)
+        }
+
+        // Check global last.
+        if (raw == null && this != global) {
+            raw = global.get(field, lang, *args)
         }
 
         return raw
@@ -222,9 +235,10 @@ class LangPackage(val dir: File, val name: String) {
      * @param field The ID of the dialog to send.
      * @param args The variables to apply to the dialog sent.
      */
-    fun broadcastDynamic(field: String, vararg args: LangArg) {
+    fun broadcastField(field: String, vararg args: LangArg) {
 
         val cache: EnumMap<Language, String> = EnumMap(Language::class.java)
+        val cacheComponent: EnumMap<Language, TextComponent> = EnumMap(Language::class.java)
 
         for (player in Bukkit.getOnlinePlayers()) {
 
@@ -238,7 +252,12 @@ class LangPackage(val dir: File, val name: String) {
             if (cache.containsKey(lang)) {
                 player.sendMessage(cache[lang]!!)
                 continue
+            } else if (cacheComponent.containsKey(lang)) {
+                player.spigot().sendMessage(cacheComponent[lang]!!)
+                continue
             }
+
+
 
             // Grab the message and send it through Bukkit.
             val message = get(field, lang, *args)
@@ -251,13 +270,22 @@ class LangPackage(val dir: File, val name: String) {
         }
     }
 
-    fun messageDynamic(player: Player, field: String, vararg args: LangArg) {
+    fun isComponent(value: Any): Boolean {
+        return value is LangComponent || value is TextComponent
+    }
+
+    /**
+     * Messages a player with a given field and arguments. The language will be based on [Player.getLocale].
+     *   If the language is not supported, [LangPackage.defaultLanguage] will be used.
+     *
+     * @param player The player to send the message.
+     * @param field The field to send.
+     * @param args Additional arguments to apply.
+     */
+    fun messageField(player: Player, field: String, vararg args: LangArg) {
 
         // Grab the players language, else fallback to default.
-        var lang = Language.getLanguageAbbrev(player.locale)
-        if (lang == null) {
-            lang = defaultLanguage
-        }
+        val lang = Language.getLanguage(player, defaultLanguage)
 
         // Grab the message and send it through Bukkit.
         val message = get(field, lang, *args)
@@ -268,10 +296,28 @@ class LangPackage(val dir: File, val name: String) {
 
     companion object {
 
+        val global: LangPackage
+
         /** The standard 'line.separator' for most Java Strings. */
         const val NEW_LINE: String = "\n"
 
         var DEFAULT_RANDOM: Random = Random()
+
+        init {
+            // The global 'lang' directory.
+            val dir = File("lang")
+            if (!dir.exists()) {
+                dir.mkdirs()
+            }
+
+            // Store all global lang files present in the jar.
+            for (lang in Language.values()) {
+                saveResource("lang${File.separator}global_${lang.abbreviation}.yml")
+            }
+
+            global = LangPackage(File("lang"), "global")
+            global.load()
+        }
 
         /**
          * Converts any object given to a string. Lists are compacted into one String using [NEW_LINE] as a separator.
@@ -298,10 +344,12 @@ class LangPackage(val dir: File, val name: String) {
         }
 
         /**
-         * TODO: Document.
+         * Creates a component with a [ClickEvent] for firing a command.
          *
-         * @param text
-         * @param command
+         * @param text The text to display.
+         * @param command The command to execute when clicked.
+         *
+         * @return Returns a text component with a click event for executing the command.
          */
         fun createCommandComponent(text: String, command: String): TextComponent {
             val component = TextComponent(text)
@@ -310,12 +358,11 @@ class LangPackage(val dir: File, val name: String) {
         }
 
         /**
-         * TODO: Document.
+         * Creates a component with a [HoverEvent] for displaying lines of text.
          *
-         * @param text
-         * @param lines
+         * @param text The text to display.
+         * @param lines The lines of text to display when the text is hovered by a mouse.
          */
-        @Suppress("DEPRECATION")
         fun createHoverComponent(text: String, lines: Array<String>): TextComponent {
             val component = TextComponent(text)
 
@@ -324,15 +371,16 @@ class LangPackage(val dir: File, val name: String) {
                 list = list.plus(TextComponent(arg))
             }
 
+            @Suppress("DEPRECATION")
             component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, list)
             return component
         }
 
         /**
-         * TODO: Document.
+         * Creates a component with a [HoverEvent] for displaying lines of text.
          *
-         * @param text
-         * @param lines
+         * @param text The text to display.
+         * @param lines The lines of text to display when the text is hovered by a mouse.
          */
         @Suppress("DEPRECATION")
         fun createHoverComponent(text: String, lines: List<String>): TextComponent {
@@ -376,58 +424,74 @@ class LangPackage(val dir: File, val name: String) {
         }
 
         /**
-         * TODO: Document.
+         * Colors a list of strings to the Minecraft color-code specifications using an alternative color-code.
          *
-         * @param strings
+         * @param strings The strings to color.
+         * @param colorCode (Default: '&') The alternative color-code to process.
          */
-        fun color(strings: List<String>): List<String> {
+        fun color(strings: List<String>, colorCode: Char = '&'): List<String> {
             val coloredList = ArrayList<String>()
             for (string in strings) {
-                coloredList.add(color(string))
+                coloredList.add(color(string, colorCode))
             }
             return coloredList
         }
 
         /**
-         * TODO: Document.
+         * Colors a string to the Minecraft color-code specifications using an alternative color-code.
          *
-         * @param string
+         * @param string The string to color.
+         * @param colorCode (Default: '&') The alternative color-code to process.
          */
-        fun color(string: String): String {
-            return ChatColor.translateAlternateColorCodes('&', string)
+        fun color(string: String, colorCode: Char = '&'): String {
+            return ChatColor.translateAlternateColorCodes(colorCode, string)
         }
 
         /**
-         * TODO: Document.
+         * Message a player with multiple lines of text.
          *
-         * @param sender
-         * @param lines
+         * @param sender The player to send the texts.
+         * @param lines The lines of text to send.
          */
-        fun message(sender: CommandSender, lines: Array<String?>) {
+        fun message(sender: CommandSender, lines: Array<String>) {
             if (lines.isEmpty()) {
                 return
             }
+
+            // // Make sure to not send any null lines.
+            // var array = emptyArray<String>()
+            // for (line in lines) {
+            //    if (line != null) {
+            //        array = array.plus(line)
+            //    }
+            // }
+            // sender.sendMessage(array)
+
             sender.sendMessage(lines)
         }
 
         /**
-         * TODO: Document.
+         * Message a player with multiple lines of text.
          *
-         * @param sender
-         * @param lines
+         * @param sender The player to send the texts.
+         * @param lines The lines of text to send.
          */
-        fun message(sender: CommandSender, lines: List<String?>) {
+        fun message(sender: CommandSender, lines: List<String>) {
+
+            // Convert to an array to send all messages at once.
+            var array = emptyArray<String>()
             for (line in lines) {
-                if (line != null) {
-                    sender.sendMessage(line)
-                }
+                array = array.plus(line)
+
             }
+
+            sender.sendMessage(array)
         }
 
         /**
-         * TODO: Document.
+         * Broadcasts multiple lines of text to all players on the server.
          *
-         * @param lines
+         * @param lines The lines of text to broadcast.
          */
         fun broadcast(lines: Array<String>) {
             for (line in lines) {
@@ -436,9 +500,9 @@ class LangPackage(val dir: File, val name: String) {
         }
 
         /**
-         * TODO: Document.
+         * Broadcasts multiple lines of text to all players on the server.
          *
-         * @param lines
+         * @param lines The lines of text to broadcast.
          */
         fun broadcast(lines: List<String>) {
             for (line in lines) {
@@ -447,11 +511,13 @@ class LangPackage(val dir: File, val name: String) {
         }
 
         /**
-         * TODO: Document.
+         * Broadcasts multiple lines of text to all players on the server.
          *
-         * @param lines
+         * <br/><b>NOTE:</b> If any lines of text are null, it is ignored.
+         *
+         * @param lines The lines of text to broadcast.
          */
-        fun broadcastNulls(lines: Array<String?>) {
+        fun broadcastSafe(lines: Array<String?>) {
             for (line in lines) {
                 if (line != null) {
                     Bukkit.broadcastMessage(line)
@@ -460,15 +526,63 @@ class LangPackage(val dir: File, val name: String) {
         }
 
         /**
-         * TODO: Document.
+         * Broadcasts multiple lines of text to all players on the server.
          *
-         * @param lines
+         * <br/><b>NOTE:</b> If any lines of text are null, it is ignored.
+         *
+         * @param lines The lines of text to broadcast.
          */
-        fun broadcastNulls(lines: List<String?>) {
+        fun broadcastSafe(lines: List<String?>) {
             for (line in lines) {
                 if (line != null) {
                     Bukkit.broadcastMessage(line)
                 }
+            }
+        }
+
+        private fun saveResource(resourcePath: String, replace: Boolean = false) {
+            if (resourcePath.isEmpty()) {
+                throw RuntimeException("ResourcePath cannot be empty.")
+            }
+
+            var resourcePath2 = resourcePath
+            resourcePath2 = resourcePath2.replace('\\', '/')
+            val `in`: InputStream = getResource(resourcePath2)
+                ?: return
+            val outFile = File(resourcePath2)
+            val lastIndex = resourcePath2.lastIndexOf('/')
+            val outDir = File(resourcePath2.substring(0, if (lastIndex >= 0) lastIndex else 0))
+            if (!outDir.exists()) {
+                outDir.mkdirs()
+            }
+            try {
+                if (!outFile.exists() || replace) {
+                    val out: OutputStream = FileOutputStream(outFile)
+                    val buf = ByteArray(1024)
+                    var len: Int
+                    while (`in`.read(buf).also { len = it } > 0) {
+                        out.write(buf, 0, len)
+                    }
+                    out.close()
+                    `in`.close()
+                } else {
+                    System.err.println(
+                        "Could not save ${outFile.name} to $outFile because ${outFile.name} already exists."
+                    )
+                }
+            } catch (ex: IOException) {
+                System.err.println("Could not save ${outFile.name} to $outFile")
+            }
+        }
+
+        private fun getResource(filename: String): InputStream? {
+            return try {
+                val url: URL = this::class.java.classLoader.getResource(filename) ?: return null
+                val connection = url.openConnection()
+                connection.useCaches = false
+                connection.getInputStream()
+            } catch (ex: IOException) {
+                null
             }
         }
     }

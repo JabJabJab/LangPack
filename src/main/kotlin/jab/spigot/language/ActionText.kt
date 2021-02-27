@@ -1,5 +1,6 @@
 package jab.spigot.language
 
+import jab.spigot.language.util.LangComponent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
@@ -8,7 +9,7 @@ import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 
 @Suppress("MemberVisibilityCanBePrivate")
-class ActionText {
+class ActionText : LangComponent {
 
     var text: String
     var hoverText: HoverText? = null
@@ -97,7 +98,7 @@ class ActionText {
             return
         }
 
-        val component: TextComponent = TextComponent()
+        val component = TextComponent()
 
         // If there's assigned hover text, use it.
         when {
@@ -118,6 +119,35 @@ class ActionText {
                 TODO("Not implemented.")
             }
         }
+
+        player.spigot().sendMessage(component)
+    }
+
+    override fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): TextComponent {
+
+        val component = TextComponent()
+
+        // If there's assigned hover text, use it.
+        when {
+            hoverText != null -> {
+                val hoverText = hoverText!!
+                val processedHoverTextLines = hoverText.process(pkg, lang, *args).split(LangPackage.NEW_LINE)
+
+                var array = emptyArray<TextComponent>()
+                for (line in processedHoverTextLines) {
+                    array = array.plus(TextComponent(line))
+                }
+                component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
+            }
+            hoverItem != null -> {
+                TODO("Not implemented.")
+            }
+            hoverEntity != null -> {
+                TODO("Not implemented.")
+            }
+        }
+
+        return component
     }
 
 }

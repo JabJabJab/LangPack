@@ -4,6 +4,7 @@ main: jab.spigot.language.LPPlugin
 authors:
   - Jab
 commands:
+  lang:
   hover:
   subcommand:
   subsubcommand:
