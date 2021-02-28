@@ -21,4 +21,9 @@ interface LangComponent {
      * @param args Optional fields passed to the langPackage.
      */
     fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): TextComponent
+
+    /**
+     * TODO: Document.
+     */
+    fun get(): TextComponent
 }

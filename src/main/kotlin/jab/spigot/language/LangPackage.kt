@@ -18,7 +18,6 @@ import java.util.*
  * String to be injected with EntryFields. Adding to this is the ability to select what Language to
  * choose from, falling back to English if not defined.
  *
- * TODO: Cache system.
  * TODO: Document.
  *
  * @author Jab
@@ -273,28 +272,30 @@ class LangPackage(val dir: File, val name: String) {
      * @param args Additional arguments to apply.
      */
     fun messageField(player: Player, field: String, vararg args: LangArg) {
+
         // Grab the players language, else fallback to default.
         val lang = Language.getLanguage(player, defaultLang)
         val value = getRaw(field, lang) ?: return
 
-        when (value) {
+
+        val component: TextComponent = when (value) {
             is LangComponent -> {
-                println("Sending LangComponent..")
-                player.spigot().sendMessage(value.process(this, lang, *args))
+                value.get()
             }
             is LangComplex -> {
-                println("Sending LangComplex..")
-                player.sendMessage(value.process(this, lang, *args))
+                TextComponent(value.get())
             }
             is TextComponent -> {
-                println("Sending TextComponent..")
-                player.spigot().sendMessage(value)
+                value
             }
             else -> {
-                println("Sending String..")
-                player.sendMessage(value.toString())
+                TextComponent(value.toString())
             }
         }
+
+        val result = processor.processComponent(component, this, lang, *args)
+
+        player.spigot().sendMessage(result)
     }
 
     /**
@@ -619,11 +620,12 @@ class LangPackage(val dir: File, val name: String) {
                     }
                     out.close()
                     `in`.close()
-                } else {
-                    System.err.println(
-                        "Could not save ${outFile.name} to $outFile because ${outFile.name} already exists."
-                    )
                 }
+//                else {
+//                    System.err.println(
+//                        "Could not save ${outFile.name} to $outFile because ${outFile.name} already exists."
+//                    )
+//                }
             } catch (ex: IOException) {
                 System.err.println("Could not save ${outFile.name} to $outFile")
             }

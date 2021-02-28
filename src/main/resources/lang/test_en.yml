@@ -15,14 +15,15 @@ enter_server:
     - '%green%Please welcome %player% to the server!'
     - '%green%%player% dropped into the server.'
 
+hover_command_msg: "&aHover Text: %hover_command_hover_msg% (Post-Text)"
+
 # This is an example of an ActionText. ActionTexts are used for hover text and clickable actions.
-hover_command_execute:
-  # Identify to load as ActionText here.
+hover_command_hover_msg:
   type: ActionText
-  # The main text goes here.
-  text: '&7Hover over me to see a hidden message, %player%!'
-  # Hover text goes here.
-  hover_text: '&6This is a hover message, %player%!'
+  text: '&7%player%'
+  hover_text:
+    - '%player%,'
+    - '&6This is a hover message!'
 
   # click_command: TODO
   # click_url: TODO

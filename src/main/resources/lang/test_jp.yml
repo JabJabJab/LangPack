@@ -15,16 +15,24 @@ enter_server:
     - '&a%player% をサーバーに歓迎してください！'
     - '&a%player%がサーバーにドロップされました。'
 
+## This is an example of an ActionText. ActionTexts are used for hover text and clickable actions.
+#hover_command_hover_msg:
+#  # Identify to load as ActionText here.
+#  type: ActionText
+#  # The main text goes here.
+#  text: '&7私にカーソルを合わせると、隠されたメッセージが表示されます。'
+#  # Hover text goes here.
+#  hover_text:
+#    - '%player%'
+#    - '&6これはホバーメッセージです！'
+
 # This is an example of an ActionText. ActionTexts are used for hover text and clickable actions.
-hover_command_execute:
-  # Identify to load as ActionText here.
+hover_command_hover_msg:
   type: ActionText
-  # The main text goes here.
-  text: '&7私にカーソルを合わせると、隠されたメッセージが表示されます。'
-  # Hover text goes here.
+  text: '&7%player%, &6これはホバーメッセージです！'
   hover_text:
-    - '%player%'
-    - '&6これはホバーメッセージです！'
+    - '%player%,'
+    - '&6This is a hover message!'
 
   # click_command: TODO
   # click_url: TODO

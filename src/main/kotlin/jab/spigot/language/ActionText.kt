@@ -2,6 +2,7 @@ package jab.spigot.language
 
 import jab.spigot.language.util.LangComponent
 import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.configuration.ConfigurationSection
@@ -29,20 +30,19 @@ class ActionText : LangComponent {
 
         val readHoverText = fun(cfg: ConfigurationSection) {
             if (cfg.contains("hover_text")) {
-                var text: Array<TextComponent> = emptyArray()
+                val lines = ArrayList<Text>()
                 if (cfg.isList("hover_text")) {
-                    val lines: List<String> = cfg.getStringList("hover_text")
-                    for (arg in lines) {
-                        text = if (text.isEmpty()) {
-                            text.plus(TextComponent(arg))
+                    for (arg in cfg.getStringList("hover_text")) {
+                        if (lines.isEmpty()) {
+                            lines.add(Text(arg))
                         } else {
-                            text.plus(TextComponent("\n$arg"))
+                            lines.add(Text("\n$arg"))
                         }
                     }
                 } else {
-                    text = text.plus(TextComponent(LangPackage.toAString(cfg.get("hover_text")!!)))
+                    lines.add(Text(LangPackage.toAString(cfg.get("hover_text")!!)))
                 }
-                hoverText = HoverText(text)
+                hoverText = HoverText(lines)
             }
         }
 
@@ -123,6 +123,25 @@ class ActionText : LangComponent {
         when {
             hoverText != null -> {
                 component.hoverEvent = hoverText!!.process(pkg, lang, *args)
+            }
+            hoverItem != null -> {
+                TODO("Not implemented.")
+            }
+            hoverEntity != null -> {
+                TODO("Not implemented.")
+            }
+        }
+
+        return component
+    }
+
+    override fun get(): TextComponent {
+        val component = TextComponent(text)
+
+        // If there's assigned hover text, use it.
+        when {
+            hoverText != null -> {
+                component.hoverEvent = hoverText!!.get()
             }
             hoverItem != null -> {
                 TODO("Not implemented.")

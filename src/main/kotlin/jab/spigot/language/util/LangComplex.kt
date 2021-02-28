@@ -20,4 +20,9 @@ interface LangComplex {
      * @param args Optional fields passed to the langPackage.
      */
     fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): String
+
+    /**
+     * TODO: Document.
+     */
+    fun get(): String
 }

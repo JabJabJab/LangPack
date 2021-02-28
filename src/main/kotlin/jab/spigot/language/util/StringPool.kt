@@ -72,6 +72,14 @@ class StringPool : LangComplex {
         }
     }
 
+    override fun get(): String {
+        return if (strings.isEmpty()) {
+            ""
+        } else {
+            poll()
+        }
+    }
+
     /**
      * @return Returns the next result in the pool.
      */
