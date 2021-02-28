@@ -22,9 +22,9 @@ class LangCache(val pkg: LangPackage) {
     private val cacheList: EnumMap<Language, HashMap<String, List<String?>>> = EnumMap(Language::class.java)
 
     /**
-     * @see LangPackage.get
+     * @see LangPackage.getString
      */
-    fun get(field: String, lang: Language? = pkg.defaultLanguage, vararg args: LangArg): String? {
+    fun get(field: String, lang: Language? = pkg.defaultLang, vararg args: LangArg): String? {
         val fieldLower = field.toLowerCase()
         if (cache.containsKey(lang)) {
             val cache = cache[lang]!!
@@ -33,7 +33,7 @@ class LangCache(val pkg: LangPackage) {
             }
         }
 
-        val value = pkg.get(field, lang, *args)
+        val value = pkg.getString(field, lang, *args)
         if (value != null) {
             val cache = cache.computeIfAbsent(lang) { HashMap() }
             cache[fieldLower] = value
@@ -44,7 +44,7 @@ class LangCache(val pkg: LangPackage) {
     /**
      * @see LangPackage.getList
      */
-    fun getList(field: String, lang: Language? = pkg.defaultLanguage, vararg args: LangArg): List<String?>? {
+    fun getList(field: String, lang: Language? = pkg.defaultLang, vararg args: LangArg): List<String?>? {
         val fieldLower = field.toLowerCase()
         if (cacheList.containsKey(lang)) {
             val cacheList = cacheList[lang]!!

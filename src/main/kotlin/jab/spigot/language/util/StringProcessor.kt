@@ -21,7 +21,7 @@ interface StringProcessor {
      *
      * @return Returns the processed string.
      */
-    fun process(
+    fun processString(
         string: String,
         pkg: LangPackage,
         lang: Language = Language.ENGLISH,
@@ -36,7 +36,7 @@ interface StringProcessor {
      *
      * @return Returns the processed string.
      */
-    fun process(string: String, vararg args: LangArg): String
+    fun processString(string: String, vararg args: LangArg): String
 
     /**
      * Parses a string into fields.

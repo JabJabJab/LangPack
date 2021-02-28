@@ -1,8 +1,6 @@
 package jab.spigot.language
 
-import jab.spigot.language.util.LangComponent
-import jab.spigot.language.util.PercentStringProcessor
-import jab.spigot.language.util.StringProcessor
+import jab.spigot.language.util.*
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
@@ -40,10 +38,10 @@ class LangPackage(val dir: File, val name: String) {
     var processor: StringProcessor = PercentStringProcessor()
 
     /** The language file to default to if a raw string cannot be located with another language. */
-    var defaultLanguage: Language = Language.ENGLISH
+    var defaultLang: Language = Language.ENGLISH
 
     /** The Map for LanguageFiles, assigned with their Languages. */
-    private val mapLanguageFiles: EnumMap<Language, LangFile> = EnumMap(Language::class.java)
+    private val files: EnumMap<Language, LangFile> = EnumMap(Language::class.java)
 
     init {
         if (!dir.exists()) {
@@ -82,7 +80,7 @@ class LangPackage(val dir: File, val name: String) {
                 val langFile = LangFile(file, language)
                 langFile.load()
 
-                mapLanguageFiles[language] = langFile
+                files[language] = langFile
             }
         }
     }
@@ -95,7 +93,7 @@ class LangPackage(val dir: File, val name: String) {
      * @param value The value to set.
      */
     fun set(lang: Language, field: String, value: Any?) {
-        val file: LangFile = mapLanguageFiles.computeIfAbsent(lang) { LangFile(lang) }
+        val file: LangFile = files.computeIfAbsent(lang) { LangFile(lang) }
         file.set(field, value)
     }
 
@@ -111,7 +109,7 @@ class LangPackage(val dir: File, val name: String) {
             return
         }
 
-        val file: LangFile = mapLanguageFiles.computeIfAbsent(lang) { LangFile(lang) }
+        val file: LangFile = files.computeIfAbsent(lang) { LangFile(lang) }
         for (field in fields) {
             file.set(field.key, field.value)
         }
@@ -125,47 +123,56 @@ class LangPackage(val dir: File, val name: String) {
      *
      * @return
      */
-    fun getList(field: String, lang: Language? = defaultLanguage, vararg args: LangArg): List<String?>? {
+    fun getList(field: String, lang: Language? = defaultLang, vararg args: LangArg): List<String>? {
+
         var llang = lang
         if (llang == null) {
-            llang = defaultLanguage
+            llang = defaultLang
         }
-        var rawList = getRawList(field, llang)
-        if (rawList == null && llang != defaultLanguage) {
-            rawList = getRawList(field, defaultLanguage)
+
+        val string = getString(field, lang, *args) ?: return null
+        val rawList = toAList(string)
+        val processedList = ArrayList<String>()
+        for (raw in rawList) {
+            if (raw != null) {
+                processedList.add(processor.processString(raw, this, llang, *args))
+            } else {
+                processedList.add("")
+            }
         }
-        if (rawList != null) {
-            val processedList = ArrayList<String>()
-            for (raw in rawList) {
-                if (raw != null) {
-                    processedList.add(processor.process(raw, this, llang, *args))
-                } else {
-                    processedList.add(null.toString())
+        return processedList
+    }
+
+    /**
+     * TODO: Document.
+     *
+     * @param field
+     * @param lang
+     *
+     * @return
+     */
+    fun getString(field: String, lang: Language? = defaultLang, vararg args: LangArg): String? {
+
+        var llang = lang
+        if (llang == null) {
+            llang = defaultLang
+        }
+
+        val raw = getRaw(field, llang)
+        return if (raw != null) {
+            when (raw) {
+                is LangComponent -> {
+                    raw.process(this, llang, *args).toPlainText()
+                }
+                is LangComplex -> {
+                    raw.process(this, llang, *args)
+                }
+                else -> {
+                    processor.processString(raw.toString(), this, llang, *args)
                 }
             }
-            return processedList
-        }
-        return null
-    }
-
-    /**
-     * TODO: Document.
-     *
-     * @param field
-     * @param lang
-     *
-     * @return
-     */
-    fun get(field: String, lang: Language? = defaultLanguage, vararg args: LangArg): String? {
-        var llang = lang
-        if (llang == null) {
-            llang = defaultLanguage
-        }
-        val rawText = getRaw(field, llang)
-        return if (rawText != null) {
-            processor.process(rawText, this, llang, *args)
         } else {
-            null
+            return null
         }
     }
 
@@ -174,56 +181,37 @@ class LangPackage(val dir: File, val name: String) {
      *
      * @param field
      * @param lang
-     *
-     * @return
      */
-    fun getRawList(field: String, lang: Language): List<String?>? {
-        val rawText = getRaw(field, lang)
-        return if (rawText != null) {
-            toAList(rawText)
-        } else {
-            null
-        }
-    }
-
-    /**
-     * TODO: Document.
-     *
-     * @param field
-     * @param lang
-     *
-     * @return
-     */
-    fun getRaw(field: String, lang: Language, vararg args: LangArg): String? {
-        val langFile = mapLanguageFiles[lang]
-        var raw: String? = null
+    fun getRaw(field: String, lang: Language): Any? {
+        val langFile = files[lang]
+        var raw: Any? = null
 
         if (langFile != null) {
-            raw = langFile.getString(field, this, lang, *args)
+            raw = langFile.get(field)
             if (raw == null) {
                 // Check thew fallback language. (If set)
                 val fallbackLang = lang.getFallback()
                 if (fallbackLang != null) {
-                    val fallbackLangFile = mapLanguageFiles[fallbackLang]
-                    raw = fallbackLangFile?.getString(field, this, lang, *args)
+                    val fallbackLangFile = files[fallbackLang]
+                    raw = fallbackLangFile?.get(field)
                 }
             }
         } else {
             // Check the fallback language. (If set)
             val fallbackLang = lang.getFallback()
             if (fallbackLang != null) {
-                raw = mapLanguageFiles[fallbackLang]?.getString(field, this, lang, *args)
+                raw = files[fallbackLang]?.get(field)
             }
         }
 
         // Check default language set by the package.
-        if (raw == null && lang != defaultLanguage) {
-            raw = mapLanguageFiles[defaultLanguage]?.getString(field, this, lang, *args)
+        if (raw == null && lang != defaultLang) {
+            raw = files[defaultLang]?.get(field)
         }
 
         // Check global last.
         if (raw == null && this != global) {
-            raw = global.get(field, lang, *args)
+            raw = global.getRaw(field, lang)
         }
 
         return raw
@@ -245,7 +233,7 @@ class LangPackage(val dir: File, val name: String) {
             // Grab the players language, else fallback to default.
             var lang = Language.getLanguageAbbrev(player.locale)
             if (lang == null) {
-                lang = defaultLanguage
+                lang = defaultLang
             }
 
             // If the dialog for the language has alredy been rendered, use the cache.
@@ -257,46 +245,123 @@ class LangPackage(val dir: File, val name: String) {
                 continue
             }
 
+            if (isLangComponent(lang, field)) {
+                val message: LangComponent = getRaw(field, lang) as LangComponent
+                player.spigot().sendMessage(message.process(this, lang, *args))
 
+                // Set the language result in the cache to avoid wasted calculations.
+                cacheComponent[lang] = message.process(this, lang, *args)
+            } else {
+                // Grab the message and send it through Bukkit.
+                val message = getString(field, lang, *args)
+                if (message != null) {
+                    player.sendMessage(message)
+                }
 
-            // Grab the message and send it through Bukkit.
-            val message = get(field, lang, *args)
-            if (message != null) {
-                player.sendMessage(message)
+                // Set the language result in the cache to avoid wasted calculations.
+                cache[lang] = message
             }
-
-            // Set the language result in the cache to avoid wasted calculations.
-            cache[lang] = message
         }
-    }
-
-    fun isComponent(value: Any): Boolean {
-        return value is LangComponent || value is TextComponent
     }
 
     /**
      * Messages a player with a given field and arguments. The language will be based on [Player.getLocale].
-     *   If the language is not supported, [LangPackage.defaultLanguage] will be used.
+     *   If the language is not supported, [LangPackage.defaultLang] will be used.
      *
      * @param player The player to send the message.
      * @param field The field to send.
      * @param args Additional arguments to apply.
      */
     fun messageField(player: Player, field: String, vararg args: LangArg) {
-
         // Grab the players language, else fallback to default.
-        val lang = Language.getLanguage(player, defaultLanguage)
+        val lang = Language.getLanguage(player, defaultLang)
+        val value = getRaw(field, lang) ?: return
 
-        // Grab the message and send it through Bukkit.
-        val message = get(field, lang, *args)
-        if (message != null) {
-            player.sendMessage(message)
+        when (value) {
+            is LangComponent -> {
+                println("Sending LangComponent..")
+                player.spigot().sendMessage(value.process(this, lang, *args))
+            }
+            is LangComplex -> {
+                println("Sending LangComplex..")
+                player.sendMessage(value.process(this, lang, *args))
+            }
+            is TextComponent -> {
+                println("Sending TextComponent..")
+                player.spigot().sendMessage(value)
+            }
+            else -> {
+                println("Sending String..")
+                player.sendMessage(value.toString())
+            }
         }
+    }
+
+    /**
+     * TODO: Document.
+     *
+     * @param lang
+     * @param field
+     *
+     * @return
+     */
+    fun contains(lang: Language, field: String): Boolean {
+        return files[lang]?.contains(field.toLowerCase()) ?: false
+    }
+
+    /**
+     * TODO: Document.
+     *
+     * @param lang The language to test.
+     * @param field The field to test.
+     *
+     * @return Returns true if the field for the language stores a [LangComplex] object.
+     */
+    fun isComplex(lang: Language, field: String): Boolean {
+        return files[lang]?.isComplex(field) ?: false
+    }
+
+    /**
+     * TODO: Document.
+     *
+     * @param lang The language to test.
+     * @param field The field to test.
+     *
+     * @return Returns true if the field for the language stores a component-based value.
+     */
+    fun isLangComponent(lang: Language, field: String): Boolean {
+        return files[lang]?.isLangComponent(field) ?: false
+    }
+
+    /**
+     * TODO: Document.
+     *
+     * @param lang The language to test.
+     * @param field The field to test.
+     *
+     * @return Returns true if the field for the language stores a [StringPool].
+     */
+    fun isStringPool(lang: Language, field: String): Boolean {
+        return files[lang]?.isStringPool(field) ?: false
+    }
+
+    /**
+     * TODO: Document.
+     *
+     * @param lang The language to test.
+     * @param field The field to test.
+     *
+     * @return Returns true if the field for the language stores a [ActionText].
+     */
+    fun isActionText(lang: Language, field: String): Boolean {
+        return files[lang]?.isActionText(field) ?: false
     }
 
     companion object {
 
         val global: LangPackage
+
+        val GLOBAL_DIRECTORY: File = File("lang")
 
         /** The standard 'line.separator' for most Java Strings. */
         const val NEW_LINE: String = "\n"
@@ -305,9 +370,8 @@ class LangPackage(val dir: File, val name: String) {
 
         init {
             // The global 'lang' directory.
-            val dir = File("lang")
-            if (!dir.exists()) {
-                dir.mkdirs()
+            if (!GLOBAL_DIRECTORY.exists()) {
+                GLOBAL_DIRECTORY.mkdirs()
             }
 
             // Store all global lang files present in the jar.
@@ -458,15 +522,6 @@ class LangPackage(val dir: File, val name: String) {
                 return
             }
 
-            // // Make sure to not send any null lines.
-            // var array = emptyArray<String>()
-            // for (line in lines) {
-            //    if (line != null) {
-            //        array = array.plus(line)
-            //    }
-            // }
-            // sender.sendMessage(array)
-
             sender.sendMessage(lines)
         }
 
@@ -477,7 +532,6 @@ class LangPackage(val dir: File, val name: String) {
          * @param lines The lines of text to send.
          */
         fun message(sender: CommandSender, lines: List<String>) {
-
             // Convert to an array to send all messages at once.
             var array = emptyArray<String>()
             for (line in lines) {

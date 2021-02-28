@@ -1,6 +1,7 @@
 package jab.spigot.language
 
 import jab.spigot.language.util.LangComplex
+import jab.spigot.language.util.LangComponent
 import jab.spigot.language.util.StringPool
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -11,14 +12,14 @@ import java.io.FileNotFoundException
  *
  * @author Jab
  */
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 class LangFile {
 
     var file: File? = null
     val lang: Language
 
     /** TODO: Document. */
-    private val mapEntries: HashMap<String, Any> = HashMap()
+    private val fields: HashMap<String, Any> = HashMap()
 
     /** TODO: Document. */
     var yaml: YamlConfiguration? = null
@@ -44,7 +45,7 @@ class LangFile {
     fun load() {
 
         // Clear the current entries and reload from file.
-        mapEntries.clear()
+        fields.clear()
         readFile()
 
         if (yaml != null) {
@@ -83,11 +84,6 @@ class LangFile {
                 }
             }
         }
-
-//        // Load default variables if in English.
-//        if (lang == Language.ENGLISH) {
-//            setEnglishDefaults()
-//        }
     }
 
     /**
@@ -140,8 +136,8 @@ class LangFile {
      */
     fun getString(key: String, pkg: LangPackage, lang: Language, vararg args: LangArg): String? {
         val keyLower = key.toLowerCase()
-        if (mapEntries.containsKey(keyLower)) {
-            val o = mapEntries[keyLower]
+        if (fields.containsKey(keyLower)) {
+            val o = fields[keyLower]
             return when {
                 o is String -> {
                     o
@@ -173,7 +169,7 @@ class LangFile {
     }
 
     fun get(key: String): Any? {
-        return mapEntries[key.toLowerCase()]
+        return fields[key.toLowerCase()]
     }
 
     /**
@@ -184,30 +180,35 @@ class LangFile {
      */
     fun set(key: String, value: Any?) {
         if (value != null) {
-            mapEntries[key.toLowerCase()] = value
+            fields[key.toLowerCase()] = value
         } else {
-            mapEntries.remove(key.toLowerCase())
+            fields.remove(key.toLowerCase())
         }
     }
 
     fun contains(field: String): Boolean {
-        return mapEntries.containsKey(field.toLowerCase())
+        return fields.containsKey(field.toLowerCase())
     }
 
     fun isComplex(field: String): Boolean {
-        return contains(field) && mapEntries[field.toLowerCase()] is LangComplex
+        return contains(field) && fields[field.toLowerCase()] is LangComplex
+    }
+
+    fun isLangComponent(field: String): Boolean {
+        val value = fields[field] ?: return false
+        return value is LangComponent
     }
 
     fun isStringPool(field: String): Boolean {
-        return contains(field) && mapEntries[field.toLowerCase()] is StringPool
+        return contains(field) && fields[field.toLowerCase()] is StringPool
     }
 
     fun isActionText(field: String): Boolean {
-        return contains(field) && mapEntries[field.toLowerCase()] is ActionText
+        return contains(field) && fields[field.toLowerCase()] is ActionText
     }
 
     fun getStringPool(field: String): StringPool {
-        val value = mapEntries[field.toLowerCase()]
+        val value = fields[field.toLowerCase()]
         if (value == null || value !is StringPool) {
             throw RuntimeException("The field $field is not a StringPool.")
         }
@@ -215,42 +216,10 @@ class LangFile {
     }
 
     fun getActionText(field: String): ActionText {
-        val value = mapEntries[field.toLowerCase()]
+        val value = fields[field.toLowerCase()]
         if (value == null || value !is ActionText) {
             throw RuntimeException("The field $field is not a ActionText.")
         }
         return value
     }
-
-//    /**
-//     * Sets the default global variables for the [Language.ENGLISH] LangFiles.
-//     */
-//    private fun setEnglishDefaults() {
-//        set("black", ChatColor.BLACK)
-//        set("blue", ChatColor.DARK_BLUE)
-//        set("green", ChatColor.DARK_GREEN)
-//        set("cyan", ChatColor.DARK_AQUA)
-//        set("aqua", ChatColor.DARK_AQUA)
-//        set("red", ChatColor.DARK_RED)
-//        set("purple", ChatColor.DARK_PURPLE)
-//        set("pink", ChatColor.LIGHT_PURPLE)
-//        set("gold", ChatColor.GOLD)
-//        set("gray", ChatColor.DARK_GRAY)
-//        set("light_gray", ChatColor.GRAY)
-//        set("light_blue", ChatColor.BLUE)
-//        set("light_green", ChatColor.GREEN)
-//        set("light_cyan", ChatColor.AQUA)
-//        set("light_aqua", ChatColor.AQUA)
-//        set("light_red", ChatColor.RED)
-//        set("light_purple", ChatColor.LIGHT_PURPLE)
-//        set("yellow", ChatColor.YELLOW)
-//        set("white", ChatColor.WHITE)
-//        set("magic", ChatColor.MAGIC)
-//        set("bold", ChatColor.BOLD)
-//        set("strike", ChatColor.STRIKETHROUGH)
-//        set("underline", ChatColor.UNDERLINE)
-//        set("italic", ChatColor.ITALIC)
-//        set("reset", ChatColor.RESET)
-//        set("color_code", ChatColor.COLOR_CHAR)
-//    }
 }

@@ -14,11 +14,11 @@ import jab.spigot.language.Language
  */
 class PercentStringProcessor : StringProcessor {
 
-    override fun process(string: String, pkg: LangPackage, lang: Language, vararg args: LangArg): String {
+    override fun processString(string: String, pkg: LangPackage, lang: Language, vararg args: LangArg): String {
 
         val stringFields = getFields(string)
         if (stringFields.isEmpty()) {
-            return string
+            return color(string)
         }
 
         var processedString = string
@@ -41,7 +41,7 @@ class PercentStringProcessor : StringProcessor {
 
             // Check LanguagePackage for the defined field.
             if (!found) {
-                val field = pkg.get(stringField)
+                val field = pkg.getString(stringField)
                 if (field != null) {
                     processedString = processedString.replace(fField, field, true)
                 }
@@ -56,11 +56,11 @@ class PercentStringProcessor : StringProcessor {
         return color(processedString)
     }
 
-    override fun process(string: String, vararg args: LangArg): String {
+    override fun processString(string: String, vararg args: LangArg): String {
 
         val stringFields = getFields(string)
         if (stringFields.isEmpty()) {
-            return string
+            return color(string)
         }
 
         var processedString = string

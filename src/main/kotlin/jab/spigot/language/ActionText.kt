@@ -1,7 +1,6 @@
 package jab.spigot.language
 
 import jab.spigot.language.util.LangComponent
-import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.World
@@ -17,40 +16,40 @@ class ActionText : LangComponent {
     var hoverEntity: HoverEntity? = null
 
 
+    /**
+     * @param text
+     * @param hoverText
+     */
     constructor(text: String, hoverText: HoverText) {
         this.text = text
         this.hoverText = hoverText
     }
 
     constructor(cfg: ConfigurationSection) {
+
+        val readHoverText = fun(cfg: ConfigurationSection) {
+            if (cfg.contains("hover_text")) {
+                var text: Array<TextComponent> = emptyArray()
+                if (cfg.isList("hover_text")) {
+                    val lines: List<String> = cfg.getStringList("hover_text")
+                    for (arg in lines) {
+                        text = if (text.isEmpty()) {
+                            text.plus(TextComponent(arg))
+                        } else {
+                            text.plus(TextComponent("\n$arg"))
+                        }
+                    }
+                } else {
+                    text = text.plus(TextComponent(LangPackage.toAString(cfg.get("hover_text")!!)))
+                }
+                hoverText = HoverText(text)
+            }
+        }
+
         text = cfg.getString("text")!!
-        //        if (cfg.contains("hover") && cfg.isConfigurationSection("hover")) {
-        //            val cfgHover = cfg.getConfigurationSection("hover")!!
-        //            if (cfgHover.contains("type")) {
-        //                val hoverActionString = cfgHover.getString("type")
-        //                if (hoverActionString.equals("text", true) || hoverActionString.equals("show_text", true)) {
-        //                    val hoverAction = HoverEvent.Action.SHOW_TEXT
-        //                    if (cfgHover.isList("value")) {
-        //                        val lines: List<String> = cfgHover.getStringList("value")
-        //                        var list: Array<TextComponent> = emptyArray()
-        //                        for (arg in lines) {
-        //                            list = list.plus(TextComponent(arg))
-        //                        }
-        //                        component.hoverEvent = HoverEvent(hoverAction, list)
-        //                    } else {
-        //                        val line = TextComponent(LangPackage.toAString(cfgHover.get("value")!!))
-        //                        component.hoverEvent = HoverEvent(hoverAction, arrayOf(line))
-        //                    }
-        //
-        //
-        //                } else if (hoverActionString.equals("item", true) || hoverActionString.equals("show_item", true)) {
-        //                    hoverAction = HoverEvent.Action.SHOW_ITEM
-        //                }
-        //            } else if (cfgHover.contains(""))
-        //                if (cfg.isList("hover")) {
-        //                    component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT)
-        //                }
-        //        }
+        if (cfg.contains("hover_text")) {
+            readHoverText(cfg)
+        }
     }
 
     /**
@@ -103,14 +102,7 @@ class ActionText : LangComponent {
         // If there's assigned hover text, use it.
         when {
             hoverText != null -> {
-                val hoverText = hoverText!!
-                val processedHoverTextLines = hoverText.process(pkg, lang, *args).split(LangPackage.NEW_LINE)
-
-                var array = emptyArray<TextComponent>()
-                for (line in processedHoverTextLines) {
-                    array = array.plus(TextComponent(line))
-                }
-                component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
+                component.hoverEvent = hoverText!!.process(pkg, lang, *args)
             }
             hoverItem != null -> {
                 TODO("Not implemented.")
@@ -124,20 +116,13 @@ class ActionText : LangComponent {
     }
 
     override fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): TextComponent {
-
-        val component = TextComponent()
+        val text = pkg.processor.processString(text, pkg, lang, *args)
+        val component = TextComponent(text)
 
         // If there's assigned hover text, use it.
         when {
             hoverText != null -> {
-                val hoverText = hoverText!!
-                val processedHoverTextLines = hoverText.process(pkg, lang, *args).split(LangPackage.NEW_LINE)
-
-                var array = emptyArray<TextComponent>()
-                for (line in processedHoverTextLines) {
-                    array = array.plus(TextComponent(line))
-                }
-                component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
+                component.hoverEvent = hoverText!!.process(pkg, lang, *args)
             }
             hoverItem != null -> {
                 TODO("Not implemented.")

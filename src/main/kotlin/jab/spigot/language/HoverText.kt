@@ -1,6 +1,7 @@
 package jab.spigot.language
 
-import jab.spigot.language.util.LangComplex
+import net.md_5.bungee.api.chat.HoverEvent
+import net.md_5.bungee.api.chat.TextComponent
 
 /**
  * The <i>HoverText</i> class handles hover text that is displayed for ActionText instances. The
@@ -11,23 +12,18 @@ import jab.spigot.language.util.LangComplex
  * @param lines The lines of text to display.
  */
 @Suppress("MemberVisibilityCanBePrivate")
-class HoverText(var lines: Array<String>) : LangComplex {
+class HoverText(var lines: Array<TextComponent>) {
 
-    override fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): String {
-        val builder = StringBuilder()
+    fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): HoverEvent {
+        var array = emptyArray<TextComponent>()
 
         // Append all lines as one line with the [NEW_LINE] separator. The LangPackage will
         //   interpret the separator and handle this when displayed to the player.
         for (line in lines) {
-            val processedLine = pkg.processor.process(line, pkg, lang, *args)
-            if (builder.isEmpty()) {
-                builder.append(processedLine)
-            } else {
-                builder.append(LangPackage.NEW_LINE).append(processedLine)
-            }
+            array = array.plus(TextComponent(pkg.processor.processString(line.text, pkg, lang, *args)))
         }
 
-        return builder.toString()
+        return HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
     }
 
 }

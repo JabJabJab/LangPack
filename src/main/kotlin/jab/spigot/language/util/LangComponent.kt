@@ -3,7 +3,7 @@ package jab.spigot.language.util
 import jab.spigot.language.LangArg
 import jab.spigot.language.LangPackage
 import jab.spigot.language.Language
-import java.awt.TextComponent
+import net.md_5.bungee.api.chat.TextComponent
 
 /**
  * The <i>LangComponent</i> interface is for complex objects that requires a package

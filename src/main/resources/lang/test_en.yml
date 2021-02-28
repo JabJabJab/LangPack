@@ -20,9 +20,9 @@ hover_command_execute:
   # Identify to load as ActionText here.
   type: ActionText
   # The main text goes here.
-  text: '&7Hover over me to see a hidden message!'
+  text: '&7Hover over me to see a hidden message, %player%!'
   # Hover text goes here.
-  hover_text: '&6This is a hover message!'
+  hover_text: '&6This is a hover message, %player%!'
 
   # click_command: TODO
   # click_url: TODO

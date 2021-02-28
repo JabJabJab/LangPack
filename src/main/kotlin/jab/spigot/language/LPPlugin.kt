@@ -74,7 +74,8 @@ class LPPlugin : JavaPlugin(), Listener {
 
         when {
             command.name.equals("hover", true) -> {
-                lang.messageField(player, "hover_command_execute")
+                println("sending command.")
+                lang.messageField(player, "hover_command_execute", LangArg("player", player.displayName))
             }
             command.name.equals("subcommand", true) -> {
 

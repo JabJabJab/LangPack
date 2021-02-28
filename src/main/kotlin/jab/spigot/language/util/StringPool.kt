@@ -68,7 +68,7 @@ class StringPool : LangComplex {
         return if (strings.isEmpty()) {
             ""
         } else {
-            pkg.processor.process(poll(), pkg, lang, *args)
+            pkg.processor.processString(poll(), pkg, lang, *args)
         }
     }
 
