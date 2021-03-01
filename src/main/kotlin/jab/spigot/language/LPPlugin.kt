@@ -49,24 +49,6 @@ class LPPlugin : JavaPlugin(), Listener {
         lang = null
     }
 
-    @EventHandler
-    fun on(event: PlayerJoinEvent) {
-
-        val runnable = Runnable {
-            val lang = lang!!
-            val player = event.player
-            lang.broadcastField("enter_server", LangArg("player", player.displayName))
-        }
-
-        server.scheduler.runTaskLater(this, runnable, 20L)
-    }
-
-    @EventHandler
-    fun on(event: PlayerQuitEvent) {
-        val player = event.player
-        lang?.broadcastField("leave_server", LangArg("player", player.displayName))
-    }
-
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player || !sender.isOp) {
             return true
@@ -89,6 +71,24 @@ class LPPlugin : JavaPlugin(), Listener {
         }
 
         return true
+    }
+
+    @EventHandler
+    fun on(event: PlayerJoinEvent) {
+
+        val runnable = Runnable {
+            val lang = lang!!
+            val player = event.player
+            lang.broadcastField("enter_server", LangArg("player", player.displayName))
+        }
+
+        server.scheduler.runTaskLater(this, runnable, 20L)
+    }
+
+    @EventHandler
+    fun on(event: PlayerQuitEvent) {
+        val player = event.player
+        lang?.broadcastField("leave_server", LangArg("player", player.displayName))
     }
 
     companion object {

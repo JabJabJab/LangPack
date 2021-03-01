@@ -11,9 +11,12 @@ import org.bukkit.entity.Player
  * https://minecraft.gamepedia.com/Language
  *
  * @author Jab
+ *
+ * @property abbreviation The abbreviation of the Language.
+ * @property fallBack The fallback language to refer to.
  */
 @Suppress("unused", "SpellCheckingInspection")
-enum class Language {
+enum class Language(val abbreviation: String, private val fallBack: String? = null) {
 
     // English
     ENGLISH("en"),
@@ -55,33 +58,6 @@ enum class Language {
 
     ;
 
-    /** The abbreviation of the Language. */
-    val abbreviation: String
-
-    /** The fallback language abbreviation. (Optional) */
-    private val fallBack: String?
-
-    /**
-     * Full constructor.
-     *
-     * @param abbreviation The abbreviation of the Language.
-     * @param fallback The fallback language to refer to.
-     */
-    constructor(abbreviation: String, fallback: String?) {
-        this.abbreviation = abbreviation
-        this.fallBack = fallback
-    }
-
-    /**
-     * Constructor with no fallback.
-     *
-     * @param abbreviation The abbreviation of the Language.
-     */
-    constructor(abbreviation: String) {
-        this.abbreviation = abbreviation
-        this.fallBack = null
-    }
-
     /**
      * @return Returns the fallback language. If a fallback language is not defined, null is returned.
      */
@@ -95,7 +71,6 @@ enum class Language {
 
     companion object {
 
-        var DEFAULT_LANGUAGE = ENGLISH
 
         /**
          * @param name The name of the Language.
@@ -128,11 +103,13 @@ enum class Language {
         /**
          * TODO: Document.
          *
-         * @param player
+         * @param player The player to read.
+         * @param fallBack The fallBack language if the player doesn't have a valid locale.
          *
-         * @return
+         * @return Returns the language of the player's [Player.getLocale]. If the locale set is invalid, the fallBack
+         *   is returned.
          */
-        fun getLanguage(player: Player, fallBack: Language = DEFAULT_LANGUAGE): Language {
+        fun getLanguage(player: Player, fallBack: Language): Language {
             val locale = player.locale
             println("player ${player.name} locale: ${player.locale}")
             for (lang in values()) {

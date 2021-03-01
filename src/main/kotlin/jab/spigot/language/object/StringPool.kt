@@ -15,7 +15,10 @@ import java.util.*
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class StringPool : LangComplex {
 
+    /** TODO: Document. */
     val mode: Mode
+
+    /** TODO: Document. */
     var random: Random
 
     private var strings: Array<String> = emptyArray()

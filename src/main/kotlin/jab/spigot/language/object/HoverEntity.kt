@@ -6,6 +6,6 @@ package jab.spigot.language.`object`
  *
  * @author Jab
  *
- * @param entityId The internal ID of the entity to display to the player.
+ * @property entityId The internal ID of the entity to display to the player.
  */
 class HoverEntity(var entityId: Int)

@@ -16,20 +16,33 @@ import java.io.FileNotFoundException
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class LangFile {
 
+    /** TODO: Document. */
     var file: File? = null
-    val lang: Language
 
     /** TODO: Document. */
-    private val fields: HashMap<String, Any> = HashMap()
+    val lang: Language
 
     /** TODO: Document. */
     var yaml: YamlConfiguration? = null
         private set
 
+    private val fields: HashMap<String, Any> = HashMap()
+
+    /**
+     * TODO: Document.
+     *
+     * @param lang
+     */
     constructor(lang: Language) {
         this.lang = lang
     }
 
+    /**
+     * TODO: Document.
+     *
+     * @param file
+     * @param lang
+     */
     constructor(file: File, lang: Language) {
         if (!file.exists()) {
             throw FileNotFoundException(file.path)
@@ -130,7 +143,12 @@ class LangFile {
     }
 
     /**
-     * @param key The id of the entry.
+     * TODO: Document.
+     *
+     * @param key
+     * @param pkg
+     * @param lang
+     * @param args
      *
      * @return Returns the entry with the given id. If no entry is registered with the given id, null
      *     is returned.
@@ -169,6 +187,13 @@ class LangFile {
         return yaml
     }
 
+    /**
+     * TODO: Document.
+     *
+     * @param key
+     *
+     * @return
+     */
     fun get(key: String): Any? {
         return fields[key.toLowerCase()]
     }
@@ -187,27 +212,69 @@ class LangFile {
         }
     }
 
+    /**
+     * TODO: Document.
+     *
+     * @param field
+     *
+     * @return
+     */
     fun contains(field: String): Boolean {
         return fields.containsKey(field.toLowerCase())
     }
 
+    /**
+     * TODO: Document.
+     *
+     * @param field
+     *
+     * @return
+     */
     fun isComplex(field: String): Boolean {
         return contains(field) && fields[field.toLowerCase()] is LangComplex
     }
 
+    /**
+     * TODO: Document.
+     *
+     * @param field
+     *
+     * @return
+     */
     fun isLangComponent(field: String): Boolean {
         val value = fields[field] ?: return false
         return value is LangComponent
     }
 
+    /**
+     * TODO: Document.
+     *
+     * @param field
+     *
+     * @return
+     */
     fun isStringPool(field: String): Boolean {
         return contains(field) && fields[field.toLowerCase()] is StringPool
     }
 
+    /**
+     * TODO: Document.
+     *
+     * @param field
+     *
+     * @return
+     */
     fun isActionText(field: String): Boolean {
         return contains(field) && fields[field.toLowerCase()] is ActionText
     }
 
+    /**
+     * TODO: Document.
+     *
+     * @param field
+     *
+     * @return
+     */
     fun getStringPool(field: String): StringPool {
         val value = fields[field.toLowerCase()]
         if (value == null || value !is StringPool) {
@@ -216,6 +283,13 @@ class LangFile {
         return value
     }
 
+    /**
+     * TODO: Document.
+     *
+     * @param field
+     *
+     * @return
+     */
     fun getActionText(field: String): ActionText {
         val value = fields[field.toLowerCase()]
         if (value == null || value !is ActionText) {

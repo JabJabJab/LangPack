@@ -10,16 +10,30 @@ import org.bukkit.World
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 
-@Suppress("MemberVisibilityCanBePrivate")
+/**
+ * TODO: Document.
+ *
+ * @author Jab
+ */
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 class ActionText : LangComponent {
 
+    /** TODO: Document. */
     var text: String
+
+    /** TODO: Document. */
     var hoverText: HoverText? = null
+
+    /** TODO: Document. */
     var hoverItem: HoverItem? = null
+
+    /** TODO: Document. */
     var hoverEntity: HoverEntity? = null
 
 
     /**
+     * TODO: Document.
+     *
      * @param text
      * @param hoverText
      */
@@ -28,6 +42,11 @@ class ActionText : LangComponent {
         this.hoverText = hoverText
     }
 
+    /**
+     * TODO: Document.
+     *
+     * @param cfg
+     */
     constructor(cfg: ConfigurationSection) {
 
         val readHoverText = fun(cfg: ConfigurationSection) {
@@ -52,69 +71,6 @@ class ActionText : LangComponent {
         if (cfg.contains("hover_text")) {
             readHoverText(cfg)
         }
-    }
-
-    /**
-     * Broadcasts the ActionText to all online players on the server.
-     */
-    fun broadcast() {
-        for (player in Bukkit.getOnlinePlayers()) {
-            message(player)
-        }
-    }
-
-    /**
-     * Broadcasts the ActionText to all players in a given world.
-     *
-     * @param world The world to broadcast.
-     */
-    fun broadcast(world: World) {
-        for (player in world.players) {
-            message(player)
-        }
-    }
-
-    /**
-     * Sends the ActionText to a given player.
-     *
-     * @param player The player to send.
-     */
-    fun message(player: Player) {
-
-        // Make sure that only online players are processed.
-        if (!player.isOnline) {
-            return
-        }
-    }
-
-    fun messageDynamic(
-        player: Player,
-        pkg: LangPackage,
-        lang: Language = Language.getLanguage(player),
-        vararg args: LangArg
-    ) {
-
-        // Make sure that only online players are processed.
-        if (!player.isOnline) {
-            return
-        }
-
-        val component = TextComponent()
-
-        // If there's assigned hover text, use it.
-        when {
-            hoverText != null -> {
-                component.hoverEvent = hoverText!!.process(pkg, lang, *args)
-            }
-            hoverItem != null -> {
-                TODO("Not implemented.")
-            }
-            hoverEntity != null -> {
-                TODO("Not implemented.")
-            }
-        }
-
-        player.spigot().sendMessage(component)
     }
 
     override fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): TextComponent {
@@ -156,4 +112,76 @@ class ActionText : LangComponent {
         return component
     }
 
+    /**
+     * Broadcasts the ActionText to all online players on the server.
+     */
+    fun broadcast() {
+        for (player in Bukkit.getOnlinePlayers()) {
+            message(player)
+        }
+    }
+
+    /**
+     * Broadcasts the ActionText to all players in a given world.
+     *
+     * @param world The world to broadcast.
+     */
+    fun broadcast(world: World) {
+        for (player in world.players) {
+            message(player)
+        }
+    }
+
+    /**
+     * Sends the ActionText to a given player.
+     *
+     * @param player The player to send.
+     */
+    fun message(player: Player) {
+
+        // Make sure that only online players are processed.
+        if (!player.isOnline) {
+            return
+        }
+    }
+
+    /**
+     * TODO: Document
+     *
+     * @param player
+     * @param pkg
+     * @param lang
+     * @param args
+     *
+     * @return
+     */
+    fun messageDynamic(
+        player: Player,
+        pkg: LangPackage,
+        lang: Language = Language.getLanguage(player),
+        vararg args: LangArg
+    ) {
+
+        // Make sure that only online players are processed.
+        if (!player.isOnline) {
+            return
+        }
+
+        val component = TextComponent()
+
+        // If there's assigned hover text, use it.
+        when {
+            hoverText != null -> {
+                component.hoverEvent = hoverText!!.process(pkg, lang, *args)
+            }
+            hoverItem != null -> {
+                TODO("Not implemented.")
+            }
+            hoverEntity != null -> {
+                TODO("Not implemented.")
+            }
+        }
+
+        player.spigot().sendMessage(component)
+    }
 }

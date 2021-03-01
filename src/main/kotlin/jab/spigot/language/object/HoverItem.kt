@@ -8,6 +8,6 @@ import org.bukkit.inventory.ItemStack
  *
  * @author Jab
  *
- * @param itemStack The item to display to the player.
+ * @property itemStack The item to display to the player.
  */
 class HoverItem(var itemStack: ItemStack)

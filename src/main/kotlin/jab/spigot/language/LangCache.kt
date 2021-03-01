@@ -10,7 +10,11 @@ import java.util.*
  *   the cache for this string will always return, regardless of successive requests. If you need to clear the cache,
  *   [clear] will clear the cache.
  *
+ * TODO: Implement TextComponent cache.
+ *
  * @author Jab
+ *
+ * @property pkg The LangPackage instance to call to and cache the results.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class LangCache(val pkg: LangPackage) {
@@ -21,7 +25,7 @@ class LangCache(val pkg: LangPackage) {
     /**
      * @see LangPackage.getString
      */
-    fun get(field: String, lang: Language? = pkg.defaultLang, vararg args: LangArg): String? {
+    fun getString(field: String, lang: Language? = pkg.defaultLang, vararg args: LangArg): String? {
         val fieldLower = field.toLowerCase()
         if (cache.containsKey(lang)) {
             val cache = cache[lang]!!
@@ -62,6 +66,7 @@ class LangCache(val pkg: LangPackage) {
      * Clears results stored in the cache. If no arguments are provided, the entire language section of the cache
      *   is removed.
      *
+     * @param lang The language to clear.
      * @param fields The fields to clear.
      */
     fun clear(lang: Language, vararg fields: String) {

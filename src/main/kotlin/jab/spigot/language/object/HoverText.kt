@@ -12,11 +12,20 @@ import net.md_5.bungee.api.chat.hover.content.Text
  *
  * @author Jab
  *
- * @param lines The lines of text to display.
+ * @property lines The lines of text to display.
  */
 @Suppress("MemberVisibilityCanBePrivate")
 class HoverText(var lines: List<Text>) {
 
+    /**
+     * TODO: Document.
+     *
+     * @param pkg
+     * @param lang
+     * @param args
+     *
+     * @return
+     */
     fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): HoverEvent {
         var array = emptyList<Text>()
 
@@ -29,6 +38,11 @@ class HoverText(var lines: List<Text>) {
         return HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
     }
 
+    /**
+     * TODO: Document.
+     *
+     * @return
+     */
     fun get(): HoverEvent {
         return HoverEvent(HoverEvent.Action.SHOW_TEXT, lines)
     }

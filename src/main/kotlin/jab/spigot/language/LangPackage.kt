@@ -2,6 +2,8 @@ package jab.spigot.language
 
 import jab.spigot.language.`object`.LangComplex
 import jab.spigot.language.`object`.LangComponent
+import jab.spigot.language.processor.LangProcessor
+import jab.spigot.language.processor.PercentProcessor
 import jab.spigot.language.util.*
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
@@ -24,19 +26,17 @@ import java.util.*
  *
  * @author Jab
  *
- * @param dir The File Object for the directory where the LangFiles are stored.
- * @param name The String name of the LanguagePackage. This is noted in the LanguageFiles as
+ * @property dir The File Object for the directory where the LangFiles are stored.
+ * @property name The String name of the LanguagePackage. This is noted in the LanguageFiles as
  *      "{{name}}_{{language_abbreviation}}.yml"
  * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory. Thrown if
  *      the name given is empty.
- *
- * @property dir The directory of the folder storing the lang files.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class LangPackage(val dir: File, val name: String) {
 
     /** Handles processing of texts for the LanguageFile. */
-    var processor: StringProcessor = PercentStringProcessor()
+    var processor: LangProcessor = PercentProcessor()
 
     /** The language file to default to if a raw string cannot be located with another language. */
     var defaultLang: Language = Language.ENGLISH
@@ -121,6 +121,7 @@ class LangPackage(val dir: File, val name: String) {
      *
      * @param field
      * @param lang
+     * @param args
      *
      * @return
      */
@@ -182,6 +183,8 @@ class LangPackage(val dir: File, val name: String) {
      *
      * @param field
      * @param lang
+     *
+     * @return
      */
     fun getRaw(field: String, lang: Language): Any? {
         val langFile = files[lang]
@@ -279,7 +282,6 @@ class LangPackage(val dir: File, val name: String) {
         val lang = Language.getLanguage(player, defaultLang)
         val value = getRaw(field, lang) ?: return
 
-
         val component: TextComponent = when (value) {
             is LangComponent -> {
                 value.get()
@@ -354,7 +356,7 @@ class LangPackage(val dir: File, val name: String) {
      * @param lang The language to test.
      * @param field The field to test.
      *
-     * @return Returns true if the field for the language stores a [ActionText].
+     * @return Returns true if the field for the language stores a ActionText.
      */
     fun isActionText(lang: Language, field: String): Boolean {
         return files[lang]?.isActionText(field) ?: false
@@ -362,13 +364,16 @@ class LangPackage(val dir: File, val name: String) {
 
     companion object {
 
+        /** TODO: Document. */
         val global: LangPackage
 
+        /** TODO: Document. */
         val GLOBAL_DIRECTORY: File = File("lang")
 
         /** The standard 'line.separator' for most Java Strings. */
         const val NEW_LINE: String = "\n"
 
+        /** TODO: Document. */
         var DEFAULT_RANDOM: Random = Random()
 
         init {
@@ -429,6 +434,8 @@ class LangPackage(val dir: File, val name: String) {
          *
          * @param text The text to display.
          * @param lines The lines of text to display when the text is hovered by a mouse.
+         *
+         * @return TODO: Document.
          */
         fun createHoverComponent(text: String, lines: Array<String>): TextComponent {
             val component = TextComponent(text)
@@ -448,6 +455,8 @@ class LangPackage(val dir: File, val name: String) {
          *
          * @param text The text to display.
          * @param lines The lines of text to display when the text is hovered by a mouse.
+         *
+         * @return
          */
         @Suppress("DEPRECATION")
         fun createHoverComponent(text: String, lines: List<String>): TextComponent {
@@ -480,6 +489,7 @@ class LangPackage(val dir: File, val name: String) {
          * Converts a List of Strings to a String Array.
          *
          * @param list The List to convert.
+         *
          * @return Returns a String Array of the String Lines in the List provided.
          */
         fun toAStringArray(list: List<String>): Array<String> {
@@ -495,6 +505,8 @@ class LangPackage(val dir: File, val name: String) {
          *
          * @param strings The strings to color.
          * @param colorCode (Default: '&') The alternative color-code to process.
+         *
+         * @return TODO: Document.
          */
         fun color(strings: List<String>, colorCode: Char = '&'): List<String> {
             val coloredList = ArrayList<String>()
@@ -509,6 +521,8 @@ class LangPackage(val dir: File, val name: String) {
          *
          * @param string The string to color.
          * @param colorCode (Default: '&') The alternative color-code to process.
+         *
+         * @return TODO: Document.
          */
         fun color(string: String, colorCode: Char = '&'): String {
             return ChatColor.translateAlternateColorCodes(colorCode, string)
@@ -597,6 +611,9 @@ class LangPackage(val dir: File, val name: String) {
             }
         }
 
+        /**
+         * Modified method from [JavaPlugin] to store global lang files.
+         */
         private fun saveResource(resourcePath: String, replace: Boolean = false) {
             if (resourcePath.isEmpty()) {
                 throw RuntimeException("ResourcePath cannot be empty.")
@@ -623,19 +640,17 @@ class LangPackage(val dir: File, val name: String) {
                     out.close()
                     `in`.close()
                 }
-//                else {
-//                    System.err.println(
-//                        "Could not save ${outFile.name} to $outFile because ${outFile.name} already exists."
-//                    )
-//                }
             } catch (ex: IOException) {
                 System.err.println("Could not save ${outFile.name} to $outFile")
             }
         }
 
-        private fun getResource(filename: String): InputStream? {
+        /**
+         * Modified method from [JavaPlugin] to retrieve global lang files.
+         */
+        private fun getResource(fileName: String): InputStream? {
             return try {
-                val url: URL = this::class.java.classLoader.getResource(filename) ?: return null
+                val url: URL = this::class.java.classLoader.getResource(fileName) ?: return null
                 val connection = url.openConnection()
                 connection.useCaches = false
                 connection.getInputStream()

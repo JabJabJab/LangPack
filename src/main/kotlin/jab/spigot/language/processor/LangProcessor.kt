@@ -1,4 +1,4 @@
-package jab.spigot.language.util
+package jab.spigot.language.processor
 
 import jab.spigot.language.LangArg
 import jab.spigot.language.LangPackage
@@ -10,7 +10,7 @@ import net.md_5.bungee.api.chat.TextComponent
  *
  * @author Jab
  */
-interface StringProcessor {
+interface LangProcessor {
 
     /**
      * Processes a text component, inserting arguments and fields set in the LangPackage.
@@ -26,6 +26,19 @@ interface StringProcessor {
         textComponent: TextComponent,
         pkg: LangPackage,
         lang: Language = Language.ENGLISH,
+        vararg args: LangArg
+    ): TextComponent
+
+    /**
+     * Processes a TextComponent, inserting provided arguments.
+     *
+     * @param textComponent The component to process.
+     * @param args (Optional) The arguments to process into the string.
+     *
+     * @return Returns the processed component.
+     */
+    fun processComponent(
+        textComponent: TextComponent,
         vararg args: LangArg
     ): TextComponent
 
@@ -55,13 +68,4 @@ interface StringProcessor {
      * @return Returns the processed string.
      */
     fun processString(string: String, vararg args: LangArg): String
-
-    /**
-     * Parses a string into fields.
-     *
-     * @param string The unprocessed string to parse.
-     *
-     * @return Returns the fields in the unprocessed string.
-     */
-    fun getFields(string: String): Array<String>
 }
