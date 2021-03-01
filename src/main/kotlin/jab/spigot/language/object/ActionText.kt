@@ -1,6 +1,8 @@
-package jab.spigot.language
+package jab.spigot.language.`object`
 
-import jab.spigot.language.util.LangComponent
+import jab.spigot.language.LangArg
+import jab.spigot.language.LangPackage
+import jab.spigot.language.Language
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.Bukkit

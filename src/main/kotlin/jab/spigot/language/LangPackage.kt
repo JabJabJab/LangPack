@@ -1,5 +1,7 @@
 package jab.spigot.language
 
+import jab.spigot.language.`object`.LangComplex
+import jab.spigot.language.`object`.LangComponent
 import jab.spigot.language.util.*
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent

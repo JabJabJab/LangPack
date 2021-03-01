@@ -1,8 +1,5 @@
-package jab.spigot.language.util
+package jab.spigot.language
 
-import jab.spigot.language.LangArg
-import jab.spigot.language.LangPackage
-import jab.spigot.language.Language
 import java.util.*
 
 /**

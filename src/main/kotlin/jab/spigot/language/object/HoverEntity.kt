@@ -1,4 +1,4 @@
-package jab.spigot.language
+package jab.spigot.language.`object`
 
 /**
  * TODO: Implement.

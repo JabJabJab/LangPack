@@ -4,6 +4,8 @@ import jab.spigot.language.LangArg
 import jab.spigot.language.LangPackage
 import jab.spigot.language.LangPackage.Companion.color
 import jab.spigot.language.Language
+import jab.spigot.language.`object`.LangComplex
+import jab.spigot.language.`object`.LangComponent
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.ClickEvent

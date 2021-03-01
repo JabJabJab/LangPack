@@ -1,8 +1,9 @@
 package jab.spigot.language
 
-import jab.spigot.language.util.LangComplex
-import jab.spigot.language.util.LangComponent
-import jab.spigot.language.util.StringPool
+import jab.spigot.language.`object`.ActionText
+import jab.spigot.language.`object`.LangComplex
+import jab.spigot.language.`object`.LangComponent
+import jab.spigot.language.`object`.StringPool
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.FileNotFoundException

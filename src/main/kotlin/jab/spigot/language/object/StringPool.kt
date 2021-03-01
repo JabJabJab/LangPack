@@ -1,4 +1,4 @@
-package jab.spigot.language.util
+package jab.spigot.language.`object`
 
 import jab.spigot.language.LangArg
 import jab.spigot.language.LangFile
