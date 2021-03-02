@@ -14,13 +14,7 @@ import java.io.File
 /**
  * Dummy plug-in class to allow for independent loading of library as a plug-in for multi-plugin use.
  *
- * TODO: Implement ActionText ClickEvent API.
- * TODO: Implement remaining [Language] enums for Minecraft.
- * TODO: Test cases for dynamic TextComponent code.
- * TODO: Official command for Basic & general LangPackage use.
- * TODO: Remaining code documentation.
- * TODO: Code Cleanup.
- * TODO: WIKI documentation.
+ * TODO: Document.
  *
  * @author Jab
  */
