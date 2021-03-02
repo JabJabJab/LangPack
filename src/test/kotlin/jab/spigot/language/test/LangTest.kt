@@ -1,7 +1,9 @@
+package jab.spigot.language.test
+
 import jab.spigot.language.LangPackage
 
 /**
- * The <i>LangTest</i> class handles runtime tests for the LangPackage plugin.
+ * The <i>jab.spigot.language.test.LangTest</i> class handles runtime tests for the LangPackage plugin.
  *
  * @author Jab
  *
@@ -41,5 +43,5 @@ abstract class LangTest(private val name: String) {
     /**
      * @param pkg The langPackage instance to test.
      */
-    protected abstract fun runTest(pkg: LangPackage): Boolean
+    protected abstract fun run(pkg: LangPackage): Boolean
 }

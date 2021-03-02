@@ -1,10 +1,7 @@
 name: LanguagePackage
 version: 1.0.0
-main: jab.spigot.language.LPPlugin
+main: jab.spigot.language.LangPlugin
 authors:
   - Jab
 commands:
   lang:
-  hover:
-  subcommand:
-  subsubcommand:

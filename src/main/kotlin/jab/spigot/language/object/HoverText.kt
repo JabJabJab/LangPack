@@ -12,10 +12,30 @@ import net.md_5.bungee.api.chat.hover.content.Text
  *
  * @author Jab
  *
- * @property lines The lines of text to display.
  */
 @Suppress("MemberVisibilityCanBePrivate")
-class HoverText(var lines: List<Text>) {
+class HoverText {
+
+    /** The lines of text to display. */
+    var lines: List<Text>
+
+    /**
+     * @param lines The lines of text to display.
+     */
+    constructor(lines: List<Text>) {
+        this.lines = lines
+    }
+
+    /**
+     * @param lines The lines of text to display.
+     */
+    constructor(vararg lines: Text) {
+        val newLines = ArrayList<Text>()
+        for (line in lines) {
+            newLines.add(line)
+        }
+        this.lines = newLines
+    }
 
     /**
      * TODO: Document.

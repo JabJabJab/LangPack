@@ -15,7 +15,7 @@ interface LangProcessor {
     /**
      * Processes a text component, inserting arguments and fields set in the LangPackage.
      *
-     * @param textComponent The text component to process.
+     * @param component The text component to process.
      * @param pkg The package instance.
      * @param lang The language context.
      * @param args (Optional) The arguments to process into the string.
@@ -23,22 +23,22 @@ interface LangProcessor {
      * @return Returns the processed string.
      */
     fun processComponent(
-        textComponent: TextComponent,
+        component: TextComponent,
         pkg: LangPackage,
-        lang: Language = Language.ENGLISH,
+        lang: Language,
         vararg args: LangArg
     ): TextComponent
 
     /**
      * Processes a TextComponent, inserting provided arguments.
      *
-     * @param textComponent The component to process.
+     * @param component The component to process.
      * @param args (Optional) The arguments to process into the string.
      *
      * @return Returns the processed component.
      */
     fun processComponent(
-        textComponent: TextComponent,
+        component: TextComponent,
         vararg args: LangArg
     ): TextComponent
 
@@ -52,12 +52,7 @@ interface LangProcessor {
      *
      * @return Returns the processed string.
      */
-    fun processString(
-        string: String,
-        pkg: LangPackage,
-        lang: Language = Language.ENGLISH,
-        vararg args: LangArg
-    ): String
+    fun processString(string: String, pkg: LangPackage, lang: Language, vararg args: LangArg): String
 
     /**
      * Processes a string, inserting provided arguments.

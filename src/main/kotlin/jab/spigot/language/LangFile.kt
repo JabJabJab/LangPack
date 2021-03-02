@@ -70,7 +70,7 @@ class LangFile {
 
                     // Make sure that the type is defined.
                     if (!cfg.contains("type") || !cfg.isString("type")) {
-                        LPPlugin.instance?.logger?.warning("Unknown complex type: [Not defined]")
+                        LangPlugin.instance?.logger?.warning("Unknown complex type: [Not defined]")
                         continue
                     }
 
@@ -89,7 +89,7 @@ class LangFile {
                             set(key, StringPool.read(cfg))
                         }
                         else -> {
-                            LPPlugin.instance?.logger?.warning("Unknown complex type: $type")
+                            LangPlugin.instance?.logger?.warning("Unknown complex type: $type")
                         }
                     }
 
@@ -113,7 +113,7 @@ class LangFile {
 
                 // Make sure that the type is defined.
                 if (!cfg.contains("type") || !cfg.isString("type")) {
-                    LPPlugin.instance?.logger?.warning("Unknown complex type: [Not defined]")
+                    LangPlugin.instance?.logger?.warning("Unknown complex type: [Not defined]")
                     continue
                 }
 
@@ -132,7 +132,7 @@ class LangFile {
                         set(key, StringPool.read(cfg))
                     }
                     else -> {
-                        LPPlugin.instance?.logger?.warning("Unknown complex type: $type")
+                        LangPlugin.instance?.logger?.warning("Unknown complex type: $type")
                     }
                 }
 

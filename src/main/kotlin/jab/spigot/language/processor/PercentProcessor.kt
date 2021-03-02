@@ -24,21 +24,21 @@ import net.md_5.bungee.api.chat.hover.content.Text
 class PercentProcessor : LangProcessor {
 
     override fun processComponent(
-        textComponent: TextComponent,
+        component: TextComponent,
         pkg: LangPackage,
         lang: Language,
         vararg args: LangArg
     ): TextComponent {
 
         // There's no need to slice a component that is only a field.
-        val composition = if (!isField(textComponent.text)) {
-            slice(textComponent)
+        val composition = if (!isField(component.text)) {
+            slice(component)
         } else {
-            val comp = TextComponent(textComponent.text)
-            comp.hoverEvent = textComponent.hoverEvent
-            comp.clickEvent = textComponent.clickEvent
-            if (textComponent.extra != null) {
-                comp.extra = textComponent.extra
+            val comp = TextComponent(component.text)
+            comp.hoverEvent = component.hoverEvent
+            comp.clickEvent = component.clickEvent
+            if (component.extra != null) {
+                comp.extra = component.extra
             }
             comp
         }
@@ -56,17 +56,17 @@ class PercentProcessor : LangProcessor {
         return composition
     }
 
-    override fun processComponent(textComponent: TextComponent, vararg args: LangArg): TextComponent {
+    override fun processComponent(component: TextComponent, vararg args: LangArg): TextComponent {
 
         // There's no need to slice a component that is only a field.
-        val composition = if (!isField(textComponent.text)) {
-            slice(textComponent)
+        val composition = if (!isField(component.text)) {
+            slice(component)
         } else {
-            val comp = TextComponent(textComponent.text)
-            comp.hoverEvent = textComponent.hoverEvent
-            comp.clickEvent = textComponent.clickEvent
-            if (textComponent.extra != null) {
-                comp.extra = textComponent.extra
+            val comp = TextComponent(component.text)
+            comp.hoverEvent = component.hoverEvent
+            comp.clickEvent = component.clickEvent
+            if (component.extra != null) {
+                comp.extra = component.extra
             }
             comp
         }

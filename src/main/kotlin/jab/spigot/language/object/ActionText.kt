@@ -146,42 +146,18 @@ class ActionText : LangComponent {
     }
 
     /**
-     * TODO: Document
+     * Sends the ActionText as a message to a player.
      *
-     * @param player
-     * @param pkg
-     * @param lang
-     * @param args
-     *
-     * @return
+     * @param player The player to receive the message.
+     * @param pkg (Optional) The package to process the text.
+     * @param args (Optional) Additional arguments to provide to process the text.
      */
-    fun messageDynamic(
-        player: Player,
-        pkg: LangPackage,
-        lang: Language = Language.getLanguage(player),
-        vararg args: LangArg
-    ) {
-
-        // Make sure that only online players are processed.
-        if (!player.isOnline) {
-            return
+    fun send(player: Player, pkg: LangPackage? = null, vararg args: LangArg) {
+        val textComponent = if (pkg != null) {
+            process(pkg, Language.getLanguage(player, pkg.defaultLang), *args)
+        } else {
+            get()
         }
-
-        val component = TextComponent()
-
-        // If there's assigned hover text, use it.
-        when {
-            hoverText != null -> {
-                component.hoverEvent = hoverText!!.process(pkg, lang, *args)
-            }
-            hoverItem != null -> {
-                TODO("Not implemented.")
-            }
-            hoverEntity != null -> {
-                TODO("Not implemented.")
-            }
-        }
-
-        player.spigot().sendMessage(component)
+        player.spigot().sendMessage(textComponent)
     }
 }
