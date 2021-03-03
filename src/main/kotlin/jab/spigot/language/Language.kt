@@ -329,7 +329,6 @@ enum class Language(val abbreviation: String, private val fallBack: String? = nu
          */
         fun getLanguage(player: Player, fallBack: Language): Language {
             val locale = player.locale
-            println("player ${player.name} locale: ${player.locale}")
             for (lang in values()) {
                 if (lang.abbreviation.equals(locale, true)) {
                     return lang

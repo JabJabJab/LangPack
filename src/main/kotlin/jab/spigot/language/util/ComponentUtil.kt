@@ -107,15 +107,16 @@ class ComponentUtil {
                 line("${component.javaClass.simpleName} {")
                 tab()
                 if (component is TextComponent) {
-                    val text = if (component.text.isEmpty()) {
-                        "(Empty)"
-                    } else {
-                        component.text
+                    if (component.text != null && !component.text.isEmpty()) {
+                        line("""text: "${component.text}${ChatColor.RESET}"""")
                     }
-                    line("text: $text")
-                    line("color: ${component.color}")
-                    line("clickEvent: ${component.clickEvent}")
-                    line("hoverEvent: ${component.hoverEvent}")
+                    line("color: ${component.color.name}${ChatColor.RESET}")
+                    if (component.clickEvent != null) {
+                        line("clickEvent: ${component.clickEvent}")
+                    }
+                    if (component.hoverEvent != null) {
+                        line("hoverEvent: ${component.hoverEvent}")
+                    }
                     if (component.extra != null) {
                         line("extras: (size: ${component.extra.size})")
                         tab()

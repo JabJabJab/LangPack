@@ -21,19 +21,21 @@ class LangEventListener(private val plugin: LangPlugin) : Listener {
 
     @EventHandler
     fun on(event: PlayerJoinEvent) {
-
-        val runnable = Runnable {
-            val lang = plugin.lang!!
-            val player = event.player
-            lang.broadcastField("enter_server", LangArg("player", player.displayName))
+        if (LangCfg.joinMessages) {
+            plugin.server.scheduler.runTaskLater(plugin, Runnable {
+                val lang = plugin.lang!!
+                val player = event.player
+                lang.broadcast("enter_server", LangArg("player", player.displayName))
+            }, 20L)
         }
-
-        plugin.server.scheduler.runTaskLater(plugin, runnable, 20L)
     }
 
     @EventHandler
     fun on(event: PlayerQuitEvent) {
-        val player = event.player
-        plugin.lang?.broadcastField("leave_server", LangArg("player", player.displayName))
+        if (LangCfg.leaveMessages) {
+            val lang = plugin.lang!!
+            val player = event.player
+            lang.broadcast("leave_server", LangArg("player", player.displayName))
+        }
     }
 }

@@ -23,8 +23,13 @@ lang_command_test_failure: '%command_header_error% The test "%test%" failed. Rea
 
 lang_command_test_disabled: '%command_header_error% The test command for lang is disabled.'
 
-lang_command_test_help: '%command_header_info% &6/lang test &7[&6test_id&7]'
+lang_command_test_help: '%command_header_info% &6/lang test &7[&6%test_id%&7]'
 
+test_id:
+  type: ActionText
+  text: "test_id"
+  hover_text:
+    - "Runs a test for LangPackage."
 
 
 ### /lang

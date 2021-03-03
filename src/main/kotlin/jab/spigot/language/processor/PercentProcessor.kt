@@ -35,13 +35,14 @@ class PercentProcessor : LangProcessor {
             slice(component)
         } else {
             val comp = TextComponent(component.text)
-            comp.hoverEvent = component.hoverEvent
-            comp.clickEvent = component.clickEvent
             if (component.extra != null) {
                 comp.extra = component.extra
             }
             comp
         }
+
+        composition.hoverEvent = component.hoverEvent
+        composition.clickEvent = component.clickEvent
 
         // Process fields as extras, removing the text after processing it.
         val eraseText = processText(composition, pkg, lang, *args)
@@ -111,7 +112,7 @@ class PercentProcessor : LangProcessor {
 
             // Check LanguagePackage for the defined field.
             if (!found) {
-                val field = pkg.getString(stringField)
+                val field = pkg.getString(stringField, lang, *args)
                 if (field != null) {
                     processedString = processedString.replace(fField, field, true)
                 }
@@ -176,6 +177,9 @@ class PercentProcessor : LangProcessor {
             }
             if (!found) {
                 field = pkg.getRaw(fField, lang)
+                if (field == null) {
+                    field = pkg.getRaw(fField, pkg.defaultLang)
+                }
             }
 
             if (field != null) {

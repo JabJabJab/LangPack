@@ -121,6 +121,26 @@ class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabComplete
         alias: String,
         args: Array<out String>
     ): MutableList<String> {
+
+        if (args.isEmpty()) {
+            return EMPTY_LIST
+        }
+
+        if (args.size == 1) {
+            val arg0 = args[0].toLowerCase()
+
+            if (arg0.isEmpty()) {
+                val list = ArrayList<String>()
+                list.add("test")
+            } else {
+                val list = ArrayList<String>()
+                if ("test".contains(arg0)) {
+                    list.add("test")
+                }
+                return list
+            }
+        }
+
         return EMPTY_LIST
     }
 

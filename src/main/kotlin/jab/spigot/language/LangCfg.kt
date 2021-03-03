@@ -16,9 +16,25 @@ class LangCfg(private var plugin: LangPlugin) {
         } else {
             false
         }
+
+        joinMessages = if (cfg.isBoolean("join_messages")) {
+            cfg.getBoolean("join_messages")
+        } else {
+            false
+        }
+
+        leaveMessages = if (cfg.isBoolean("leave_messages")) {
+            cfg.getBoolean("leave_messages")
+        } else {
+            false
+        }
     }
 
     companion object {
+        var joinMessages: Boolean = false
+            private set
+        var leaveMessages: Boolean = false
+            private set
         var testsEnabled: Boolean = false
             private set
     }

@@ -62,7 +62,7 @@ class ActionText : LangComponent {
                         }
                     }
                 } else {
-                    lines.add(Text(LangPackage.toAString(cfg.get("hover_text")!!)))
+                    lines.add(Text(cfg.getString("hover_text")))
                 }
                 hoverText = HoverText(lines)
             }

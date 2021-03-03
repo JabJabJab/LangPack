@@ -25,7 +25,7 @@ class LangCache(val pkg: LangPackage) {
     /**
      * @see LangPackage.getString
      */
-    fun getString(field: String, lang: Language? = pkg.defaultLang, vararg args: LangArg): String? {
+    fun getString(field: String, lang: Language = pkg.defaultLang, vararg args: LangArg): String? {
         val fieldLower = field.toLowerCase()
         if (cache.containsKey(lang)) {
             val cache = cache[lang]!!
@@ -45,7 +45,7 @@ class LangCache(val pkg: LangPackage) {
     /**
      * @see LangPackage.getList
      */
-    fun getList(field: String, lang: Language? = pkg.defaultLang, vararg args: LangArg): List<String?>? {
+    fun getList(field: String, lang: Language = pkg.defaultLang, vararg args: LangArg): List<String?>? {
         val fieldLower = field.toLowerCase()
         if (cacheList.containsKey(lang)) {
             val cacheList = cacheList[lang]!!

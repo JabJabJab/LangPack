@@ -82,7 +82,7 @@ class LangFile {
                         type.equals("ActionText", true) || type.equals("Action Text", true) || type.equals(
                             "Action_Text",
                             true
-                        ) -> {
+                        ) || type.equals("Text", true) -> {
                             set(key, ActionText(cfg))
                         }
                         type.equals("StringPool", true) || type.equals("String Pool", true) || type.equals(

@@ -1,4 +1,4 @@
-name: LanguagePackage
+name: LangPackage
 version: 1.0.0
 main: jab.spigot.language.LangPlugin
 authors:
