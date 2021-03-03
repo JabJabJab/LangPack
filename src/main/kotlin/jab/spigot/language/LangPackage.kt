@@ -57,13 +57,13 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
 
     /**
      * Reads and loads the LangPackage.
-     * @param detectResources (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
-     * @param forceSave (Optional) Set to true to save resources, even if they are already present.
+     * @param save (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
+     * @param force (Optional) Set to true to save resources, even if they are already present.
      *
      * @return Returns the instance. (For one-line executions)
      */
-    fun load(detectResources: Boolean = false, forceSave: Boolean = false): LangPackage {
-        append(name, detectResources, forceSave)
+    fun load(save: Boolean = false, force: Boolean = false): LangPackage {
+        append(name, save, force)
         return this
     }
 
@@ -71,20 +71,20 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
      * Appends a language package.
      *
      * @param name The name of the package to append.
-     * @param detectResources (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
-     * @param forceSave (Optional) Set to true to save resources, even if they are already present.
+     * @param save (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
+     * @param force (Optional) Set to true to save resources, even if they are already present.
      *
      * @return Returns the instance. (For one-line executions)
      */
-    fun append(name: String, detectResources: Boolean = false, forceSave: Boolean = false): LangPackage {
+    fun append(name: String, save: Boolean = false, force: Boolean = false): LangPackage {
 
         // Save any resources detected.
-        if (detectResources) {
+        if (save) {
             val slash = File.separator
             for (lang in Language.values()) {
                 val resourcePath = "${dir.path}$slash${name}_${lang.abbreviation}.yml"
                 try {
-                    saveResource(resourcePath, forceSave)
+                    saveResource(resourcePath, force)
                 } catch (e: Exception) {
                     System.err.println("Failed to save resource: $resourcePath")
                     e.printStackTrace(System.err)
@@ -92,20 +92,19 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
             }
         }
 
-        for (file in dir.listFiles()!!) {
-            if (file.nameWithoutExtension.startsWith(name, true)
-                && file.extension.equals("yml", true)
-            ) {
-                val langAbbrev = file.nameWithoutExtension.split("_")[1]
-                val language = Language.getLanguageAbbrev(langAbbrev)
-                if (language == null) {
-                    System.err.println("""The file "${file.name}" does not have a valid language abbreviation.""")
-                    continue
-                }
-                val langFile = LangFile(file, language)
-                langFile.load()
+        // Search for and load LangFiles for the package.
+        for (lang in Language.values()) {
 
-                files[language] = langFile
+            val file = File(dir, "${name}_${lang.abbreviation}.yml")
+            if (file.exists()) {
+                val langFile = files[lang]
+                if (langFile != null) {
+                    println("Appending LangFile: ${file.path}..")
+                    langFile.append(file)
+                } else {
+                    println("Loading LangFile: ${file.path}..")
+                    files[lang] = LangFile(file, lang).load()
+                }
             }
         }
 
@@ -213,30 +212,26 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
      * @return
      */
     fun getRaw(field: String, lang: Language): Any? {
-        val langFile = files[lang]
-        var raw: Any? = null
 
-        if (langFile != null) {
-            raw = langFile.get(field)
-            if (raw == null) {
-                // Check thew fallback language. (If set)
-                val fallbackLang = lang.getFallback()
-                if (fallbackLang != null) {
-                    val fallbackLangFile = files[fallbackLang]
-                    raw = fallbackLangFile?.get(field)
-                }
+        // Attempt to grab the most relevant LangFile.
+        var langFile = files[lang]
+        if (langFile == null) {
+
+            // Check language fallbacks if the file is not defined.
+            val fallBack = lang.getFallback()
+            if (fallBack != null) {
+                langFile = files[fallBack]
             }
-        } else {
-            // Check the fallback language. (If set)
-            val fallbackLang = lang.getFallback()
-            if (fallbackLang != null) {
-                raw = files[fallbackLang]?.get(field)
+
+            // If a LangFile is still not found, use the default language for the package.
+            if (langFile == null) {
+                langFile = files[defaultLang]
             }
         }
 
-        // Check default language set by the package.
-        if (raw == null && lang != defaultLang) {
-            raw = files[defaultLang]?.get(field)
+        var raw: Any? = null
+        if (langFile != null) {
+            raw = langFile.get(field)
         }
 
         // Check global last.
@@ -302,28 +297,44 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
      * @param field The field to send.
      * @param args Additional arguments to apply.
      */
-    fun messageField(player: Player, field: String, vararg args: LangArg) {
+    fun message(player: Player, field: String, vararg args: LangArg) {
+
+        println("message(${player.displayName}, $field, ${args.contentToString()})")
 
         // Grab the players language, else fallback to default.
         val lang = Language.getLanguage(player, defaultLang)
-        val value = getRaw(field, lang) ?: return
 
-        val component: TextComponent = when (value) {
-            is LangComponent -> {
-                value.get()
+        println("\tlang: $lang")
+
+        val value = getRaw(field, lang)
+
+        val component: TextComponent
+        if (value != null) {
+            component = when (value) {
+                is LangComponent -> {
+                    value.get()
+                }
+                is LangComplex -> {
+                    TextComponent(value.get())
+                }
+                is TextComponent -> {
+                    value
+                }
+                else -> {
+                    TextComponent(value.toString())
+                }
             }
-            is LangComplex -> {
-                TextComponent(value.get())
-            }
-            is TextComponent -> {
-                value
-            }
-            else -> {
-                TextComponent(value.toString())
-            }
+        } else {
+            component = TextComponent(field)
         }
 
         val result = processor.processComponent(component, this, lang, *args)
+
+        println("\tResult: ")
+        val resultList = ComponentUtil.toPretty(result, "\t")
+        for (line in resultList) {
+            println(line)
+        }
 
         player.spigot().sendMessage(result)
     }

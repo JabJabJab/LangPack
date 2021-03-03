@@ -53,10 +53,13 @@ class LangFile {
         yaml = YamlConfiguration.loadConfiguration(file)
     }
 
+
     /**
      * TODO: Document.
+     *
+     * @return Returns the instance of the file for single-line executions.
      */
-    fun load() {
+    fun load(): LangFile {
 
         // Clear the current entries and reload from file.
         fields.clear()
@@ -98,14 +101,18 @@ class LangFile {
                 }
             }
         }
+
+        return this
     }
 
     /**
      * Appends another LangFile's contents to this LangFile.
      *
      * @param file The file handle.
+     *
+     * @return Returns the instance of the file for single-line executions.
      */
-    fun append(file: File) {
+    fun append(file: File): LangFile {
         val yaml = YamlConfiguration.loadConfiguration(file)
         for (key in yaml.getKeys(false)) {
             if (yaml.isConfigurationSection(key)) {
@@ -140,6 +147,8 @@ class LangFile {
                 set(key, LangPackage.toAString(yaml.get(key)!!))
             }
         }
+
+        return this
     }
 
     /**
@@ -296,5 +305,17 @@ class LangFile {
             throw RuntimeException("The field $field is not a ActionText.")
         }
         return value
+    }
+
+    override fun toString(): String {
+        return "LangFile(lang=$lang)"
+    }
+
+    fun printlnFields() {
+        println("Fields for ${toString()} {")
+        for (key in fields.keys) {
+            print("\t$key: ${fields[key]}")
+        }
+        println("}")
     }
 }

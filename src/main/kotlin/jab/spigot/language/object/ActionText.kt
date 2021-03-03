@@ -3,6 +3,7 @@ package jab.spigot.language.`object`
 import jab.spigot.language.LangArg
 import jab.spigot.language.LangPackage
 import jab.spigot.language.Language
+import jab.spigot.language.util.ComponentUtil
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.Bukkit
@@ -158,6 +159,13 @@ class ActionText : LangComponent {
         } else {
             get()
         }
+
+        println("\tResult: ")
+        val resultList = ComponentUtil.toPretty(textComponent, "\t")
+        for (line in resultList) {
+            println(line)
+        }
+
         player.spigot().sendMessage(textComponent)
     }
 }

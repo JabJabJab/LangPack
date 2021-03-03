@@ -30,7 +30,9 @@ class LangPlugin : JavaPlugin(), Listener {
             langDir.mkdirs()
         }
 
-        lang = LangPackage("lang").load().append("test", true, true)
+        lang = LangPackage("lang")
+            .load(save = true, force = true)
+            .append("test", save = true, force = true)
     }
 
     override fun onDisable() {

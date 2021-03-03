@@ -20,31 +20,25 @@ abstract class LangTest(val name: String) {
      *
      * @return Returns true if the test succeeds. Returns false if the test fails.
      */
-    fun test(pkg: LangPackage, player: Player): Boolean {
-
-        fun fail(reason: String) {
-            System.err.println("""Failed to run test: "$name". Reason: "$reason".""")
-        }
+    fun test(pkg: LangPackage, player: Player): TestResult {
 
         try {
             println("""Running test: "$name".. """)
-            if (!run(pkg, player)) {
-                fail("Test Failure.")
-                return false
+            val result = run(pkg, player)
+            if(!result.success) {
+                return result
             }
-            println("""Test "$name" successful.""")
-            return true
+            return result
         } catch (e: Exception) {
-            fail("Exception occurred.")
+            val result = TestResult(false, e.message)
             e.printStackTrace(System.err)
+            return result
         }
-
-        return false
     }
 
     /**
      * @param pkg The langPackage instance to test.
      * @param player The player running the test.
      */
-    protected abstract fun run(pkg: LangPackage, player: Player): Boolean
+    protected abstract fun run(pkg: LangPackage, player: Player): TestResult
 }

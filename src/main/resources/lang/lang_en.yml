@@ -29,3 +29,6 @@ lang_command_test_help: '%command_header_info% &6/lang test &7[&6test_id&7]'
 
 ### /lang
 lang_command_help: '%command_header_info% &6/lang &7[&6test&7]'
+
+# %command% -> The command given.
+lang_command_not_found: '%command_header_error% Command not found: %command%'

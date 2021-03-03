@@ -17,22 +17,30 @@ import org.bukkit.entity.Player
  */
 class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabCompleter {
 
-    private val tests: HashMap<String, LangTest>
+    private val tests = HashMap<String, LangTest>()
 
     init {
         val command = plugin.getCommand("lang")
-        if (command != null) {
+        if (command == null) {
+            System.err.println("The command 'lang' is not registered.")
+        } else {
             command.setExecutor(this)
             command.tabCompleter = this
-        }
 
-        tests = HashMap()
-        if (LangCfg.testsEnabled) {
-            addTest(LangTestActionText())
+            if (LangCfg.testsEnabled) {
+                addTest(LangTestActionText())
+            }
         }
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+
+        println(
+            "Command: ${command.name} ${
+                args.contentToString()
+            }"
+        )
+
         if (sender !is Player || !sender.isOp) {
             return true
         }
@@ -41,19 +49,67 @@ class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabComplete
         val lang = plugin.lang!!
 
         fun test() {
-            if(args.size < 2) {
 
+            // Make sure that 'tests_enabled' is set to true in the global config.
+            if (!LangCfg.testsEnabled) {
+                lang.message(player, "lang_command_test_disabled")
+                return
             }
+
+            // Make sure that a test name is provided.
+            if (args.size < 2) {
+                lang.message(player, "lang_command_test_help")
+                return
+            }
+
+            val testName = args[1].toLowerCase()
+            val argTest = LangArg("test", testName)
+
+            // Make sure the test exists.
+            val test = tests[testName]
+            if (test == null) {
+                lang.message(player, "lang_command_test_not_found", argTest)
+                return
+            }
+
+            lang.message(player, "lang_command_test_run", argTest)
+
+            // Run the test.
+            val result = test.test(lang, player)
+
+            // Display the result.
+            if (result.success) {
+                lang.message(player, "lang_command_test_success", argTest)
+            } else {
+                val argReason = LangArg("reason", result.reason)
+                lang.message(player, "lang_command_test_failure", argTest, argReason)
+            }
+
+            return
         }
 
+        var found = false
+
+        // Scan for sub-commands.
         if (args.size >= 1) {
             val firstArg = args[0].toLowerCase()
 
             when (firstArg) {
                 "test" -> {
                     test()
+                    found = true
                 }
             }
+
+            // Let the player know the command is invalid before sending the help dialog.
+            if (!found) {
+                lang.message(player, "lang_command_not_found", LangArg("command", args[0]))
+            }
+        }
+
+        // Display help message if no command is found.
+        if (!found) {
+            lang.message(player, "lang_command_help")
         }
 
         return true

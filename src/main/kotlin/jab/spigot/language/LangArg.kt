@@ -8,4 +8,9 @@ package jab.spigot.language
  * @property key The key to identify.
  * @property value The value to store.
  */
-class LangArg(val key: String, val value: Any?)
+class LangArg(val key: String, val value: Any?) {
+
+    override fun toString(): String {
+        return "{key='$key', value=$value}"
+    }
+}
