@@ -1,5 +1,7 @@
 package jab.spigot.language
 
+import jab.spigot.language.test.LangTest
+import jab.spigot.language.test.LangTestActionText
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -15,11 +17,18 @@ import org.bukkit.entity.Player
  */
 class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabCompleter {
 
+    private val tests: HashMap<String, LangTest>
+
     init {
         val command = plugin.getCommand("lang")
         if (command != null) {
             command.setExecutor(this)
             command.tabCompleter = this
+        }
+
+        tests = HashMap()
+        if (LangCfg.testsEnabled) {
+            addTest(LangTestActionText())
         }
     }
 
@@ -29,18 +38,21 @@ class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabComplete
         }
 
         val player: Player = sender
-
         val lang = plugin.lang!!
 
-        when {
-            command.name.equals("hover", true) -> {
-                lang.messageField(player, "hover_command_msg", LangArg("player", player.displayName))
-            }
-            command.name.equals("subcommand", true) -> {
+        fun test() {
+            if(args.size < 2) {
 
             }
-            command.name.equals("subsubcommand", true) -> {
+        }
 
+        if (args.size >= 1) {
+            val firstArg = args[0].toLowerCase()
+
+            when (firstArg) {
+                "test" -> {
+                    test()
+                }
             }
         }
 
@@ -54,6 +66,10 @@ class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabComplete
         args: Array<out String>
     ): MutableList<String> {
         return EMPTY_LIST
+    }
+
+    private fun addTest(test: LangTest) {
+        tests[test.name] = test
     }
 
     companion object {

@@ -1,9 +1,8 @@
-package jab.spigot.language.test.impl
+package jab.spigot.language.test
 
 import jab.spigot.language.LangPackage
 import jab.spigot.language.`object`.ActionText
 import jab.spigot.language.`object`.HoverText
-import jab.spigot.language.test.LangTest
 import org.bukkit.entity.Player
 
 /**
@@ -13,9 +12,9 @@ import org.bukkit.entity.Player
  *
  * @property player
  */
-class LangTestActionText(private val player: Player) : LangTest("test_actiontext") {
+class LangTestActionText : LangTest("test_actiontext") {
 
-    override fun run(pkg: LangPackage): Boolean {
+    override fun run(pkg: LangPackage, player: Player): Boolean {
         val actionText = ActionText("Hover me.", HoverText())
         actionText.send(player, pkg)
         return true

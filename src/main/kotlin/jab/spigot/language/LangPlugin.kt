@@ -18,20 +18,19 @@ class LangPlugin : JavaPlugin(), Listener {
 
     override fun onEnable() {
         instance = this
+        LangCfg(this)
+        loadLangPackages()
+        LangEventListener(this)
+        LangCommand(this)
+    }
 
+    private fun loadLangPackages() {
         val langDir = File(dataFolder, "lang")
         if (!langDir.exists()) {
             langDir.mkdirs()
         }
 
-        saveResource("lang/test_en.yml", true)
-        saveResource("lang/test_jp.yml", true)
-
-        lang = LangPackage(langDir, "test")
-        lang!!.load()
-
-        LangEventListener(this)
-        LangCommand(this)
+        lang = LangPackage("lang").load().append("test", true, true)
     }
 
     override fun onDisable() {
@@ -40,5 +39,6 @@ class LangPlugin : JavaPlugin(), Listener {
 
     companion object {
         var instance: LangPlugin? = null
+            private set
     }
 }

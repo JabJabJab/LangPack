@@ -1,24 +1,26 @@
 package jab.spigot.language.test
 
 import jab.spigot.language.LangPackage
+import org.bukkit.entity.Player
 
 /**
- * The <i>jab.spigot.language.test.LangTest</i> class handles runtime tests for the LangPackage plugin.
+ * TODO: Document.
  *
  * @author Jab
  *
  * @property name The name of the test.
  */
-abstract class LangTest(private val name: String) {
+abstract class LangTest(val name: String) {
 
     /**
      * Executes the test procedure.
      *
      * @param pkg The LangPackage instance to test.
+     * @param player The player running the test.
      *
      * @return Returns true if the test succeeds. Returns false if the test fails.
      */
-    fun test(pkg: LangPackage): Boolean {
+    fun test(pkg: LangPackage, player: Player): Boolean {
 
         fun fail(reason: String) {
             System.err.println("""Failed to run test: "$name". Reason: "$reason".""")
@@ -26,7 +28,7 @@ abstract class LangTest(private val name: String) {
 
         try {
             println("""Running test: "$name".. """)
-            if (!runTest(pkg)) {
+            if (!run(pkg, player)) {
                 fail("Test Failure.")
                 return false
             }
@@ -42,6 +44,7 @@ abstract class LangTest(private val name: String) {
 
     /**
      * @param pkg The langPackage instance to test.
+     * @param player The player running the test.
      */
-    protected abstract fun run(pkg: LangPackage): Boolean
+    protected abstract fun run(pkg: LangPackage, player: Player): Boolean
 }

@@ -26,20 +26,20 @@ import java.util.*
  *
  * @author Jab
  *
- * @property dir The File Object for the directory where the LangFiles are stored.
  * @property name The String name of the LanguagePackage. This is noted in the LanguageFiles as
  *      "{{name}}_{{language_abbreviation}}.yml"
+ * @property dir (Optional) The File Object for the directory where the LangFiles are stored. DEFAULT: 'lang/'
  * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory. Thrown if
  *      the name given is empty.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-class LangPackage(val dir: File, val name: String) {
+class LangPackage(val name: String, val dir: File = File("lang")) {
 
     /** Handles processing of texts for the LanguageFile. */
     var processor: LangProcessor = PercentProcessor()
 
     /** The language file to default to if a raw string cannot be located with another language. */
-    var defaultLang: Language = Language.ENGLISH
+    var defaultLang: Language = Language.ENGLISH_GENERIC
 
     /** The Map for LanguageFiles, assigned with their Languages. */
     private val files: EnumMap<Language, LangFile> = EnumMap(Language::class.java)
@@ -57,17 +57,41 @@ class LangPackage(val dir: File, val name: String) {
 
     /**
      * Reads and loads the LangPackage.
+     * @param detectResources (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
+     * @param forceSave (Optional) Set to true to save resources, even if they are already present.
+     *
+     * @return Returns the instance. (For one-line executions)
      */
-    fun load() {
-        append(name)
+    fun load(detectResources: Boolean = false, forceSave: Boolean = false): LangPackage {
+        append(name, detectResources, forceSave)
+        return this
     }
 
     /**
      * Appends a language package.
      *
      * @param name The name of the package to append.
+     * @param detectResources (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
+     * @param forceSave (Optional) Set to true to save resources, even if they are already present.
+     *
+     * @return Returns the instance. (For one-line executions)
      */
-    fun append(name: String) {
+    fun append(name: String, detectResources: Boolean = false, forceSave: Boolean = false): LangPackage {
+
+        // Save any resources detected.
+        if (detectResources) {
+            val slash = File.separator
+            for (lang in Language.values()) {
+                val resourcePath = "${dir.path}$slash${name}_${lang.abbreviation}.yml"
+                try {
+                    saveResource(resourcePath, forceSave)
+                } catch (e: Exception) {
+                    System.err.println("Failed to save resource: $resourcePath")
+                    e.printStackTrace(System.err)
+                }
+            }
+        }
+
         for (file in dir.listFiles()!!) {
             if (file.nameWithoutExtension.startsWith(name, true)
                 && file.extension.equals("yml", true)
@@ -84,6 +108,8 @@ class LangPackage(val dir: File, val name: String) {
                 files[language] = langFile
             }
         }
+
+        return this
     }
 
     /**
@@ -387,8 +413,7 @@ class LangPackage(val dir: File, val name: String) {
                 saveResource("lang${File.separator}global_${lang.abbreviation}.yml")
             }
 
-            global = LangPackage(File("lang"), "global")
-            global.load()
+            global = LangPackage("global").load()
         }
 
         /**
