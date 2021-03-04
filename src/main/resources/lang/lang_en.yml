@@ -30,6 +30,7 @@ test_id:
   text: "test_id"
   hover_text:
     - "Runs a test for LangPackage."
+  command: "/say hi"
 
 
 ### /lang

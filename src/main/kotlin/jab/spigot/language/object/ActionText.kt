@@ -3,13 +3,14 @@ package jab.spigot.language.`object`
 import jab.spigot.language.LangArg
 import jab.spigot.language.LangPackage
 import jab.spigot.language.Language
-import jab.spigot.language.util.ComponentUtil
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * TODO: Document.
@@ -26,21 +27,28 @@ class ActionText : LangComponent {
     var hoverText: HoverText? = null
 
     /** TODO: Document. */
-    var hoverItem: HoverItem? = null
-
-    /** TODO: Document. */
-    var hoverEntity: HoverEntity? = null
-
+    var commandText: CommandText? = null
 
     /**
-     * TODO: Document.
+     * Hover constructor.
      *
-     * @param text
-     * @param hoverText
+     * @param text The text to display.
+     * @param hoverText The hover text to display.
      */
     constructor(text: String, hoverText: HoverText) {
         this.text = text
         this.hoverText = hoverText
+    }
+
+    /**
+     * Command constructor.
+     *
+     * @param text The text to display.
+     * @param command The command to execute.
+     */
+    constructor(text: String, command: String) {
+        this.text = text
+        this.commandText = CommandText(command)
     }
 
     /**
@@ -51,6 +59,7 @@ class ActionText : LangComponent {
     constructor(cfg: ConfigurationSection) {
 
         val readHoverText = fun(cfg: ConfigurationSection) {
+
             if (cfg.contains("hover_text")) {
                 val lines = ArrayList<Text>()
                 if (cfg.isList("hover_text")) {
@@ -66,6 +75,11 @@ class ActionText : LangComponent {
                 }
                 hoverText = HoverText(lines)
             }
+
+            if (cfg.contains("command")) {
+                val line = cfg.getString("command")!!
+                this.commandText = CommandText(line)
+            }
         }
 
         text = cfg.getString("text")!!
@@ -75,62 +89,32 @@ class ActionText : LangComponent {
     }
 
     override fun process(pkg: LangPackage, lang: Language, vararg args: LangArg): TextComponent {
+
         val text = pkg.processor.processString(text, pkg, lang, *args)
         val component = TextComponent(text)
 
-        // If there's assigned hover text, use it.
-        when {
-            hoverText != null -> {
-                component.hoverEvent = hoverText!!.process(pkg, lang, *args)
-            }
-            hoverItem != null -> {
-                TODO("Not implemented.")
-            }
-            hoverEntity != null -> {
-                TODO("Not implemented.")
-            }
+        if (hoverText != null) {
+            component.hoverEvent = hoverText!!.process(pkg, lang, *args)
+        }
+        if (commandText != null) {
+            component.clickEvent = commandText!!.process(pkg, lang, *args)
         }
 
         return component
     }
 
     override fun get(): TextComponent {
+
         val component = TextComponent(text)
 
-        // If there's assigned hover text, use it.
-        when {
-            hoverText != null -> {
-                component.hoverEvent = hoverText!!.get()
-            }
-            hoverItem != null -> {
-                TODO("Not implemented.")
-            }
-            hoverEntity != null -> {
-                TODO("Not implemented.")
-            }
+        if (hoverText != null) {
+            component.hoverEvent = hoverText!!.get()
+        }
+        if (commandText != null) {
+            component.clickEvent = commandText!!.get()
         }
 
         return component
-    }
-
-    /**
-     * Broadcasts the ActionText to all online players on the server.
-     */
-    fun broadcast() {
-        for (player in Bukkit.getOnlinePlayers()) {
-            message(player)
-        }
-    }
-
-    /**
-     * Broadcasts the ActionText to all players in a given world.
-     *
-     * @param world The world to broadcast.
-     */
-    fun broadcast(world: World) {
-        for (player in world.players) {
-            message(player)
-        }
     }
 
     /**
@@ -144,6 +128,8 @@ class ActionText : LangComponent {
         if (!player.isOnline) {
             return
         }
+
+        player.spigot().sendMessage(get())
     }
 
     /**
@@ -154,18 +140,95 @@ class ActionText : LangComponent {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun send(player: Player, pkg: LangPackage? = null, vararg args: LangArg) {
+
         val textComponent = if (pkg != null) {
             process(pkg, Language.getLanguage(player, pkg.defaultLang), *args)
         } else {
             get()
         }
 
-        println("\tResult: ")
-        val resultList = ComponentUtil.toPretty(textComponent, "\t")
-        for (line in resultList) {
-            println(line)
-        }
+        // println("\tResult: ")
+        // val resultList = ComponentUtil.toPretty(textComponent, "\t")
+        // for (line in resultList) {
+        //     println(line)
+        // }
 
         player.spigot().sendMessage(textComponent)
+    }
+
+    /**
+     * Broadcasts the ActionText to all online players on the server.
+     */
+    fun broadcast() {
+
+        val message = get()
+        for (player in Bukkit.getOnlinePlayers()) {
+            player.spigot().sendMessage(message)
+        }
+    }
+
+    /**
+     * Broadcasts the ActionText to all players in a given world.
+     *
+     * @param world The world to broadcast.
+     */
+    fun broadcast(world: World) {
+
+        val message = get()
+        for (player in world.players) {
+            player.spigot().sendMessage(message)
+        }
+    }
+
+    /**
+     * Broadcasts the ActionText to all online players on the server.
+     *
+     * @param pkg The package to process the text.
+     * @param args (Optional) Additional arguments to provide to process the text.
+     */
+    fun broadcast(pkg: LangPackage, vararg args: LangArg) {
+
+        val cache = EnumMap<Language, TextComponent>(Language::class.java)
+
+        for (player in Bukkit.getOnlinePlayers()) {
+
+            val textComponent: TextComponent
+            val lang = Language.getLanguage(player, pkg.defaultLang)
+
+            if (cache[lang] != null) {
+                textComponent = cache[lang]!!
+            } else {
+                textComponent = process(pkg, Language.getLanguage(player, pkg.defaultLang), *args)
+                cache[lang] = textComponent
+            }
+
+            player.spigot().sendMessage(textComponent)
+        }
+    }
+
+    /**
+     * Broadcasts the ActionText to all players in a given world.
+     *
+     * @param pkg The package to process the text.
+     * @param args (Optional) Additional arguments to provide to process the text.
+     */
+    fun broadcast(world: World, pkg: LangPackage, vararg args: LangArg) {
+
+        val cache = EnumMap<Language, TextComponent>(Language::class.java)
+
+        for (player in world.players) {
+
+            val textComponent: TextComponent
+            val lang = Language.getLanguage(player, pkg.defaultLang)
+
+            if (cache[lang] != null) {
+                textComponent = cache[lang]!!
+            } else {
+                textComponent = process(pkg, Language.getLanguage(player, pkg.defaultLang), *args)
+                cache[lang] = textComponent
+            }
+
+            player.spigot().sendMessage(textComponent)
+        }
     }
 }
