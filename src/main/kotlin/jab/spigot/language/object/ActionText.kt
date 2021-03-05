@@ -20,13 +20,19 @@ import kotlin.collections.ArrayList
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class ActionText : LangComponent {
 
-    /** TODO: Document. */
+    /**
+     * TODO: Document.
+     */
     var text: String
 
-    /** TODO: Document. */
+    /**
+     * TODO: Document.
+     */
     var hoverText: HoverText? = null
 
-    /** TODO: Document. */
+    /**
+     * TODO: Document.
+     */
     var commandText: CommandText? = null
 
     /**
@@ -146,12 +152,6 @@ class ActionText : LangComponent {
         } else {
             get()
         }
-
-        // println("\tResult: ")
-        // val resultList = ComponentUtil.toPretty(textComponent, "\t")
-        // for (line in resultList) {
-        //     println(line)
-        // }
 
         player.spigot().sendMessage(textComponent)
     }

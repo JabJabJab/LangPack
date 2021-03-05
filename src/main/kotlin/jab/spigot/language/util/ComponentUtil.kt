@@ -1,5 +1,6 @@
 package jab.spigot.language.util
 
+import jab.spigot.language.processor.FieldFormatter
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.ClickEvent
@@ -11,9 +12,46 @@ import net.md_5.bungee.api.chat.TextComponent
  *
  * @author Jab
  */
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 class ComponentUtil {
     companion object {
+
+        /**
+         * TODO: Document.
+         *
+         * @param textComponent
+         * @param formatter
+         *
+         * @return
+         */
+        fun slice(textComponent: TextComponent, formatter: FieldFormatter): TextComponent {
+
+            val composition = TextComponent()
+            val text = textComponent.text ?: return TextComponent(textComponent.text)
+
+            // Make sure that we have fields to sort, otherwise return the color-formatted text.
+            val stringFields = formatter.getFields(text)
+            if (stringFields.isEmpty()) {
+                return TextComponent(StringUtil.color(text))
+            }
+
+            var next = text
+            for (stringField in stringFields) {
+                val fField = "%$stringField%"
+                val offset = next.indexOf(fField, 0, true)
+                composition.addExtra(TextComponent(next.substring(0, offset)))
+                composition.addExtra(TextComponent(fField))
+                next = next.substring(offset + fField.length)
+            }
+            if (next.isNotEmpty()) {
+                composition.addExtra(TextComponent(next))
+            }
+
+            composition.hoverEvent = textComponent.hoverEvent
+            composition.clickEvent = textComponent.clickEvent
+
+            return composition
+        }
 
         /**
          * Creates a component with a [ClickEvent] for firing a command.
@@ -133,8 +171,7 @@ class ComponentUtil {
                     while (index > -1) {
 
                         val next = chars[index]
-
-                        if (next == ChatColor.COLOR_CHAR.toChar()) {
+                        if (next == ChatColor.COLOR_CHAR) {
                             return ChatColor.getByChar(chars[index + 1])
                         }
 
@@ -175,7 +212,7 @@ class ComponentUtil {
                 line("${component.javaClass.simpleName} {")
                 tabIn()
                 if (component is TextComponent) {
-                    if (component.text != null && !component.text.isEmpty()) {
+                    if (component.text != null && component.text.isNotEmpty()) {
                         line("""text: "${component.text}${ChatColor.RESET}"""")
                     }
                     line("color: ${component.color.name}${ChatColor.RESET}")
@@ -202,6 +239,5 @@ class ComponentUtil {
             recurse(component)
             return lines
         }
-
     }
 }

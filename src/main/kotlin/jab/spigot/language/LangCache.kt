@@ -22,8 +22,6 @@ class LangCache(val pkg: LangPackage) {
     private val cache: EnumMap<Language, HashMap<String, String>> = EnumMap(Language::class.java)
     private val cacheList: EnumMap<Language, HashMap<String, List<String?>>> = EnumMap(Language::class.java)
 
-
-
     override fun toString(): String {
         return "LangCache(pkg=$pkg, cache=$cache, cacheList=$cacheList)"
     }

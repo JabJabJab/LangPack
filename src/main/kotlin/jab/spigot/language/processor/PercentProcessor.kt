@@ -15,13 +15,13 @@ import net.md_5.bungee.api.chat.hover.content.Content
 import net.md_5.bungee.api.chat.hover.content.Text
 
 /**
- * The <i>PercentStringProcessor</i> class implements the default field syntax for [LangPackage].
+ * The ***PercentStringProcessor*** class implements the default field syntax for [LangPackage].
  *
- *  Field syntax: '%field%'
+ *  > ### Field syntax: **%**field**%**
  *
  *  @author Jab
  */
-class PercentProcessor : LangProcessor {
+class PercentProcessor : LangProcessor, FieldFormatter {
 
     override fun processComponent(
         component: TextComponent,
@@ -32,7 +32,7 @@ class PercentProcessor : LangProcessor {
 
         // There's no need to slice a component that is only a field.
         val composition = if (!isField(component.text)) {
-            slice(component)
+            ComponentUtil.slice(component, this)
         } else {
             val comp = TextComponent(component.text)
             if (component.extra != null) {
@@ -61,7 +61,7 @@ class PercentProcessor : LangProcessor {
 
         // There's no need to slice a component that is only a field.
         val composition = if (!isField(component.text)) {
-            slice(component)
+            ComponentUtil.slice(component, this)
         } else {
             val comp = TextComponent(component.text)
             comp.hoverEvent = component.hoverEvent
@@ -361,95 +361,39 @@ class PercentProcessor : LangProcessor {
         composition.extra.addAll(newExtras)
     }
 
-    companion object {
+    override fun getFields(string: String): ArrayList<String> {
 
-        /**
-         * TODO: Document.
-         *
-         * @param textComponent
-         *
-         * @return
-         */
-        private fun slice(textComponent: TextComponent): TextComponent {
+        val nextField = StringBuilder()
+        var fields = ArrayList<String>()
+        var insideField = false
 
-            val composition = TextComponent()
-            val text = textComponent.text ?: return TextComponent(textComponent.text)
-
-            // Make sure that we have fields to sort, otherwise return the color-formatted text.
-            val stringFields = getFields(text)
-            if (stringFields.isEmpty()) {
-                return TextComponent(color(text))
-            }
-
-            var next = text
-            for (stringField in stringFields) {
-                val fField = "%$stringField%"
-                val offset = next.indexOf(fField, 0, true)
-                composition.addExtra(TextComponent(next.substring(0, offset)))
-                composition.addExtra(TextComponent(fField))
-                next = next.substring(offset + fField.length)
-            }
-            if (next.isNotEmpty()) {
-                composition.addExtra(TextComponent(next))
-            }
-
-            composition.hoverEvent = textComponent.hoverEvent
-            composition.clickEvent = textComponent.clickEvent
-
-            return composition
-        }
-
-        /**
-         * Parses a string into fields.
-         *
-         * @param string The unprocessed string to parse.
-         *
-         * @return Returns the fields in the unprocessed string.
-         */
-        fun getFields(string: String): Array<String> {
-
-            val nextField = StringBuilder()
-            var fields: Array<String> = emptyArray()
-            var insideField = false
-
-            for (next in string.chars()) {
-                val c = next.toChar()
-                if (c == '%') {
-                    if (insideField) {
-                        if (nextField.isNotEmpty()) {
-                            fields = fields.plus(nextField.toString())
-                        }
-                        insideField = false
-                    } else {
-                        insideField = true
-                        nextField.clear()
+        for (next in string.chars()) {
+            val c = next.toChar()
+            if (c == '%') {
+                if (insideField) {
+                    if (nextField.isNotEmpty()) {
+                        fields.add(nextField.toString())
                     }
+                    insideField = false
                 } else {
-                    if (insideField) {
-                        nextField.append(c)
-                    }
+                    insideField = true
+                    nextField.clear()
+                }
+            } else {
+                if (insideField) {
+                    nextField.append(c)
                 }
             }
-
-            return fields
         }
 
-        /**
-         * @param field the Field to process.
-         *
-         * @return Returns a field in the syntax format.
-         */
-        private fun formatField(field: String): String {
-            return "%${field.toLowerCase()}%"
-        }
+        return fields
+    }
 
-        /**
-         * @param string
-         *
-         * @return
-         */
-        private fun isField(string: String?): Boolean {
-            return string != null && string.length > 2 && string.startsWith('%') && string.endsWith('%')
-        }
+    override fun formatField(field: String): String {
+        return "%${field.toLowerCase()}%"
+    }
+
+    override fun isField(string: String?): Boolean {
+        return string != null && string.length > 2 && string.startsWith('%') && string.endsWith('%')
     }
 }

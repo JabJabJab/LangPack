@@ -66,5 +66,4 @@ class HoverText {
     fun get(): HoverEvent {
         return HoverEvent(HoverEvent.Action.SHOW_TEXT, lines)
     }
-
 }
