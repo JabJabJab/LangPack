@@ -23,16 +23,21 @@ abstract class LangTest(val name: String) {
     fun test(pkg: LangPackage, player: Player): TestResult {
 
         try {
-            println("""Running test: "$name".. """)
+
             val result = run(pkg, player)
-            if(!result.success) {
+            if (!result.success) {
                 return result
             }
+
             return result
+
         } catch (e: Exception) {
+
             val result = TestResult(false, e.message)
             e.printStackTrace(System.err)
+
             return result
+
         }
     }
 

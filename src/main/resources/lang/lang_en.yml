@@ -30,7 +30,7 @@ test_id:
   text: "test_id"
   hover_text:
     - "Runs a test for LangPackage."
-  command: "/say hi"
+
 
 
 ### /lang
@@ -38,3 +38,19 @@ lang_command_help: '%command_header_info% &6/lang &7[&6test&7]'
 
 # %command% -> The command given.
 lang_command_not_found: '%command_header_error% Command not found: %command%'
+
+
+
+### Events
+
+# %player% -> The name of the player entering the server.
+enter_server:
+  type: Pool
+  mode: Random
+  pool:
+    - '&aHello, %player%!'
+    - '&aPlease welcome %player% to the server!'
+    - '&a%player% dropped into the server.'
+
+# %player% -> The name of the player leaving the server.
+leave_server: '&9Goodbye, %player%.'

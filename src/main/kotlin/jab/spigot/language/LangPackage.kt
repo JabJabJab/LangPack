@@ -5,15 +5,11 @@ import jab.spigot.language.`object`.LangComponent
 import jab.spigot.language.processor.LangProcessor
 import jab.spigot.language.processor.PercentProcessor
 import jab.spigot.language.util.*
-import net.md_5.bungee.api.chat.ClickEvent
-import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.io.*
-import java.net.URL
 import java.util.*
 
 /**
@@ -57,6 +53,7 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
 
     /**
      * Reads and loads the LangPackage.
+     *
      * @param save (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
      * @param force (Optional) Set to true to save resources, even if they are already present.
      *
@@ -80,11 +77,13 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
 
         // Save any resources detected.
         if (save) {
-            val slash = File.separator
+
             for (lang in Language.values()) {
-                val resourcePath = "${dir.path}$slash${name}_${lang.abbreviation}.yml"
+
+                val resourcePath = "${dir.path}${File.separator}${name}_${lang.abbreviation}.yml"
+
                 try {
-                    saveResource(resourcePath, force)
+                    ResourceUtil.saveResource(resourcePath, force)
                 } catch (e: Exception) {
                     System.err.println("Failed to save resource: $resourcePath")
                     e.printStackTrace(System.err)
@@ -129,6 +128,7 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
      * @param fields The fields to set.
      */
     fun set(lang: Language, vararg fields: LangArg) {
+
         // Make sure that we have fields to set.
         if (fields.isEmpty()) {
             return
@@ -150,8 +150,9 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
      * @return
      */
     fun getList(field: String, lang: Language = defaultLang, vararg args: LangArg): List<String>? {
+
         val string = getString(field, lang, *args) ?: return null
-        val rawList = toAList(string)
+        val rawList = StringUtil.toAList(string)
         val processedList = ArrayList<String>()
         for (raw in rawList) {
             if (raw != null) {
@@ -160,6 +161,7 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
                 processedList.add("")
             }
         }
+
         return processedList
     }
 
@@ -319,13 +321,9 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
             component = TextComponent(field)
         }
 
-        val result = processor.processComponent(component, this, langPlayer, *args)
-
-//        println("\tResult: ")
-//        val resultList = ComponentUtil.toPretty(result, "\t")
-//        ConsoleColor.println(resultList)
-
-        player.spigot().sendMessage(result)
+        player.spigot().sendMessage(
+            processor.processComponent(component, this, langPlayer, *args)
+        )
     }
 
     /**
@@ -403,6 +401,7 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
         var DEFAULT_RANDOM: Random = Random()
 
         init {
+
             // The global 'lang' directory.
             if (!GLOBAL_DIRECTORY.exists()) {
                 GLOBAL_DIRECTORY.mkdirs()
@@ -410,147 +409,10 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
 
             // Store all global lang files present in the jar.
             for (lang in Language.values()) {
-                saveResource("lang${File.separator}global_${lang.abbreviation}.yml")
+                ResourceUtil.saveResource("lang${File.separator}global_${lang.abbreviation}.yml")
             }
 
             global = LangPackage("global").load()
-        }
-
-        /**
-         * Converts any object given to a string. Lists are compacted into one String using [NEW_LINE] as a separator.
-         *
-         * @param value The value to process to a String.
-         *
-         * @return Returns the result String.
-         */
-        fun toAString(value: Any): String {
-            return if (value is List<*>) {
-                val builder: StringBuilder = StringBuilder()
-                for (next in value) {
-                    val line = value.toString()
-                    if (builder.isEmpty()) {
-                        builder.append(line)
-                    } else {
-                        builder.append(NEW_LINE).append(line)
-                    }
-                }
-                builder.toString()
-            } else {
-                value.toString()
-            }
-        }
-
-        /**
-         * Creates a component with a [ClickEvent] for firing a command.
-         *
-         * @param text The text to display.
-         * @param command The command to execute when clicked.
-         *
-         * @return Returns a text component with a click event for executing the command.
-         */
-        fun createCommandComponent(text: String, command: String): TextComponent {
-            val component = TextComponent(text)
-            component.clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, command)
-            return component
-        }
-
-        /**
-         * Creates a component with a [HoverEvent] for displaying lines of text.
-         *
-         * @param text The text to display.
-         * @param lines The lines of text to display when the text is hovered by a mouse.
-         *
-         * @return TODO: Document.
-         */
-        fun createHoverComponent(text: String, lines: Array<String>): TextComponent {
-            val component = TextComponent(text)
-
-            var list: Array<TextComponent> = emptyArray()
-            for (arg in lines) {
-                list = list.plus(TextComponent(arg))
-            }
-
-            @Suppress("DEPRECATION")
-            component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, list)
-            return component
-        }
-
-        /**
-         * Creates a component with a [HoverEvent] for displaying lines of text.
-         *
-         * @param text The text to display.
-         * @param lines The lines of text to display when the text is hovered by a mouse.
-         *
-         * @return
-         */
-        @Suppress("DEPRECATION")
-        fun createHoverComponent(text: String, lines: List<String>): TextComponent {
-            val component = TextComponent(text)
-
-            var list: Array<TextComponent> = emptyArray()
-            for (arg in lines) {
-                list = list.plus(TextComponent(arg))
-            }
-
-            component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, list)
-            return component
-        }
-
-        /**
-         * @param value The value to partition as a string with the [NEW_LINE] operator.
-         *
-         * @return Returns a List of Strings, partitioned by the [NEW_LINE] operator.
-         */
-        fun toAList(value: Any): List<String?> {
-            val string = value.toString()
-            return if (string.contains(NEW_LINE)) {
-                string.split(NEW_LINE)
-            } else {
-                listOf(string)
-            }
-        }
-
-        /**
-         * Converts a List of Strings to a String Array.
-         *
-         * @param list The List to convert.
-         *
-         * @return Returns a String Array of the String Lines in the List provided.
-         */
-        fun toAStringArray(list: List<String>): Array<String> {
-            var array: Array<String> = emptyArray()
-            for (next in list) {
-                array = array.plus(next)
-            }
-            return array
-        }
-
-        /**
-         * Colors a list of strings to the Minecraft color-code specifications using an alternative color-code.
-         *
-         * @param strings The strings to color.
-         * @param colorCode (Default: '&') The alternative color-code to process.
-         *
-         * @return TODO: Document.
-         */
-        fun color(strings: List<String>, colorCode: Char = '&'): List<String> {
-            val coloredList = ArrayList<String>()
-            for (string in strings) {
-                coloredList.add(color(string, colorCode))
-            }
-            return coloredList
-        }
-
-        /**
-         * Colors a string to the Minecraft color-code specifications using an alternative color-code.
-         *
-         * @param string The string to color.
-         * @param colorCode (Default: '&') The alternative color-code to process.
-         *
-         * @return TODO: Document.
-         */
-        fun color(string: String, colorCode: Char = '&'): String {
-            return ChatColor.translateAlternateColorCodes(colorCode, string)
         }
 
         /**
@@ -560,6 +422,7 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
          * @param lines The lines of text to send.
          */
         fun message(sender: CommandSender, lines: Array<String>) {
+
             if (lines.isEmpty()) {
                 return
             }
@@ -574,6 +437,7 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
          * @param lines The lines of text to send.
          */
         fun message(sender: CommandSender, lines: List<String>) {
+
             // Convert to an array to send all messages at once.
             var array = emptyArray<String>()
             for (line in lines) {
@@ -633,54 +497,6 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
                 if (line != null) {
                     Bukkit.broadcastMessage(line)
                 }
-            }
-        }
-
-        /**
-         * Modified method from [JavaPlugin] to store global lang files.
-         */
-        private fun saveResource(resourcePath: String, replace: Boolean = false) {
-            if (resourcePath.isEmpty()) {
-                throw RuntimeException("ResourcePath cannot be empty.")
-            }
-
-            var resourcePath2 = resourcePath
-            resourcePath2 = resourcePath2.replace('\\', '/')
-            val `in`: InputStream = getResource(resourcePath2)
-                ?: return
-            val outFile = File(resourcePath2)
-            val lastIndex = resourcePath2.lastIndexOf('/')
-            val outDir = File(resourcePath2.substring(0, if (lastIndex >= 0) lastIndex else 0))
-            if (!outDir.exists()) {
-                outDir.mkdirs()
-            }
-            try {
-                if (!outFile.exists() || replace) {
-                    val out: OutputStream = FileOutputStream(outFile)
-                    val buf = ByteArray(1024)
-                    var len: Int
-                    while (`in`.read(buf).also { len = it } > 0) {
-                        out.write(buf, 0, len)
-                    }
-                    out.close()
-                    `in`.close()
-                }
-            } catch (ex: IOException) {
-                System.err.println("Could not save ${outFile.name} to $outFile")
-            }
-        }
-
-        /**
-         * Modified method from [JavaPlugin] to retrieve global lang files.
-         */
-        private fun getResource(fileName: String): InputStream? {
-            return try {
-                val url: URL = this::class.java.classLoader.getResource(fileName) ?: return null
-                val connection = url.openConnection()
-                connection.useCaches = false
-                connection.getInputStream()
-            } catch (ex: IOException) {
-                null
             }
         }
     }

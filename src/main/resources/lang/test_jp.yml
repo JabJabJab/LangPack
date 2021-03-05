@@ -1,30 +1,5 @@
-leave_server: '&9さようなら, %player%.'
 lang_command: '&cこのボタンをクリックしてコマンドを実行します!'
 lang_command_execute: '&aコマンドをクリックしました！'
-
-# This is an example of a Pool. (StringPool)
-enter_server:
-  # Identify to load as a pool here.
-  type: Pool
-  # Set the option on how to pick from the pool.
-  #   (Options: Random, Sequential, Sequential_Reversed)
-  mode: Random
-  # Set each line of text here.
-  pool:
-    - '&aこんにちは, %player%!'
-    - '&a%player% をサーバーに歓迎してください！'
-    - '&a%player%がサーバーにドロップされました。'
-
-## This is an example of an ActionText. ActionTexts are used for hover text and clickable actions.
-#hover_command_hover_msg:
-#  # Identify to load as ActionText here.
-#  type: ActionText
-#  # The main text goes here.
-#  text: '&7私にカーソルを合わせると、隠されたメッセージが表示されます。'
-#  # Hover text goes here.
-#  hover_text:
-#    - '%player%'
-#    - '&6これはホバーメッセージです！'
 
 # This is an example of an ActionText. ActionTexts are used for hover text and clickable actions.
 hover_command_hover_msg:
@@ -33,8 +8,3 @@ hover_command_hover_msg:
   hover_text:
     - '%player%,'
     - '&6This is a hover message!'
-
-  # click_command: TODO
-  # click_url: TODO
-  # hover_item: TODO
-  # hover_entity: TODO

@@ -15,7 +15,7 @@ import org.bukkit.entity.Player
  *
  * @property plugin
  */
-class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabCompleter {
+internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabCompleter {
 
     private val tests = HashMap<String, LangTest>()
 
@@ -34,12 +34,6 @@ class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabComplete
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-
-        println(
-            "Command: ${command.name} ${
-                args.contentToString()
-            }"
-        )
 
         if (sender !is Player || !sender.isOp) {
             return true
@@ -123,21 +117,25 @@ class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabComplete
     ): MutableList<String> {
 
         if (args.isEmpty()) {
-            return EMPTY_LIST
+            return SUB_COMMANDS
         }
 
         if (args.size == 1) {
             val arg0 = args[0].toLowerCase()
 
-            if (arg0.isEmpty()) {
-                val list = ArrayList<String>()
-                list.add("test")
+            return if (arg0.isEmpty()) {
+                SUB_COMMANDS
             } else {
+
                 val list = ArrayList<String>()
-                if ("test".contains(arg0)) {
-                    list.add("test")
+
+                for (subCommand in SUB_COMMANDS) {
+                    if (subCommand.contains(arg0)) {
+                        list.add(subCommand)
+                    }
                 }
-                return list
+
+                list
             }
         }
 
@@ -150,5 +148,10 @@ class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabComplete
 
     companion object {
         private val EMPTY_LIST = ArrayList<String>()
+        private val SUB_COMMANDS = ArrayList<String>()
+
+        init {
+            SUB_COMMANDS.add("test")
+        }
     }
 }

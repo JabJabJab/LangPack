@@ -2,8 +2,16 @@ package jab.spigot.language.util
 
 import org.bukkit.ChatColor
 
+/**
+ * The <i>ConsoleColor</i> class contains static utility methods for processing Minecraft color-codes to ANSI
+ *   color-codes when printing to Java's consoles.
+ *
+ * @author Jab
+ */
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 class ConsoleColor {
     companion object {
+
         const val ANSI_RESET = "\u001B[0m"
         const val ANSI_BLACK = "\u001B[30m"
         const val ANSI_RED = "\u001B[31m"
@@ -23,7 +31,14 @@ class ConsoleColor {
         const val ANSI_CYAN_BACKGROUND = "\u001B[46m"
         const val ANSI_WHITE_BACKGROUND = "\u001B[47m"
 
-        fun format(string: String): String {
+        /**
+         * Formats a line of text with Minecraft color-codes to ANSI color codes.
+         *
+         * @param string The string to format.
+         *
+         * @return Returns the formatted string.
+         */
+        fun toANSI(string: String): String {
             return string
                 .replace(ChatColor.RESET.toString(), ANSI_RESET)
                 // Red
@@ -50,18 +65,27 @@ class ConsoleColor {
                 .replace(ChatColor.WHITE.toString(), ANSI_WHITE)
                 // Black
                 .replace(ChatColor.BLACK.toString(), ANSI_BLACK)
-
         }
 
+        /**
+         * Prints lines to Java's consoles, converting Minecraft color-codes to ANSI color-codes on each line.
+         *
+         * @param lines The lines of text to print.
+         */
         fun println(lines: List<String>) {
             for (line in lines) {
-                kotlin.io.println(format(line))
+                kotlin.io.println(toANSI(line))
             }
         }
 
-        fun println(vararg strings: String) {
-            for (line in strings) {
-                kotlin.io.println(format(line))
+        /**
+         * Prints lines to Java's consoles, converting Minecraft color-codes to ANSI color-codes on each line.
+         *
+         * @param lines The lines of text to print.
+         */
+        fun println(vararg lines: String) {
+            for (line in lines) {
+                kotlin.io.println(toANSI(line))
             }
         }
     }

@@ -12,7 +12,7 @@ import java.io.File
  *
  * @author Jab
  */
-class LangPlugin : JavaPlugin(), Listener {
+internal class LangPlugin : JavaPlugin(), Listener {
 
     var lang: LangPackage? = null
 

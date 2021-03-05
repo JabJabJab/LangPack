@@ -22,11 +22,19 @@ class LangCache(val pkg: LangPackage) {
     private val cache: EnumMap<Language, HashMap<String, String>> = EnumMap(Language::class.java)
     private val cacheList: EnumMap<Language, HashMap<String, List<String?>>> = EnumMap(Language::class.java)
 
+
+
+    override fun toString(): String {
+        return "LangCache(pkg=$pkg, cache=$cache, cacheList=$cacheList)"
+    }
+
     /**
      * @see LangPackage.getString
      */
     fun getString(field: String, lang: Language = pkg.defaultLang, vararg args: LangArg): String? {
+
         val fieldLower = field.toLowerCase()
+
         if (cache.containsKey(lang)) {
             val cache = cache[lang]!!
             if (cache.containsKey(fieldLower)) {
@@ -39,6 +47,7 @@ class LangCache(val pkg: LangPackage) {
             val cache = cache.computeIfAbsent(lang) { HashMap() }
             cache[fieldLower] = value
         }
+
         return value
     }
 
@@ -46,7 +55,9 @@ class LangCache(val pkg: LangPackage) {
      * @see LangPackage.getList
      */
     fun getList(field: String, lang: Language = pkg.defaultLang, vararg args: LangArg): List<String?>? {
+
         val fieldLower = field.toLowerCase()
+
         if (cacheList.containsKey(lang)) {
             val cacheList = cacheList[lang]!!
             if (cacheList.containsKey(fieldLower)) {
@@ -59,6 +70,7 @@ class LangCache(val pkg: LangPackage) {
             val cacheList = cacheList.computeIfAbsent(lang) { HashMap() }
             cacheList[fieldLower] = value
         }
+
         return value
     }
 
@@ -70,6 +82,7 @@ class LangCache(val pkg: LangPackage) {
      * @param fields The fields to clear.
      */
     fun clear(lang: Language, vararg fields: String) {
+
         // If no args are provided, remove the language.
         if (fields.isEmpty()) {
             cache.remove(lang)

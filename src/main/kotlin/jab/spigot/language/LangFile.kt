@@ -4,6 +4,7 @@ import jab.spigot.language.`object`.ActionText
 import jab.spigot.language.`object`.LangComplex
 import jab.spigot.language.`object`.LangComponent
 import jab.spigot.language.`object`.StringPool
+import jab.spigot.language.util.StringUtil
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.FileNotFoundException
@@ -16,13 +17,19 @@ import java.io.FileNotFoundException
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class LangFile {
 
-    /** TODO: Document. */
+    /**
+     * TODO: Document.
+     */
     var file: File? = null
 
-    /** TODO: Document. */
+    /**
+     * TODO: Document.
+     */
     val lang: Language
 
-    /** TODO: Document. */
+    /**
+     * TODO: Document.
+     */
     var yaml: YamlConfiguration? = null
         private set
 
@@ -44,15 +51,19 @@ class LangFile {
      * @param lang
      */
     constructor(file: File, lang: Language) {
+
         if (!file.exists()) {
             throw FileNotFoundException(file.path)
         }
+
         this.file = file
         this.lang = lang
-
         yaml = YamlConfiguration.loadConfiguration(file)
     }
 
+    override fun toString(): String {
+        return "LangFile(lang=$lang)"
+    }
 
     /**
      * TODO: Document.
@@ -97,7 +108,7 @@ class LangFile {
                     }
 
                 } else {
-                    set(key, LangPackage.toAString(yaml.get(key)!!))
+                    set(key, StringUtil.toAString(yaml.get(key)!!))
                 }
             }
         }
@@ -113,9 +124,13 @@ class LangFile {
      * @return Returns the instance of the file for single-line executions.
      */
     fun append(file: File): LangFile {
+
         val yaml = YamlConfiguration.loadConfiguration(file)
+
         for (key in yaml.getKeys(false)) {
+
             if (yaml.isConfigurationSection(key)) {
+
                 val cfg = yaml.getConfigurationSection(key)!!
 
                 // Make sure that the type is defined.
@@ -144,7 +159,7 @@ class LangFile {
                 }
 
             } else {
-                set(key, LangPackage.toAString(yaml.get(key)!!))
+                set(key, StringUtil.toAString(yaml.get(key)!!))
             }
         }
 
@@ -163,9 +178,13 @@ class LangFile {
      *     is returned.
      */
     fun getString(key: String, pkg: LangPackage, lang: Language, vararg args: LangArg): String? {
+
         val keyLower = key.toLowerCase()
+
         if (fields.containsKey(keyLower)) {
+
             val o = fields[keyLower]
+
             return when {
                 o is String -> {
                     o
@@ -174,13 +193,14 @@ class LangFile {
                     o.process(pkg, lang, *args)
                 }
                 o != null -> {
-                    LangPackage.toAString(o)
+                    StringUtil.toAString(o)
                 }
                 else -> {
                     null
                 }
             }
         }
+
         return null
     }
 
@@ -190,9 +210,11 @@ class LangFile {
      * @return Returns the loaded YamlConfiguration
      */
     fun readFile(): YamlConfiguration? {
+
         if (file != null) {
             yaml = YamlConfiguration.loadConfiguration(file!!)
         }
+
         return yaml
     }
 
@@ -285,10 +307,13 @@ class LangFile {
      * @return
      */
     fun getStringPool(field: String): StringPool {
+
         val value = fields[field.toLowerCase()]
+
         if (value == null || value !is StringPool) {
             throw RuntimeException("The field $field is not a StringPool.")
         }
+
         return value
     }
 
@@ -300,22 +325,13 @@ class LangFile {
      * @return
      */
     fun getActionText(field: String): ActionText {
+
         val value = fields[field.toLowerCase()]
+
         if (value == null || value !is ActionText) {
             throw RuntimeException("The field $field is not a ActionText.")
         }
+
         return value
-    }
-
-    override fun toString(): String {
-        return "LangFile(lang=$lang)"
-    }
-
-    fun printlnFields() {
-        println("Fields for ${toString()} {")
-        for (key in fields.keys) {
-            print("\t$key: ${fields[key]}")
-        }
-        println("}")
     }
 }

@@ -2,6 +2,8 @@ package jab.spigot.language.util
 
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.BaseComponent
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 
 /**
@@ -12,6 +14,62 @@ import net.md_5.bungee.api.chat.TextComponent
 @Suppress("MemberVisibilityCanBePrivate")
 class ComponentUtil {
     companion object {
+
+        /**
+         * Creates a component with a [ClickEvent] for firing a command.
+         *
+         * @param text The text to display.
+         * @param command The command to execute when clicked.
+         *
+         * @return Returns a text component with a click event for executing the command.
+         */
+        fun createCommandComponent(text: String, command: String): TextComponent {
+            val component = TextComponent(text)
+            component.clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, command)
+            return component
+        }
+
+        /**
+         * Creates a component with a [HoverEvent] for displaying lines of text.
+         *
+         * @param text The text to display.
+         * @param lines The lines of text to display when the text is hovered by a mouse.
+         *
+         * @return TODO: Document.
+         */
+        fun createHoverComponent(text: String, lines: Array<String>): TextComponent {
+            val component = TextComponent(text)
+
+            var list: Array<TextComponent> = emptyArray()
+            for (arg in lines) {
+                list = list.plus(TextComponent(arg))
+            }
+
+            @Suppress("DEPRECATION")
+            component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, list)
+            return component
+        }
+
+        /**
+         * Creates a component with a [HoverEvent] for displaying lines of text.
+         *
+         * @param text The text to display.
+         * @param lines The lines of text to display when the text is hovered by a mouse.
+         *
+         * @return
+         */
+        @Suppress("DEPRECATION")
+        fun createHoverComponent(text: String, lines: List<String>): TextComponent {
+            val component = TextComponent(text)
+
+            var list: Array<TextComponent> = emptyArray()
+            for (arg in lines) {
+                list = list.plus(TextComponent(arg))
+            }
+
+            component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, list)
+            return component
+        }
 
         /**
          * TODO: Document.
@@ -41,6 +99,7 @@ class ComponentUtil {
          * @param component
          */
         fun toFlatList(component: BaseComponent): ArrayList<BaseComponent> {
+
             val list = ArrayList<BaseComponent>()
 
             fun recurse(next: BaseComponent) {
@@ -83,19 +142,28 @@ class ComponentUtil {
                     }
                 }
             }
+
             return component.color
         }
 
+        /**
+         * TODO: Document.
+         *
+         * @param component
+         * @param startingPrefix
+         *
+         * @return
+         */
         fun toPretty(component: BaseComponent, startingPrefix: String): ArrayList<String> {
 
             val lines = ArrayList<String>()
             var prefix = startingPrefix
 
-            fun tab() {
+            fun tabIn() {
                 prefix += "  "
             }
 
-            fun untab() {
+            fun tabOut() {
                 prefix = prefix.substring(0, prefix.length - 2)
             }
 
@@ -105,7 +173,7 @@ class ComponentUtil {
 
             fun recurse(component: BaseComponent) {
                 line("${component.javaClass.simpleName} {")
-                tab()
+                tabIn()
                 if (component is TextComponent) {
                     if (component.text != null && !component.text.isEmpty()) {
                         line("""text: "${component.text}${ChatColor.RESET}"""")
@@ -119,15 +187,15 @@ class ComponentUtil {
                     }
                     if (component.extra != null) {
                         line("extras: (size: ${component.extra.size})")
-                        tab()
+                        tabIn()
                         for (extra in component.extra) {
                             recurse(extra)
                         }
-                        untab()
+                        tabOut()
                     }
                 }
                 // ..
-                untab()
+                tabOut()
                 line("}")
             }
 

@@ -2,11 +2,11 @@ package jab.spigot.language.processor
 
 import jab.spigot.language.LangArg
 import jab.spigot.language.LangPackage
-import jab.spigot.language.LangPackage.Companion.color
 import jab.spigot.language.Language
 import jab.spigot.language.`object`.LangComplex
 import jab.spigot.language.`object`.LangComponent
 import jab.spigot.language.util.ComponentUtil
+import jab.spigot.language.util.StringUtil.Companion.color
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent

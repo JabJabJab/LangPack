@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent
  *
  * @property plugin
  */
-class LangEventListener(private val plugin: LangPlugin) : Listener {
+internal class LangEventListener(private val plugin: LangPlugin) : Listener {
 
     init {
         val mgr = plugin.server.pluginManager

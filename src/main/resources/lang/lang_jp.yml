@@ -1,1 +1,23 @@
+# NOTE: I do not speak Japanese. This is just an attempt at showing an example language other than English.
+#
+#  - Jab (Author)
+
+# コマンド
+
 command_header: '[ラングパック]'
+
+
+
+### イベント
+
+# %player% -> サーバーに入るプレーヤーの名前。
+enter_server:
+  type: Pool
+  mode: Random
+  pool:
+    - '&aこんにちは, %player%!'
+    - '&a%player% をサーバーに歓迎してください！'
+    - '&a%player%がサーバーにドロップされました。'
+
+# %player% -> サーバーを離れるプレーヤーの名前。
+leave_server: '&9さようなら, %player%.'

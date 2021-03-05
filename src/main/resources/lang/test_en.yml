@@ -1,20 +1,5 @@
-leave_server: '&9Goodbye, %player%.'
 lang_command: '&cClick this button to execute a command!'
 lang_command_execute: '&aYou clicked the command!'
-
-# This is an example of a Pool. (StringPool)
-enter_server:
-  # Identify to load as a pool here.
-  type: Pool
-  # Set the option on how to pick from the pool.
-  #   (Options: Random, Sequential, Sequential_Reversed)
-  mode: Random
-  # Set each line of text here.
-  pool:
-    - '%green%Hello, %player%!'
-    - '%green%Please welcome %player% to the server!'
-    - '%green%%player% dropped into the server.'
-
 hover_command_msg: "&aHover Text: %hover_command_hover_msg% (Post-Text)"
 
 # This is an example of an ActionText. ActionTexts are used for hover text and clickable actions.
@@ -24,8 +9,3 @@ hover_command_hover_msg:
   hover_text:
     - '%player%,'
     - '&6This is a hover message!'
-
-  # click_command: TODO
-  # click_url: TODO
-  # hover_item: TODO
-  # hover_entity: TODO

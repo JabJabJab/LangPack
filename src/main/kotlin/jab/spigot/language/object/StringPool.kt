@@ -4,6 +4,7 @@ import jab.spigot.language.LangArg
 import jab.spigot.language.LangFile
 import jab.spigot.language.LangPackage
 import jab.spigot.language.Language
+import jab.spigot.language.util.StringUtil
 import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
@@ -59,7 +60,7 @@ class StringPool : LangComplex {
         if (list.isNotEmpty()) {
             for (o in list) {
                 if (o != null) {
-                    add(LangPackage.toAString(o))
+                    add(StringUtil.toAString(o))
                 } else {
                     add("")
                 }
@@ -188,7 +189,7 @@ class StringPool : LangComplex {
             if (list.isNotEmpty()) {
                 for (o in list) {
                     if (o != null) {
-                        pool.add(LangPackage.toAString(o))
+                        pool.add(StringUtil.toAString(o))
                     } else {
                         pool.add("")
                     }
