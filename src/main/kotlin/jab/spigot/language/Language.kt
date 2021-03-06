@@ -3,14 +3,15 @@ package jab.spigot.language
 import org.bukkit.entity.Player
 
 /**
- * The <i>Language</i> enum stores the constants for identification of languages supported by the LanguagePackage library.
+ * The **Language** enum stores the constants for identification of languages supported by the LanguagePackage library.
  *
  * <br/>NOTE: Due to the language support changes for Minecraft, a language enumeration may not be the best implementation
  *   for the library. Instead, a configuation file for language and relationships for those languages might be the best
  *   design to allow for changes to be made for updates to Minecraft and personal adjustments for the server
  *   administrators.
  *
- * <br/><b>Minecraft's supported languages:</b> https://minecraft.gamepedia.com/Language
+ * ###
+ * ### Minecraft's supported languages:</b> https://minecraft.gamepedia.com/Language
  *
  * @author Jab
  *

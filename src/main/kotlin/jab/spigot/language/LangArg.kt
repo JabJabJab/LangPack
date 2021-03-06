@@ -1,7 +1,7 @@
 package jab.spigot.language
 
 /**
- * The <i>LangArg</i> class is a struct for a stored key->value pair to override & replace fields.
+ * The **LangArg** class is a struct for a stored key->value pair to override & replace fields.
  *
  * @author Jab
  *

@@ -3,7 +3,7 @@ package jab.spigot.language
 import java.util.*
 
 /**
- * The <i>LangCache</i> class proxies the processed calls for [LangPackage], storing them as a cached result to be
+ * The **LangCache** class proxies the processed calls for [LangPackage], storing them as a cached result to be
  *   referred to if called again. The purpose of the cache is to avoid wasted calculations on multiple calls that
  *   returns the same result. If dynamic calls to the same field are passed different arguments or the arguments
  *   referenced in the string processing are dynamic, do not use a cache to call to them, otherwise the first call to
@@ -29,22 +29,24 @@ class LangCache(val pkg: LangPackage) {
     /**
      * @see LangPackage.getString
      */
-    fun getString(field: String, lang: Language = pkg.defaultLang, vararg args: LangArg): String? {
+    fun getString(field: String, lang: Language = pkg.defaultLang, vararg args: LangArg): String {
 
         val fieldLower = field.toLowerCase()
 
         if (cache.containsKey(lang)) {
             val cache = cache[lang]!!
             if (cache.containsKey(fieldLower)) {
-                return cache[fieldLower]
+                return cache[fieldLower]!!
             }
         }
 
-        val value = pkg.getString(field, lang, *args)
-        if (value != null) {
-            val cache = cache.computeIfAbsent(lang) { HashMap() }
-            cache[fieldLower] = value
+        var value = pkg.getString(field, lang, *args)
+        if (value == null) {
+            value = field.toLowerCase()
         }
+
+        val cache = cache.computeIfAbsent(lang) { HashMap() }
+        cache[fieldLower] = value
 
         return value
     }

@@ -2,28 +2,27 @@ package jab.spigot.language
 
 import jab.spigot.language.`object`.LangComplex
 import jab.spigot.language.`object`.LangComponent
+import jab.spigot.language.`object`.StringPool
 import jab.spigot.language.processor.LangProcessor
 import jab.spigot.language.processor.PercentProcessor
-import jab.spigot.language.util.*
+import jab.spigot.language.util.ResourceUtil
+import jab.spigot.language.util.StringUtil
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import java.io.*
+import java.io.File
 import java.util.*
 
+
 /**
- * LangPackage is a utility that provides the ability to substitute sections of a string
- * recursively. This allows for Strings to be dynamically edited, and defined anywhere within the
- * String to be injected with EntryFields. Adding to this is the ability to select what Language to
- * choose from, falling back to English if not defined.
+ * The **LangPackage** class.
  *
  * TODO: Document.
  *
  * @author Jab
  *
- * @property name The String name of the LanguagePackage. This is noted in the LanguageFiles as
- *      "{{name}}_{{language_abbreviation}}.yml"
+ * @property name The String name of the LanguagePackage.
  * @property dir (Optional) The File Object for the directory where the LangFiles are stored. DEFAULT: 'lang/'
  * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory. Thrown if
  *      the name given is empty.
@@ -101,7 +100,7 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
                 if (langFile != null) {
                     langFile.append(file)
                 } else {
-                    files[lang] = LangFile(file, lang).load()
+                    files[lang] = LangFile(this, file, lang).load()
                 }
             }
         }
@@ -117,7 +116,7 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
      * @param value The value to set.
      */
     fun set(lang: Language, field: String, value: Any?) {
-        val file: LangFile = files.computeIfAbsent(lang) { LangFile(lang) }
+        val file: LangFile = files.computeIfAbsent(lang) { LangFile(this, lang, lang.abbreviation) }
         file.set(field, value)
     }
 
@@ -134,7 +133,7 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
             return
         }
 
-        val file: LangFile = files.computeIfAbsent(lang) { LangFile(lang) }
+        val file: LangFile = files.computeIfAbsent(lang) { LangFile(this, lang, lang.abbreviation) }
         for (field in fields) {
             file.set(field.key, field.value)
         }
@@ -216,7 +215,7 @@ class LangPackage(val name: String, val dir: File = File("lang")) {
 
         var raw: Any? = null
         if (langFile != null) {
-            raw = langFile.get(field)
+            raw = langFile.resolve(field)
         }
 
         // Check global last.

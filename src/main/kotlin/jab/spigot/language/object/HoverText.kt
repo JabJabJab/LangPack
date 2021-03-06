@@ -16,7 +16,9 @@ import net.md_5.bungee.api.chat.hover.content.Text
 @Suppress("MemberVisibilityCanBePrivate")
 class HoverText {
 
-    /** The lines of text to display. */
+    /**
+     * The lines of text to display.
+     */
     var lines: List<Text>
 
     /**

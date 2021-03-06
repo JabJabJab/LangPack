@@ -3,21 +3,21 @@
 #  - Jab (Author)
 
 # コマンド
-
-command_header: '[ラングパック]'
+command_header:
+  text: '[ラングパック]'
 
 
 
 ### イベント
+event:
+  # %player% -> サーバーに入るプレーヤーの名前。
+  enter_server:
+    type: Pool
+    mode: Random
+    pool:
+      - '&aこんにちは, %player%!'
+      - '&a%player% をサーバーに歓迎してください！'
+      - '&a%player%がサーバーにドロップされました。'
 
-# %player% -> サーバーに入るプレーヤーの名前。
-enter_server:
-  type: Pool
-  mode: Random
-  pool:
-    - '&aこんにちは, %player%!'
-    - '&a%player% をサーバーに歓迎してください！'
-    - '&a%player%がサーバーにドロップされました。'
-
-# %player% -> サーバーを離れるプレーヤーの名前。
-leave_server: '&9さようなら, %player%.'
+  # %player% -> サーバーを離れるプレーヤーの名前。
+  leave_server: '&9さようなら, %player%.'

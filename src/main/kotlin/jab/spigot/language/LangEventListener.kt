@@ -25,7 +25,7 @@ internal class LangEventListener(private val plugin: LangPlugin) : Listener {
             plugin.server.scheduler.runTaskLater(plugin, Runnable {
                 val lang = plugin.lang!!
                 val player = event.player
-                lang.broadcast("enter_server", LangArg("player", player.displayName))
+                lang.broadcast("event.enter_server", LangArg("player", player.displayName))
             }, 20L)
         }
     }
@@ -35,7 +35,7 @@ internal class LangEventListener(private val plugin: LangPlugin) : Listener {
         if (LangCfg.leaveMessages) {
             val lang = plugin.lang!!
             val player = event.player
-            lang.broadcast("leave_server", LangArg("player", player.displayName))
+            lang.broadcast("event.leave_server", LangArg("player", player.displayName))
         }
     }
 }

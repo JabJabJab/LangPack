@@ -6,7 +6,7 @@ import jab.spigot.language.Language
 import net.md_5.bungee.api.chat.TextComponent
 
 /**
- * The <i>StringProcessor</i> interface is for implementing syntax formats for use in [LangPackage].
+ * The **StringProcessor** interface is for implementing syntax formats for use in [LangPackage].
  *
  * @author Jab
  */

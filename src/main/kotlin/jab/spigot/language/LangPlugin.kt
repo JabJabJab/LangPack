@@ -6,8 +6,6 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
 /**
- * Dummy plug-in class to allow for independent loading of library as a plug-in for multi-plugin use.
- *
  * TODO: Document.
  *
  * @author Jab
@@ -24,6 +22,10 @@ internal class LangPlugin : JavaPlugin(), Listener {
         LangCommand(this)
     }
 
+    override fun onDisable() {
+        lang = null
+    }
+
     private fun loadLangPackages() {
         val langDir = File(dataFolder, "lang")
         if (!langDir.exists()) {
@@ -33,10 +35,6 @@ internal class LangPlugin : JavaPlugin(), Listener {
         lang = LangPackage("lang")
             .load(save = true, force = true)
             .append("test", save = true, force = true)
-    }
-
-    override fun onDisable() {
-        lang = null
     }
 
     companion object {

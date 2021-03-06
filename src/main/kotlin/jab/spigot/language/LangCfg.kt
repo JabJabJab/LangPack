@@ -3,12 +3,13 @@ package jab.spigot.language
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * TODO: Document.
+ * The **LangCfg** class handles reading and storage of global flags set for the LangPackage plugin.
  *
  * @author Jab
  *
  * @param plugin The plugin instance to read the config.yml file.
  */
+@Suppress("MemberVisibilityCanBePrivate")
 internal class LangCfg(plugin: LangPlugin) {
 
     init {
