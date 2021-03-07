@@ -14,21 +14,21 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 class BungeeLangCache(pack: BungeeLangPack) : LangCache<BungeeLangPack>(pack) {
 
     /**
-     * @see SpigotLangPack.broadcast
+     * @see BungeeLangPack.broadcast
      */
     fun broadcast(field: String, vararg args: LangArg) {
         pack.broadcast(field, *args)
     }
 
     /**
-     * @see SpigotLangPack.message
+     * @see BungeeLangPack.message
      */
     fun message(player: ProxiedPlayer, field: String, vararg args: LangArg) {
         return pack.message(player, field, *args)
     }
 
     /**
-     * @see SpigotLangPack.getLanguage
+     * @see BungeeLangPack.getLanguage
      */
     fun getLanguage(player: ProxiedPlayer): Language {
         return pack.getLanguage(player)

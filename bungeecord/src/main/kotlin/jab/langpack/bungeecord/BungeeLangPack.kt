@@ -11,6 +11,11 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 import java.io.File
 import java.util.*
 
+/**
+ * TODO: Document.
+ *
+ * @author Jab
+ */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class BungeeLangPack(name: String, dir: File = File("lang")) : LangPack(name, dir) {
 

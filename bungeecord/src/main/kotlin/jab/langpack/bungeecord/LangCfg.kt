@@ -3,7 +3,13 @@ package jab.langpack.bungeecord
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
-
+/**
+ * TODO: Document.
+ *
+ * @author Jab
+ *
+ * @param plugin The plugin instance.
+ */
 @Suppress("unused")
 internal class LangCfg(plugin: LangPlugin) {
 
@@ -19,6 +25,10 @@ internal class LangCfg(plugin: LangPlugin) {
     }
 
     companion object {
+
+        /**
+         * TODO: Document.
+         */
         var broadcastConnectionEvents = false
     }
 }

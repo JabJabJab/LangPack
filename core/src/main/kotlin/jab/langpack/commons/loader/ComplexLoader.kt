@@ -10,6 +10,13 @@ import org.bukkit.configuration.ConfigurationSection
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 interface ComplexLoader<E> {
 
+    /**
+     * TODO: Document.
+     *
+     * @param cfg
+     *
+     * @return
+     */
     fun load(cfg: ConfigurationSection): E?
 
     companion object {
@@ -20,10 +27,23 @@ interface ComplexLoader<E> {
             addDefaultLoaders()
         }
 
+        /**
+         * TODO: Document.
+         *
+         * @param type
+         *
+         * @return
+         */
         fun get(type: String): ComplexLoader<*>? {
             return loaders[type.toLowerCase()]
         }
 
+        /**
+         * TODO: Document.
+         *
+         * @param type
+         * @param loader
+         */
         fun set(type: String, loader: ComplexLoader<*>?) {
             if (loader != null) {
                 loaders[type.toLowerCase()] = loader
@@ -32,10 +52,20 @@ interface ComplexLoader<E> {
             }
         }
 
+        /**
+         * TODO: Document.
+         *
+         * @param type
+         */
         fun remove(type: String) {
             loaders.remove(type.toLowerCase())
         }
 
+        /**
+         * TODO: Document.
+         *
+         * @param type
+         */
         fun contains(type: String): Boolean {
             return loaders.containsKey(type.toLowerCase())
         }
@@ -43,12 +73,12 @@ interface ComplexLoader<E> {
         fun addDefaultLoaders() {
 
             val actionTextLoader = ActionTextLoader()
-            if(contains("action")) {
+            if (contains("action")) {
                 set("action", actionTextLoader)
             }
 
             val stringPoolLoader = StringPoolLoader()
-            if(contains("pool")) {
+            if (contains("pool")) {
                 set("pool", stringPoolLoader)
             }
         }

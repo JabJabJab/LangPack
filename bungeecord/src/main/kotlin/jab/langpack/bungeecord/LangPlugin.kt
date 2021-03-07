@@ -9,8 +9,16 @@ import java.io.*
 import java.net.URL
 import java.util.logging.Level
 
+/**
+ * TODO: Document.
+ *
+ * @author Jab
+ */
 internal class LangPlugin : Plugin() {
 
+    /**
+     * The default LangPack instance.
+     */
     var pack: BungeeLangPack? = null
 
     override fun onEnable() {
@@ -68,7 +76,6 @@ internal class LangPlugin : Plugin() {
         return this.javaClass.classLoader
     }
 
-
     private fun loadLangPackages() {
 
         val langDir = File(dataFolder, "lang")
@@ -84,7 +91,8 @@ internal class LangPlugin : Plugin() {
     }
 
     companion object {
-        fun setBungeeLoaders() {
+
+        private fun setBungeeLoaders() {
             ComplexLoader.set("action", BungeeActionTextLoader())
             ComplexLoader.set("pool", BungeeStringPoolLoader())
         }

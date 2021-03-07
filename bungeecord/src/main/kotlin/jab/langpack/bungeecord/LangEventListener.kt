@@ -8,6 +8,13 @@ import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
 import java.util.concurrent.TimeUnit
 
+/**
+ * TODO: Document.
+ *
+ * @author Jab
+ *
+ * @property plugin The plugin instance.
+ */
 internal class LangEventListener(private val plugin: LangPlugin) : Listener {
 
     init {
