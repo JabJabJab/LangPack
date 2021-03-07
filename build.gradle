@@ -3,8 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.21'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'jab'
+version '1.0'
 
 configurations {
     shade

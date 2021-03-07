@@ -1,6 +1,6 @@
 name: LangPack
 version: 1.0.0
-main: jab.spigot.language.LangPlugin
+main: jab.langpack.spigot.LangPlugin
 authors:
   - Jab
 softdepend: [ PlaceholderAPI ]

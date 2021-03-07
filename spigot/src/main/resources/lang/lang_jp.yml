@@ -2,6 +2,9 @@
 #
 #  - Jab (Author)
 
+__metadata__:
+  imports: ['test_jp']
+
 # コマンド
 command_header:
   text: '[ラングパック]'
@@ -12,8 +15,8 @@ command_header:
 event:
   # %player% -> サーバーに入るプレーヤーの名前。
   enter_server:
-    type: Pool
-    mode: Random
+    type: pool
+    mode: random
     pool:
       - '&aこんにちは, %player%!'
       - '&a%player% をサーバーに歓迎してください！'

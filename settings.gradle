@@ -1,2 +1,3 @@
-rootProject.name = 'LangPackage'
+rootProject.name = 'LangPack'
+include 'core'
 include 'spigot'

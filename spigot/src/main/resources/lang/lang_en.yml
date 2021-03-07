@@ -1,4 +1,7 @@
-### COMMAND GENERAL
+__metadata__:
+  imports: ['test_en']
+  debug: true
+
 command_header:
   text: '[LangPackage]'
   info: '&7%command_header.text%'
@@ -7,37 +10,6 @@ command_header:
 
 
 
-### /lang test
-lang_command_test:
-
-  # %test% -> The name of the test.
-  run: '%command_header.info% Running the test "%test%"..'
-
-  # %test% -> The name of the test.
-  success: '%command_header.success% The test &6%test%&a ran successfully.'
-
-  # %test% -> The name of the test.
-  # %reason% -> The reason the test failed.
-  failure: '%command_header.error% The test &6%test%&c failed. Reason: "%reason%"'
-
-  disabled: '%command_header.error% The test command for lang is disabled.'
-
-  help: '%command_header.info% &6/lang test &7[&6%test_id%&7]'
-
-  # %test% -> The name of the test.
-  not_found: '%command_header.error% The test &6%test%&c is not found or loaded.'
-
-  tooltip_not_found: '&ctest_id not found.'
-
-  test_id:
-    type: ActionText
-    text: "test_id"
-    hover_text: "Click to show list of loaded tests."
-    command: "/lang tests"
-
-
-
-### /lang
 lang_command:
 
   help: '%command_header.info% &6/lang &7[&6test&7]'
@@ -51,8 +23,8 @@ event:
 
   # %player% -> The name of the player entering the server.
   enter_server:
-    type: Pool
-    mode: Random
+    type: pool
+    mode: random
     pool:
       - '&aHello, %player%!'
       - '&aPlease welcome %player% to the server!'

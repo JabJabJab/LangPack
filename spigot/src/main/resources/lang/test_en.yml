@@ -1,11 +1,26 @@
-lang_command: '&cClick this button to execute a command!'
-lang_command_execute: '&aYou clicked the command!'
-hover_command_msg: "&aHover Text: %hover_command_hover_msg% (Post-Text)"
+lang_command_test:
 
-# This is an example of an ActionText. ActionTexts are used for hover text and clickable actions.
-hover_command_hover_msg:
-  type: ActionText
-  text: '&7%player%'
-  hover_text:
-    - '%player%,'
-    - '&6This is a hover message!'
+  # %test% -> The name of the test.
+  run: '%command_header.info% Running the test "%test%"..'
+
+  # %test% -> The name of the test.
+  success: '%command_header.success% The test &6%test%&a ran successfully.'
+
+  # %test% -> The name of the test.
+  # %reason% -> The reason the test failed.
+  failure: '%command_header.error% The test &6%test%&c failed. Reason: "%reason%"'
+
+  disabled: '%command_header.error% The test command for lang is disabled.'
+
+  help: '%command_header.info% &6/lang test &7[&6%test_id%&7]'
+
+  # %test% -> The name of the test.
+  not_found: '%command_header.error% The test &6%test%&c is not found or loaded.'
+
+  tooltip_not_found: '&ctest_id not found.'
+
+  test_id:
+    type: action
+    text: "test_id"
+    hover_text: "Click to show list of loaded tests."
+    command: "/lang tests"
