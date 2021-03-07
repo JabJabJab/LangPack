@@ -1,0 +1,4 @@
+name: LangPack
+main: jab.langpack.bungeecord.LangPlugin
+version: 1.0
+author: Jab

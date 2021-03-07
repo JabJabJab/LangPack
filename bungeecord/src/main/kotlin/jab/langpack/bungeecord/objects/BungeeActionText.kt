@@ -1,19 +1,22 @@
-package jab.langpack.spigot.objects
+package jab.langpack.bungeecord.objects
 
+import jab.langpack.bungeecord.BungeeLangPack
 import jab.langpack.commons.LangArg
 import jab.langpack.commons.Language
 import jab.langpack.commons.objects.ActionText
 import jab.langpack.commons.objects.HoverText
-import jab.langpack.spigot.SpigotLangPack
+import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
-import org.bukkit.Bukkit
-import org.bukkit.World
+import net.md_5.bungee.api.connection.ProxiedPlayer
 import org.bukkit.configuration.ConfigurationSection
-import org.bukkit.entity.Player
 import java.util.*
 
-@Suppress("unused")
-class SpigotActionText : ActionText {
+/**
+ * TODO: Document.
+ *
+ * @author Jab
+ */
+class BungeeActionText : ActionText {
 
     constructor(text: String, hoverText: HoverText) : super(text, hoverText)
     constructor(text: String, command: String) : super(text, command)
@@ -24,14 +27,14 @@ class SpigotActionText : ActionText {
      *
      * @param player The player to send.
      */
-    fun message(player: Player) {
+    fun message(player: ProxiedPlayer) {
 
         // Make sure that only online players are processed.
-        if (!player.isOnline) {
+        if (!player.isConnected) {
             return
         }
 
-        player.spigot().sendMessage(get())
+        player.sendMessage(get())
     }
 
     /**
@@ -41,7 +44,7 @@ class SpigotActionText : ActionText {
      * @param pack (Optional) The package to process the text.
      * @param args (Optional) Additional arguments to provide to process the text.
      */
-    fun send(player: Player, pack: SpigotLangPack? = null, vararg args: LangArg) {
+    fun send(player: ProxiedPlayer, pack: BungeeLangPack? = null, vararg args: LangArg) {
 
         val textComponent = if (pack != null) {
             process(pack, pack.getLanguage(player), *args)
@@ -49,30 +52,17 @@ class SpigotActionText : ActionText {
             get()
         }
 
-        player.spigot().sendMessage(textComponent)
+        player.sendMessage(textComponent)
     }
 
     /**
      * Broadcasts the ActionText to all online players on the server.
      */
     fun broadcast() {
-
         val message = get()
-        for (player in Bukkit.getOnlinePlayers()) {
-            player.spigot().sendMessage(message)
-        }
-    }
-
-    /**
-     * Broadcasts the ActionText to all players in a given world.
-     *
-     * @param world The world to broadcast.
-     */
-    fun broadcast(world: World) {
-
-        val message = get()
-        for (player in world.players) {
-            player.spigot().sendMessage(message)
+        val server = ProxyServer.getInstance()
+        for (player in server.players) {
+            player.sendMessage(message)
         }
     }
 
@@ -82,11 +72,12 @@ class SpigotActionText : ActionText {
      * @param pack The package to process the text.
      * @param args (Optional) Additional arguments to provide to process the text.
      */
-    fun broadcast(pack: SpigotLangPack, vararg args: LangArg) {
+    fun broadcast(pack: BungeeLangPack, vararg args: LangArg) {
 
         val cache = EnumMap<Language, TextComponent>(Language::class.java)
 
-        for (player in Bukkit.getOnlinePlayers()) {
+        val server = ProxyServer.getInstance()
+        for (player in server.players) {
 
             val textComponent: TextComponent
             val lang = pack.getLanguage(player)
@@ -98,33 +89,7 @@ class SpigotActionText : ActionText {
                 cache[lang] = textComponent
             }
 
-            player.spigot().sendMessage(textComponent)
-        }
-    }
-
-    /**
-     * Broadcasts the ActionText to all players in a given world.
-     *
-     * @param pack The package to process the text.
-     * @param args (Optional) Additional arguments to provide to process the text.
-     */
-    fun broadcast(world: World, pack: SpigotLangPack, vararg args: LangArg) {
-
-        val cache = EnumMap<Language, TextComponent>(Language::class.java)
-
-        for (player in world.players) {
-
-            val textComponent: TextComponent
-            val lang = pack.getLanguage(player)
-
-            if (cache[lang] != null) {
-                textComponent = cache[lang]!!
-            } else {
-                textComponent = process(pack, lang, *args)
-                cache[lang] = textComponent
-            }
-
-            player.spigot().sendMessage(textComponent)
+            player.sendMessage(textComponent)
         }
     }
 }

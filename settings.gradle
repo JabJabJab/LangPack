@@ -1,3 +1,4 @@
 rootProject.name = 'LangPack'
 include 'core'
 include 'spigot'
+include 'bungeecord'
