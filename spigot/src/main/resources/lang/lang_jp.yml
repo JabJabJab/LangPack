@@ -5,13 +5,12 @@
 __metadata__:
   imports: ['test_jp']
 
+
 # コマンド
 command_header:
   text: '[ラングパック]'
 
 
-
-### イベント
 event:
   # %player% -> サーバーに入るプレーヤーの名前。
   enter_server:

@@ -1,13 +1,12 @@
 __metadata__:
   imports: ['test_en']
-  debug: true
+
 
 command_header:
   text: '[LangPackage]'
   info: '&7%command_header.text%'
   success: '&a%command_header.text%'
   error: '&c%command_header.text%'
-
 
 
 lang_command:
@@ -18,9 +17,7 @@ lang_command:
   not_found: '%command_header.error% Command not found: %command%'
 
 
-
 event:
-
   # %player% -> The name of the player entering the server.
   enter_server:
     type: pool
