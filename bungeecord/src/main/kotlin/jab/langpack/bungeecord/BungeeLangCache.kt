@@ -1,9 +1,9 @@
-package jab.langpack.spigot
+package jab.langpack.bungeecord
 
 import jab.langpack.commons.LangArg
 import jab.langpack.commons.LangCache
 import jab.langpack.commons.Language
-import org.bukkit.entity.Player
+import net.md_5.bungee.api.connection.ProxiedPlayer
 
 /**
  * TODO: Document.
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
  * @author Jab
  */
 @Suppress("unused")
-class SpigotLangCache(pack: SpigotLangPack) : LangCache<SpigotLangPack>(pack) {
+class BungeeLangCache(pack: BungeeLangPack) : LangCache<BungeeLangPack>(pack) {
 
     /**
      * @see SpigotLangPack.broadcast
@@ -23,14 +23,14 @@ class SpigotLangCache(pack: SpigotLangPack) : LangCache<SpigotLangPack>(pack) {
     /**
      * @see SpigotLangPack.message
      */
-    fun message(player: Player, field: String, vararg args: LangArg) {
+    fun message(player: ProxiedPlayer, field: String, vararg args: LangArg) {
         return pack.message(player, field, *args)
     }
 
     /**
      * @see SpigotLangPack.getLanguage
      */
-    fun getLanguage(player: Player): Language {
+    fun getLanguage(player: ProxiedPlayer): Language {
         return pack.getLanguage(player)
     }
 }
