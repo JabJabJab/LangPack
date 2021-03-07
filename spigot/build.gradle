@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 group 'org.example'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 configurations {
     shade
@@ -23,8 +23,22 @@ dependencies {
     shade "org.jetbrains.kotlin:kotlin-stdlib"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    // CraftBukkit / NMS code registered locally via maven.
+    compileOnly 'net.minecraft:nms:1.16.5'
+    compileOnly 'me.clip:placeholderapi:2.10.9'
 }
 
 test {
     useJUnitPlatform()
+}
+
+jar {
+    baseName "LangPack-Spigot"
+    archiveName "${baseName}-${version}.${extension}"
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
+            exclude "META-INF", "META-INF/**", "**/about.html", "*/about.html", "about.html"
+        }
+    }
 }
