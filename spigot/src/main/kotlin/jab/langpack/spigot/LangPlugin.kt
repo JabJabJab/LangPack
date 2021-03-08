@@ -52,12 +52,15 @@ internal class LangPlugin : JavaPlugin(), Listener {
         var instance: LangPlugin? = null
             private set
 
+        private val actionTextLoader = SpigotActionTextLoader()
+        private val stringPoolLoader = SpigotStringPoolLoader()
+
         /**
          * Overrides the generic loaders with spigot-wrappers to add functionality specific to the Spigot environment.
          */
         fun setSpigotLoaders() {
-            ComplexLoader.set("action", SpigotActionTextLoader())
-            ComplexLoader.set("pool", SpigotStringPoolLoader())
+            ComplexLoader.set("action", actionTextLoader)
+            ComplexLoader.set("pool", stringPoolLoader)
         }
     }
 }

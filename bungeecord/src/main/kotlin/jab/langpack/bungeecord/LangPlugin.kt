@@ -91,9 +91,12 @@ internal class LangPlugin : Plugin() {
 
     companion object {
 
+        private val actionTextLoader = BungeeActionTextLoader()
+        private val stringPoolLoader = BungeeStringPoolLoader()
+
         private fun setBungeeLoaders() {
-            ComplexLoader.set("action", BungeeActionTextLoader())
-            ComplexLoader.set("pool", BungeeStringPoolLoader())
+            ComplexLoader.set("action", actionTextLoader)
+            ComplexLoader.set("pool", stringPoolLoader)
         }
     }
 }

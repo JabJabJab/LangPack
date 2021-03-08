@@ -23,6 +23,8 @@ interface ComplexLoader<E> {
     companion object {
 
         private val loaders = HashMap<String, ComplexLoader<*>>()
+        private val actionTextLoader = ActionTextLoader()
+        private val stringPoolLoader = StringPoolLoader()
 
         init {
             addDefaultLoaders()
@@ -69,16 +71,8 @@ interface ComplexLoader<E> {
          * Adds the default loaders for the core.
          */
         fun addDefaultLoaders() {
-
-            val actionTextLoader = ActionTextLoader()
-            if (contains("action")) {
-                set("action", actionTextLoader)
-            }
-
-            val stringPoolLoader = StringPoolLoader()
-            if (contains("pool")) {
-                set("pool", stringPoolLoader)
-            }
+            if (!contains("action")) set("action", actionTextLoader)
+            if (!contains("pool")) set("pool", stringPoolLoader)
         }
     }
 }
