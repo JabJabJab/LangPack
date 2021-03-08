@@ -1,7 +1,7 @@
 package jab.langpack.commons
 
 /**
- * The **Language** enum stores the constants for identification of languages supported by the LanguagePackage library.
+ * The **Language** enum stores the constants for identification of languages supported by the lang-pack library.
  * ### Minecraft's supported languages:</b> https://minecraft.gamepedia.com/Language
  *
  * @author Jab

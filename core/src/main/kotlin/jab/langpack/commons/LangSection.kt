@@ -20,7 +20,7 @@ import java.io.File
  *
  * @author Jab
  *
- * @property pack The lang pack instance.
+ * @property pack The lang-pack instance.
  * @property name The name of the section.
  * @property parent (Optional) The parent section.
  */
@@ -339,21 +339,11 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
     /**
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @return Returns true if the query resolves and is the type [LangComplex].
+     * @return Returns true if the query resolves and is the type [Complex].
      */
     fun isComplex(query: String): Boolean {
         return contains(query) && fields[query.toLowerCase()] is Complex<*>
     }
-
-//    /**
-//     * @param query The string to process. The string can be a field or set of fields delimited by a period.
-//     *
-//     * @return Returns true if the query resolves and is the type [LangComponent].
-//     */
-//    fun isLangComponent(query: String): Boolean {
-//        val value = fields[query] ?: return false
-//        return value is LangComponent
-//    }
 
     /**
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
@@ -385,13 +375,13 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
      *     import: ..
      * ```
      *
-     * Metadata supports importing from other lang files. Formats are as follows:
+     * Metadata supports importing from other lang-files. Formats are as follows:
      * - **import:** Imports only one file as a string.
      * - **imports:** Imports multiple files as a string-list.
      *
      * Additionally, file-names can be given without extensions, however the files stored must have the .yml extension.
-     * Files can be referenced by name in the same location as the lang pack's directory. Otherwise, Java-File supported
-     * paths will be tried to locate the lang file.
+     * Files can be referenced by name in the same location as the lang-pack's directory. Otherwise, Java-File supported
+     * paths will be tried to locate the lang-file.
      *
      * @author Jab
      */

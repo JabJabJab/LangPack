@@ -3,7 +3,7 @@ __metadata__:
 
 
 command_header:
-  text: '[LangPackage]'
+  text: '[LangPack]'
   info: '&7%command_header.text%'
   success: '&a%command_header.text%'
   error: '&c%command_header.text%'

@@ -3,7 +3,7 @@ package jab.langpack.spigot
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * The **LangCfg** class handles reading and storage of global flags set for the LangPackage plugin.
+ * The **LangCfg** class handles reading and storage of global flags set for the lang-pack plugin.
  *
  * @author Jab
  *
@@ -18,7 +18,7 @@ internal class LangCfg(plugin: LangPlugin) {
     }
 
     /**
-     * Reads from a configuration for global flags for LangPackage.
+     * Reads from a configuration for global flags for lang-pack.
      *
      * @param cfg The configuration to read.
      */

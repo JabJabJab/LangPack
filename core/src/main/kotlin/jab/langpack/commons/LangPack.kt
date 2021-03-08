@@ -34,7 +34,7 @@ import java.util.*
  *
  * @author Jab
  *
- * @property name The String name of the LanguagePackage.
+ * @property name The String name of the pack.
  * @property dir (Optional) The File Object for the directory where the LangFiles are stored. DEFAULT: 'lang/'
  * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory. Thrown if
  *      the name given is empty.
@@ -74,7 +74,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     }
 
     /**
-     * Reads and loads the LangPackage.
+     * Reads and loads the pack.
      *
      * @param save (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
      * @param force (Optional) Set to true to save resources, even if they are already present.
@@ -84,7 +84,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     }
 
     /**
-     * Appends a language package.
+     * Appends a pack.
      *
      * @param name The name of the package to append.
      * @param save (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
@@ -258,7 +258,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      * @param lang The language to query.
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @return Returns true if the field for the language stores a [LangComplex] object.
+     * @return Returns true if the field for the language stores a [Complex] object.
      */
     fun isComplex(lang: Language, query: String): Boolean {
         return files[lang]?.isComplex(query) ?: false
@@ -313,7 +313,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
                 GLOBAL_DIRECTORY.mkdirs()
             }
 
-            // Store all global lang files present in the jar.
+            // Store all global lang-files present in the jar.
             for (lang in Language.values()) {
                 ResourceUtil.saveResource("lang${File.separator}global_${lang.abbreviation}.yml")
             }

@@ -5,7 +5,7 @@ import java.io.File
 import java.io.FileNotFoundException
 
 /**
- * The **LangFile** class acts as a lang section that identifies with a language. The lang files are used to
+ * The **LangFile** class acts as a lang section that identifies with a language. The lang-files are used to
  * resolve dialog based on language.
  *
  * @author Jab
@@ -26,7 +26,7 @@ class LangFile : LangSection {
     /**
      * Runtime constructor.
      *
-     * @param pack The lang pack instance.
+     * @param pack The lang-pack instance.
      * @param lang The language of the file.
      * @param name The name of the section.
      */
@@ -37,7 +37,7 @@ class LangFile : LangSection {
     /**
      * File constructor.
      *
-     * @param pack The lang pack instance.
+     * @param pack The lang-pack instance.
      * @param file The file to read.
      * @param lang The language of the file.
      */
@@ -73,7 +73,7 @@ class LangFile : LangSection {
     }
 
     /**
-     * Appends a YAML file to the lang file.
+     * Appends a YAML file to the lang-file.
      *
      * @param file The file to parse and append.
      *

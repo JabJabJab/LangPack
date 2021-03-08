@@ -8,7 +8,7 @@ import net.md_5.bungee.api.chat.hover.content.Text
 
 /**
  * The **HoverText** class handles hover text that is displayed for ActionText instances. The
- *   HoverText supports dynamic text fields for LangPackages.
+ *   HoverText supports dynamic text fields for processors.
  *
  * @author Jab
  *
@@ -42,7 +42,7 @@ class HoverText: Complex<HoverEvent> {
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): HoverEvent {
         var array = emptyList<Text>()
 
-        // Append all lines as one line with the [NEW_LINE] separator. The LangPackage will
+        // Append all lines as one line with the [NEW_LINE] separator. The lang-pack will
         //   interpret the separator and handle this when displayed to the player.
         for (line in lines) {
             array = array.plus(Text(pack.processor.processString(line.value as String, pack, lang, *args)))

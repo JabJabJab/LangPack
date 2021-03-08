@@ -13,9 +13,9 @@ import org.bukkit.entity.Player
  */
 class LangTestActionText : LangTest("actiontext") {
 
-    override fun run(pkg: SpigotLangPack, player: Player): TestResult {
+    override fun run(pack: SpigotLangPack, player: Player): TestResult {
         val actionText = SpigotActionText("Hover me.", HoverText(Text("This is hover text!")))
-        actionText.send(player, pkg)
+        actionText.send(player, pack)
         return TestResult(true)
     }
 }

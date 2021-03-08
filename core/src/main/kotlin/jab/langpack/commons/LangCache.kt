@@ -13,7 +13,7 @@ import java.util.*
  *
  * @author Jab
  *
- * @property pack The LangPackage instance to call to and cache the results.
+ * @property pack The lang-pack instance to call to and cache the results.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 open class LangCache<P : LangPack>(val pack: P) {
@@ -22,7 +22,7 @@ open class LangCache<P : LangPack>(val pack: P) {
     private val cacheList: EnumMap<Language, HashMap<String, List<String?>>> = EnumMap(Language::class.java)
 
     override fun toString(): String {
-        return "LangCache(pkg=$pack, cache=$cache, cacheList=$cacheList)"
+        return "LangCache(pack=$pack, cache=$cache, cacheList=$cacheList)"
     }
 
     /**

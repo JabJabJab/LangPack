@@ -24,7 +24,7 @@ internal class LangPlugin : Plugin() {
     override fun onEnable() {
         LangCfg(this)
         setBungeeLoaders()
-        loadLangPackages()
+        loadLangPacks()
         LangEventListener(this)
     }
 
@@ -76,7 +76,7 @@ internal class LangPlugin : Plugin() {
         return this.javaClass.classLoader
     }
 
-    private fun loadLangPackages() {
+    private fun loadLangPacks() {
 
         val langDir = File(dataFolder, "lang")
         if (!langDir.exists()) {

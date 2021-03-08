@@ -15,16 +15,16 @@ abstract class LangTest(val name: String) {
     /**
      * Executes the test procedure.
      *
-     * @param pkg The lang pack instance to test.
+     * @param pack The lang-pack instance to test.
      * @param player The player running the test.
      *
      * @return Returns true if the test succeeds. Returns false if the test fails.
      */
-    fun test(pkg: SpigotLangPack, player: Player): TestResult {
+    fun test(pack: SpigotLangPack, player: Player): TestResult {
 
         try {
 
-            val result = run(pkg, player)
+            val result = run(pack, player)
             if (!result.success) {
                 return result
             }
@@ -42,8 +42,8 @@ abstract class LangTest(val name: String) {
     }
 
     /**
-     * @param pkg The lang pack instance to test.
+     * @param pack The lang-pack instance to test.
      * @param player The player running the test.
      */
-    protected abstract fun run(pkg: SpigotLangPack, player: Player): TestResult
+    protected abstract fun run(pack: SpigotLangPack, player: Player): TestResult
 }

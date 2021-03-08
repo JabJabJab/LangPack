@@ -4,7 +4,7 @@ import jab.langpack.commons.LangArg
 import jab.langpack.commons.LangPack
 import jab.langpack.commons.Language
 import jab.langpack.commons.objects.Complex
-import jab.langpack.commons.util.ComponentUtil
+import jab.langpack.commons.util.ChatUtil
 import jab.langpack.commons.util.StringUtil.Companion.color
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.ClickEvent
@@ -14,9 +14,9 @@ import net.md_5.bungee.api.chat.hover.content.Content
 import net.md_5.bungee.api.chat.hover.content.Text
 
 /**
- * The ***PercentStringProcessor*** class implements the default field syntax for [LangPack].
+ * The ***PercentStringProcessor*** class implements the default field syntax for lang-packs.
  *
- *  > ### Field syntax: **%**field**%**
+ *  ### Field syntax: **%**field**%**
  *
  *  @author Jab
  */
@@ -24,14 +24,14 @@ class PercentProcessor : LangProcessor, FieldFormatter {
 
     override fun processComponent(
         component: TextComponent,
-        pkg: LangPack,
+        pack: LangPack,
         lang: Language,
         vararg args: LangArg,
     ): TextComponent {
 
         // There's no need to slice a component that is only a field.
         val composition = if (!isField(component.text)) {
-            ComponentUtil.slice(component, this)
+            ChatUtil.slice(component, this)
         } else {
             val comp = TextComponent(component.text)
             if (component.extra != null) {
@@ -44,15 +44,15 @@ class PercentProcessor : LangProcessor, FieldFormatter {
         composition.clickEvent = component.clickEvent
 
         // Process fields as extras, removing the text after processing it.
-        val eraseText = processText(composition, pkg, lang, *args)
-        processHoverEvent(composition, pkg, lang, *args)
-        processClickEvent(composition, pkg, lang, *args)
-        processExtras(composition, pkg, lang, *args)
+        val eraseText = processText(composition, pack, lang, *args)
+        processHoverEvent(composition, pack, lang, *args)
+        processClickEvent(composition, pack, lang, *args)
+        processExtras(composition, pack, lang, *args)
         if (eraseText) {
             composition.text = ""
         }
 
-        ComponentUtil.spreadColor(composition)
+        ChatUtil.spreadColor(composition)
         return composition
     }
 
@@ -60,7 +60,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
 
         // There's no need to slice a component that is only a field.
         val composition = if (!isField(component.text)) {
-            ComponentUtil.slice(component, this)
+            ChatUtil.slice(component, this)
         } else {
             val comp = TextComponent(component.text)
             comp.hoverEvent = component.hoverEvent
@@ -80,13 +80,13 @@ class PercentProcessor : LangProcessor, FieldFormatter {
             composition.text = ""
         }
 
-        ComponentUtil.spreadColor(composition)
+        ChatUtil.spreadColor(composition)
         return composition
     }
 
     override fun processString(
         string: String,
-        pkg: LangPack,
+        pack: LangPack,
         lang: Language,
         vararg args: LangArg,
     ): String {
@@ -114,9 +114,9 @@ class PercentProcessor : LangProcessor, FieldFormatter {
                 break
             }
 
-            // Check LanguagePackage for the defined field.
+            // Check lang-pack for the defined field.
             if (!found) {
-                val field = pkg.getString(stringField, lang, *args)
+                val field = pack.getString(stringField, lang, *args)
                 if (field != null) {
                     processedString = processedString.replace(fField, field, true)
                 }
@@ -198,7 +198,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
 
     private fun processText(
         composition: TextComponent,
-        pkg: LangPack,
+        pack: LangPack,
         lang: Language,
         vararg args: LangArg,
     ): Boolean {
@@ -216,16 +216,16 @@ class PercentProcessor : LangProcessor, FieldFormatter {
                 }
             }
             if (!found) {
-                field = pkg.resolve(lang, fField)
+                field = pack.resolve(lang, fField)
                 if (field == null) {
-                    field = pkg.resolve(pkg.defaultLang, fField)
+                    field = pack.resolve(pack.defaultLang, fField)
                 }
             }
 
             if (field != null) {
                 when (field) {
                     is TextComponent -> {
-                        composition.addExtra(processComponent(field, pkg, lang, *args))
+                        composition.addExtra(processComponent(field, pack, lang, *args))
                         eraseText = true
                     }
                     is Complex<*> -> {
@@ -235,11 +235,11 @@ class PercentProcessor : LangProcessor, FieldFormatter {
                         } else {
                             TextComponent(result.toString())
                         }
-                        composition.addExtra(processComponent(processedComponent, pkg, lang, *args))
+                        composition.addExtra(processComponent(processedComponent, pack, lang, *args))
                         eraseText = true
                     }
                     else -> {
-                        composition.text = processString(field.toString(), pkg, lang, *args)
+                        composition.text = processString(field.toString(), pack, lang, *args)
                     }
                 }
             } else {
@@ -297,7 +297,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
 
     private fun processHoverEvent(
         composition: BaseComponent,
-        pkg: LangPack,
+        pack: LangPack,
         lang: Language,
         vararg args: LangArg,
     ) {
@@ -312,7 +312,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
             val newContents = ArrayList<Content>()
             for (content in contents) {
                 if (content is Text) {
-                    newContents.add(Text(processString(content.value as String, pkg, lang, *args)))
+                    newContents.add(Text(processString(content.value as String, pack, lang, *args)))
                 } else {
                     newContents.add(content)
                 }
@@ -344,7 +344,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
 
     private fun processClickEvent(
         composition: BaseComponent,
-        pkg: LangPack,
+        pack: LangPack,
         lang: Language,
         vararg args: LangArg,
     ) {
@@ -355,7 +355,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
         val event = composition.clickEvent
         if (event.value != null) {
             val action = event.action
-            val value = processString(event.value, pkg, lang, *args)
+            val value = processString(event.value, pack, lang, *args)
             composition.clickEvent = ClickEvent(action, value)
         }
     }
@@ -375,7 +375,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
 
     private fun processExtras(
         composition: TextComponent,
-        pkg: LangPack,
+        pack: LangPack,
         lang: Language,
         vararg args: LangArg,
     ) {
@@ -391,7 +391,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
                 newExtras.add(next)
                 continue
             } else {
-                newExtras.add(processComponent(next, pkg, lang, *args))
+                newExtras.add(processComponent(next, pack, lang, *args))
             }
         }
 

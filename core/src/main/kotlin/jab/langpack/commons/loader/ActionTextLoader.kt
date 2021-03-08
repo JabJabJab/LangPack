@@ -13,5 +13,4 @@ class ActionTextLoader : ComplexLoader<ActionText> {
     override fun load(cfg: ConfigurationSection): ActionText {
         return ActionText(cfg)
     }
-
 }

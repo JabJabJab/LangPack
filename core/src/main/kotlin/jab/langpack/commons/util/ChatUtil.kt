@@ -6,23 +6,25 @@ import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.chat.hover.content.Text
 
 /**
- * The **ComponentUtil** class TODO: Document.
+ * The **ChatUtil** class houses all utilities for [TextComponent] for the lang-pack plugin.
  *
  * @author Jab
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class ComponentUtil {
+class ChatUtil {
+
     companion object {
 
         /**
-         * TODO: Document.
+         * Slices a TextComponent into extras with each component being split fields and text.
          *
-         * @param textComponent
-         * @param formatter
+         * @param textComponent The component to split.
+         * @param formatter The formatter to identify fields.
          *
-         * @return
+         * @return Returns a component with all text & fields sequenced in [BaseComponent.extra].
          */
         fun slice(textComponent: TextComponent, formatter: FieldFormatter): TextComponent {
 
@@ -73,18 +75,17 @@ class ComponentUtil {
          * @param text The text to display.
          * @param lines The lines of text to display when the text is hovered by a mouse.
          *
-         * @return TODO: Document.
+         * @return Returns a text component with a hover event.
          */
         fun createHoverComponent(text: String, lines: Array<String>): TextComponent {
             val component = TextComponent(text)
 
-            var list: Array<TextComponent> = emptyArray()
-            for (arg in lines) {
-                list = list.plus(TextComponent(arg))
+            var array = emptyList<Text>()
+            for (line in lines) {
+                array = array.plus(Text(line))
             }
 
-            @Suppress("DEPRECATION")
-            component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, list)
+            component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
             return component
         }
 
@@ -94,29 +95,28 @@ class ComponentUtil {
          * @param text The text to display.
          * @param lines The lines of text to display when the text is hovered by a mouse.
          *
-         * @return
+         * @return Returns a text component with a hover event.
          */
-        @Suppress("DEPRECATION")
         fun createHoverComponent(text: String, lines: List<String>): TextComponent {
             val component = TextComponent(text)
 
-            var list: Array<TextComponent> = emptyArray()
-            for (arg in lines) {
-                list = list.plus(TextComponent(arg))
+            var array = emptyList<Text>()
+            for (line in lines) {
+                array = array.plus(Text(line))
             }
 
-            component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, list)
+            component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
             return component
         }
 
         /**
-         * TODO: Document.
+         * Spreads color to nested text components, much like how color codes work in legacy text.
          *
-         * @param textComponent
+         * @param textComponent The component to color.
          */
         fun spreadColor(textComponent: TextComponent) {
 
-            val list = toFlatList(textComponent)
+            val list = flatten(textComponent)
 
             var last: BaseComponent = list[0]
             last.color = getLastColor(last)
@@ -132,11 +132,13 @@ class ComponentUtil {
         }
 
         /**
-         * TODO: Document.
+         * Flattens a base component to a list of components.
          *
-         * @param component
+         * @param component The component to flatten.
+         *
+         * @return Returns a list of all sequenced base component extras as it would be displayed in chat.
          */
-        fun toFlatList(component: BaseComponent): ArrayList<BaseComponent> {
+        fun flatten(component: BaseComponent): ArrayList<BaseComponent> {
 
             val list = ArrayList<BaseComponent>()
 
@@ -155,11 +157,10 @@ class ComponentUtil {
         }
 
         /**
-         * TODO: Document.
+         * @param component The component to parse.
          *
-         * @param component
-         *
-         * @return
+         * @return Returns the last color-code in the base component. If one isn't in the text, the
+         * [BaseComponent.color] is used.
          */
         fun getLastColor(component: BaseComponent): ChatColor {
 
@@ -184,14 +185,14 @@ class ComponentUtil {
         }
 
         /**
-         * TODO: Document.
+         * Displays information on a base component using spacing and lines to read easily in a console.
          *
-         * @param component
-         * @param startingPrefix
+         * @param component The component to prettify.
+         * @param startingPrefix The indention to use for all lines.
          *
-         * @return
+         * @return Returns lines of text to display properties of the component.
          */
-        fun toPretty(component: BaseComponent, startingPrefix: String): ArrayList<String> {
+        fun pretty(component: BaseComponent, startingPrefix: String): ArrayList<String> {
 
             val lines = ArrayList<String>()
             var prefix = startingPrefix
@@ -231,7 +232,6 @@ class ComponentUtil {
                         tabOut()
                     }
                 }
-                // ..
                 tabOut()
                 line("}")
             }

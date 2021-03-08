@@ -56,7 +56,7 @@ class ResourceUtil {
          *
          * @param path The path inside of the JAR file.
          *
-         * @return
+         * @return Returns the input stream for the resource in the JAR file. If the file isn't found, null is returned.
          */
         private fun getResource(path: String): InputStream? {
             return try {

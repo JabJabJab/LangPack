@@ -3,6 +3,7 @@ package jab.langpack.commons.objects
 import jab.langpack.commons.LangArg
 import jab.langpack.commons.LangPack
 import jab.langpack.commons.Language
+import jab.langpack.commons.objects.StringPool.Mode
 import jab.langpack.commons.util.StringUtil
 import org.bukkit.configuration.ConfigurationSection
 import java.util.*
@@ -16,12 +17,12 @@ import java.util.*
 open class StringPool : Complex<String> {
 
     /**
-     * TODO: Document.
+     * The method of polling for the pool.
      */
     val mode: Mode
 
     /**
-     * TODO: Document.
+     * The random instance for the pool.
      */
     var random: Random
 
@@ -98,9 +99,7 @@ open class StringPool : Complex<String> {
     }
 
     /**
-     * TODO: Document.
-     *
-     * @return
+     * @return Returns the next string-index to use.
      */
     fun roll(): Int {
         if (strings.isEmpty()) {
@@ -129,11 +128,9 @@ open class StringPool : Complex<String> {
     }
 
     /**
-     * TODO: Document.
+     * Adds a string to the pool.
      *
-     * @param string
-     *
-     * @return
+     * @param string The string to add.
      */
     fun add(string: String) {
         if (strings.isEmpty()) {
@@ -151,7 +148,7 @@ open class StringPool : Complex<String> {
     }
 
     /**
-     * TODO: Document.
+     * Clears all strings from the pool.
      */
     fun clear() {
         strings = emptyArray()
@@ -165,45 +162,8 @@ open class StringPool : Complex<String> {
         return strings.isNullOrEmpty()
     }
 
-    companion object {
-
-        /**
-         * TODO: Document.
-         *
-         * @param cfg
-         *
-         * @return
-         */
-        fun read(cfg: ConfigurationSection): StringPool {
-            var mode: Mode = Mode.RANDOM
-
-            // Load the mode if defined.
-            if (cfg.contains("mode")) {
-                val modeCheck: Mode? = Mode.getType(cfg.getString("mode")!!)
-                if (modeCheck == null) {
-                    System.err.println("""The mode "$mode" is an invalid StringPool mode. Using ${mode.name}.""")
-                } else {
-                    mode = modeCheck
-                }
-            }
-
-            val pool = StringPool(mode)
-            val list = cfg.getList("pool")!!
-            if (list.isNotEmpty()) {
-                for (o in list) {
-                    if (o != null) {
-                        pool.add(StringUtil.toAString(o))
-                    } else {
-                        pool.add("")
-                    }
-                }
-            }
-            return pool
-        }
-    }
-
     /**
-     * TODO: Document.
+     * The ***Mode** enum identifies the method of rolling for string pools.
      *
      * @author Jab
      */
@@ -215,14 +175,15 @@ open class StringPool : Complex<String> {
         companion object {
 
             /**
-             * TODO: Document.
+             * @param id The id of the Mode.
              *
-             * @param mode
+             * @return Returns the mode that identifies with the one provided. If no mode-identity matches the one
+             * provided, null is returned.
              */
-            fun getType(mode: String): Mode? {
-                if (mode.isNotEmpty()) {
+            fun getType(id: String): Mode? {
+                if (id.isNotEmpty()) {
                     for (next in values()) {
-                        if (next.name.equals(mode, true)) {
+                        if (next.name.equals(id, true)) {
                             return next
                         }
                     }

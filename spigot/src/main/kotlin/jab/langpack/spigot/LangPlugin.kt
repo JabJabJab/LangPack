@@ -24,7 +24,7 @@ internal class LangPlugin : JavaPlugin(), Listener {
 
         setSpigotLoaders()
         LangCfg(this)
-        loadLangPackages()
+        loadLangPacks()
         LangEventListener(this)
         LangCommand(this)
     }
@@ -33,7 +33,7 @@ internal class LangPlugin : JavaPlugin(), Listener {
         pack = null
     }
 
-    private fun loadLangPackages() {
+    private fun loadLangPacks() {
 
         val langDir = File(dataFolder, "lang")
         if (!langDir.exists()) {

@@ -1,7 +1,7 @@
 package jab.langpack.commons
 
 /**
- * The **LangArg** struct is for a stored key->value pair to override & replace placeholders for lang packs.
+ * The **LangArg** struct is for a stored key->value pair to override & replace fields.
  *
  * @author Jab
  *
