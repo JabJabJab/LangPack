@@ -10,7 +10,7 @@ import org.bukkit.configuration.ConfigurationSection
  */
 class StringPoolLoader : ComplexLoader<StringPool> {
 
-    override fun load(cfg: ConfigurationSection): StringPool? {
+    override fun load(cfg: ConfigurationSection): StringPool {
         return StringPool(cfg)
     }
 }

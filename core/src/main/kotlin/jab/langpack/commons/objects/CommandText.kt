@@ -6,21 +6,21 @@ import jab.langpack.commons.Language
 import net.md_5.bungee.api.chat.ClickEvent
 
 /**
- * The **CommandText** class TODO: Document.
+ * The **CommandText** class packages and processes text for [ClickEvent] in processed [ActionText].
  *
  * @author Jab
  *
- * @property command
+ * @property command The command to execute when clicked.
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class CommandText(val command: String) {
+class CommandText(val command: String): Complex<ClickEvent> {
 
-    fun process(pkg: LangPack, lang: Language, vararg args: LangArg): ClickEvent {
-        val processed = pkg.processor.processString(command, pkg, lang, *args)
+    override fun process(pack: LangPack, lang: Language, vararg args: LangArg): ClickEvent {
+        val processed = pack.processor.processString(command, pack, lang, *args)
         return ClickEvent(ClickEvent.Action.RUN_COMMAND, processed)
     }
 
-    fun get(): ClickEvent {
+    override fun get(): ClickEvent {
         return ClickEvent(ClickEvent.Action.RUN_COMMAND, command)
     }
 }

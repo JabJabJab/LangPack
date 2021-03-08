@@ -14,7 +14,7 @@ import net.md_5.bungee.api.chat.hover.content.Text
  *
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class HoverText {
+class HoverText: Complex<HoverEvent> {
 
     /**
      * The lines of text to display.
@@ -39,33 +39,19 @@ class HoverText {
         this.lines = newLines
     }
 
-    /**
-     * TODO: Document.
-     *
-     * @param pkg
-     * @param lang
-     * @param args
-     *
-     * @return
-     */
-    fun process(pkg: LangPack, lang: Language, vararg args: LangArg): HoverEvent {
+    override fun process(pack: LangPack, lang: Language, vararg args: LangArg): HoverEvent {
         var array = emptyList<Text>()
 
         // Append all lines as one line with the [NEW_LINE] separator. The LangPackage will
         //   interpret the separator and handle this when displayed to the player.
         for (line in lines) {
-            array = array.plus(Text(pkg.processor.processString(line.value as String, pkg, lang, *args)))
+            array = array.plus(Text(pack.processor.processString(line.value as String, pack, lang, *args)))
         }
 
         return HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
     }
 
-    /**
-     * TODO: Document.
-     *
-     * @return
-     */
-    fun get(): HoverEvent {
+    override fun get(): HoverEvent {
         return HoverEvent(HoverEvent.Action.SHOW_TEXT, lines)
     }
 }

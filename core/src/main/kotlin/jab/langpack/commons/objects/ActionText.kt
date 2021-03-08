@@ -3,30 +3,36 @@ package jab.langpack.commons.objects
 import jab.langpack.commons.LangArg
 import jab.langpack.commons.LangPack
 import jab.langpack.commons.Language
+import jab.langpack.commons.processor.LangProcessor
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * The **ActionText** class TODO: Document.
+ * The **ActionText** class packages defined [HoverEvent] and [ClickEvent] as [HoverText] and [CommandText] wrappers for
+ * dynamic [TextComponent] usage for lang-packs.
+ *
+ * The object is complex and resolvable for [LangProcessor].
  *
  * @author Jab
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-open class ActionText : LangComponent {
+open class ActionText : Complex<TextComponent> {
 
     /**
-     * TODO: Document.
+     * The text to display for the resolved [TextComponent].
      */
     var text: String
 
     /**
-     * TODO: Document.
+     * The text to display for the resolved [TextComponent] when hovered in chat.
      */
     var hoverText: HoverText? = null
 
     /**
-     * TODO: Document.
+     * The command to execute for resolved [TextComponent] when clicked in chat.
      */
     var commandText: CommandText? = null
 
@@ -89,16 +95,16 @@ open class ActionText : LangComponent {
         }
     }
 
-    override fun process(pkg: LangPack, lang: Language, vararg args: LangArg): TextComponent {
+    override fun process(pack: LangPack, lang: Language, vararg args: LangArg): TextComponent {
 
-        val text = pkg.processor.processString(text, pkg, lang, *args)
+        val text = pack.processor.processString(text, pack, lang, *args)
         val component = TextComponent(text)
 
         if (hoverText != null) {
-            component.hoverEvent = hoverText!!.process(pkg, lang, *args)
+            component.hoverEvent = hoverText!!.process(pack, lang, *args)
         }
         if (commandText != null) {
-            component.clickEvent = commandText!!.process(pkg, lang, *args)
+            component.clickEvent = commandText!!.process(pack, lang, *args)
         }
 
         return component

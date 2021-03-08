@@ -1,7 +1,6 @@
 package jab.langpack.commons.objects
 
 import jab.langpack.commons.LangArg
-import jab.langpack.commons.LangFile
 import jab.langpack.commons.LangPack
 import jab.langpack.commons.Language
 import jab.langpack.commons.util.StringUtil
@@ -9,12 +8,12 @@ import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
 /**
- * The **StringPool** class TODO: Document.
+ * The **StringPool** class allows for storage of multiple strings to be polled based on a set [Mode].
  *
  * @author Jab
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-open class StringPool : LangComplex {
+open class StringPool : Complex<String> {
 
     /**
      * TODO: Document.
@@ -72,11 +71,11 @@ open class StringPool : LangComplex {
         }
     }
 
-    override fun process(pkg: LangPack, lang: Language, vararg args: LangArg): String {
+    override fun process(pack: LangPack, lang: Language, vararg args: LangArg): String {
         return if (strings.isEmpty()) {
             ""
         } else {
-            pkg.processor.processString(poll(), pkg, lang, *args)
+            pack.processor.processString(poll(), pack, lang, *args)
         }
     }
 

@@ -3,8 +3,7 @@ package jab.langpack.bungeecord
 import jab.langpack.commons.LangArg
 import jab.langpack.commons.LangPack
 import jab.langpack.commons.Language
-import jab.langpack.commons.objects.LangComplex
-import jab.langpack.commons.objects.LangComponent
+import jab.langpack.commons.objects.Complex
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
@@ -43,25 +42,30 @@ class BungeeLangPack(name: String, dir: File = File("lang")) : LangPack(name, di
                 continue
             }
 
-            var value = resolve(query, lang)
+            var value = resolve(lang, query)
             if (value == null) {
                 lang = defaultLang
-                value = resolve(query, lang)
+                value = resolve(lang, query)
             }
 
-            println("query: $query value: $value")
+            if(debug) {
+                println("query: $query value: $value")
+            }
 
             val component: TextComponent
             if (value != null) {
                 component = when (value) {
-                    is LangComponent -> {
-                        value.get()
-                    }
-                    is LangComplex -> {
-                        TextComponent(value.get())
-                    }
                     is TextComponent -> {
                         value
+                    }
+                    is Complex<*> -> {
+                        val result = value.get()
+                        val processedComponent: TextComponent = if (result is TextComponent) {
+                            result
+                        } else {
+                            TextComponent(result.toString())
+                        }
+                        processedComponent
                     }
                     else -> {
                         TextComponent(value.toString())
@@ -92,23 +96,26 @@ class BungeeLangPack(name: String, dir: File = File("lang")) : LangPack(name, di
         val langPlayer = getLanguage(player)
         var lang = langPlayer
 
-        var value = resolve(query, lang)
+        var value = resolve(lang, query)
         if (value == null) {
             lang = defaultLang
-            value = resolve(query, lang)
+            value = resolve(lang, query)
         }
 
         val component: TextComponent
         if (value != null) {
             component = when (value) {
-                is LangComponent -> {
-                    value.get()
-                }
-                is LangComplex -> {
-                    TextComponent(value.get())
-                }
                 is TextComponent -> {
                     value
+                }
+                is Complex<*> -> {
+                    val result = value.get()
+                    val processedComponent: TextComponent = if (result is TextComponent) {
+                        result
+                    } else {
+                        TextComponent(result.toString())
+                    }
+                    processedComponent
                 }
                 else -> {
                     TextComponent(value.toString())

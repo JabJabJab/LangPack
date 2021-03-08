@@ -3,8 +3,7 @@ package jab.langpack.commons.processor
 import jab.langpack.commons.LangArg
 import jab.langpack.commons.LangPack
 import jab.langpack.commons.Language
-import jab.langpack.commons.objects.LangComplex
-import jab.langpack.commons.objects.LangComponent
+import jab.langpack.commons.objects.Complex
 import jab.langpack.commons.util.ComponentUtil
 import jab.langpack.commons.util.StringUtil.Companion.color
 import net.md_5.bungee.api.chat.BaseComponent
@@ -217,9 +216,9 @@ class PercentProcessor : LangProcessor, FieldFormatter {
                 }
             }
             if (!found) {
-                field = pkg.resolve(fField, lang)
+                field = pkg.resolve(lang, fField)
                 if (field == null) {
-                    field = pkg.resolve(fField, pkg.defaultLang)
+                    field = pkg.resolve(pkg.defaultLang, fField)
                 }
             }
 
@@ -229,12 +228,14 @@ class PercentProcessor : LangProcessor, FieldFormatter {
                         composition.addExtra(processComponent(field, pkg, lang, *args))
                         eraseText = true
                     }
-                    is LangComponent -> {
-                        composition.addExtra(processComponent(field.get(), pkg, lang, *args))
-                        eraseText = true
-                    }
-                    is LangComplex -> {
-                        composition.addExtra(processComponent(TextComponent(field.get()), pkg, lang, *args))
+                    is Complex<*> -> {
+                        val result = field.get()
+                        val processedComponent: TextComponent = if (result is TextComponent) {
+                            result
+                        } else {
+                            TextComponent(result.toString())
+                        }
+                        composition.addExtra(processComponent(processedComponent, pkg, lang, *args))
                         eraseText = true
                     }
                     else -> {
@@ -270,12 +271,14 @@ class PercentProcessor : LangProcessor, FieldFormatter {
                         composition.addExtra(processComponent(field, *args))
                         eraseText = true
                     }
-                    is LangComponent -> {
-                        composition.addExtra(processComponent(field.get(), *args))
-                        eraseText = true
-                    }
-                    is LangComplex -> {
-                        composition.addExtra(processComponent(TextComponent(field.get()), *args))
+                    is Complex<*> -> {
+                        val result = field.get()
+                        val processedComponent: TextComponent = if (result is TextComponent) {
+                            result
+                        } else {
+                            TextComponent(result.toString())
+                        }
+                        composition.addExtra(processComponent(processedComponent, *args))
                         eraseText = true
                     }
                     else -> {

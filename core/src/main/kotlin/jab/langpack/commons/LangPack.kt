@@ -1,15 +1,14 @@
 package jab.langpack.commons
 
-import jab.langpack.commons.objects.LangComplex
-import jab.langpack.commons.objects.LangComponent
+import jab.langpack.commons.objects.Complex
 import jab.langpack.commons.objects.StringPool
 import jab.langpack.commons.processor.LangProcessor
 import jab.langpack.commons.processor.PercentProcessor
 import jab.langpack.commons.util.ResourceUtil
 import jab.langpack.commons.util.StringUtil
+import net.md_5.bungee.api.chat.TextComponent
 import java.io.File
 import java.util.*
-import net.md_5.bungee.api.chat.TextComponent
 
 /**
  * The **LangPack** class is a utility that stores entries for dialog, separated by language. Files are loaded into the
@@ -194,11 +193,13 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
         val raw = resolve(lang, query)
         return if (raw != null) {
             when (raw) {
-                is LangComponent -> {
-                    raw.process(this, lang, *args).toPlainText()
-                }
-                is LangComplex -> {
-                    raw.process(this, lang, *args)
+                is Complex<*> -> {
+                    val result = raw.process(this, lang, *args)
+                    if (result is TextComponent) {
+                        result.toPlainText()
+                    } else {
+                        result.toString()
+                    }
                 }
                 else -> {
                     processor.processString(raw.toString(), this, lang, *args)
@@ -261,16 +262,6 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      */
     fun isComplex(lang: Language, query: String): Boolean {
         return files[lang]?.isComplex(query) ?: false
-    }
-
-    /**
-     * @param lang The language to query.
-     * @param query The string to process. The string can be a field or set of fields delimited by a period.
-     *
-     * @return Returns true if the field for the language stores a component-based value.
-     */
-    fun isLangComponent(lang: Language, query: String): Boolean {
-        return files[lang]?.isLangComponent(query) ?: false
     }
 
     /**

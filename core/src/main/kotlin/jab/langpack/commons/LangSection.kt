@@ -1,10 +1,7 @@
 package jab.langpack.commons
 
 import jab.langpack.commons.loader.ComplexLoader
-import jab.langpack.commons.objects.ActionText
-import jab.langpack.commons.objects.LangComplex
-import jab.langpack.commons.objects.LangComponent
-import jab.langpack.commons.objects.StringPool
+import jab.langpack.commons.objects.*
 import jab.langpack.commons.util.StringUtil
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
@@ -220,7 +217,9 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
     fun getString(query: String): String? {
         val o = resolve(query)
         return when {
-            o is LangComplex -> o.get()
+            o is Complex<*> -> {
+                o.get().toString()
+            }
             o is String -> o
             o != null -> StringUtil.toAString(o)
             else -> null
@@ -343,18 +342,18 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
      * @return Returns true if the query resolves and is the type [LangComplex].
      */
     fun isComplex(query: String): Boolean {
-        return contains(query) && fields[query.toLowerCase()] is LangComplex
+        return contains(query) && fields[query.toLowerCase()] is Complex<*>
     }
 
-    /**
-     * @param query The string to process. The string can be a field or set of fields delimited by a period.
-     *
-     * @return Returns true if the query resolves and is the type [LangComponent].
-     */
-    fun isLangComponent(query: String): Boolean {
-        val value = fields[query] ?: return false
-        return value is LangComponent
-    }
+//    /**
+//     * @param query The string to process. The string can be a field or set of fields delimited by a period.
+//     *
+//     * @return Returns true if the query resolves and is the type [LangComponent].
+//     */
+//    fun isLangComponent(query: String): Boolean {
+//        val value = fields[query] ?: return false
+//        return value is LangComponent
+//    }
 
     /**
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
