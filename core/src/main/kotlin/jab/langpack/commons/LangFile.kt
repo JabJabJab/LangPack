@@ -51,9 +51,7 @@ class LangFile : LangSection {
         this.lang = lang
     }
 
-    override fun toString(): String {
-        return "LangFile(lang=$lang)"
-    }
+    override fun toString(): String = "LangFile(lang=$lang)"
 
     /**
      * Attempts to parse the File to YAML data to read as a lang section.

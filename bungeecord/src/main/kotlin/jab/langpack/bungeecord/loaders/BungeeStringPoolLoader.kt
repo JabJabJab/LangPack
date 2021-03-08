@@ -11,8 +11,5 @@ import org.bukkit.configuration.ConfigurationSection
  * @author Jab
  */
 class BungeeStringPoolLoader : ComplexLoader<BungeeStringPool> {
-
-    override fun load(cfg: ConfigurationSection): BungeeStringPool {
-        return BungeeStringPool(cfg)
-    }
+    override fun load(cfg: ConfigurationSection): BungeeStringPool = BungeeStringPool(cfg)
 }

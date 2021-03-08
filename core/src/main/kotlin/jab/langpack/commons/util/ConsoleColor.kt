@@ -38,34 +38,32 @@ class ConsoleColor {
          *
          * @return Returns the formatted string.
          */
-        fun toANSI(string: String): String {
-            return string
-                .replace(ChatColor.RESET.toString(), ANSI_RESET)
-                // Red
-                .replace(ChatColor.DARK_RED.toString(), ANSI_RED)
-                .replace(ChatColor.RED.toString(), ANSI_RED)
-                // Green
-                .replace(ChatColor.DARK_GREEN.toString(), ANSI_GREEN)
-                .replace(ChatColor.GREEN.toString(), ANSI_GREEN)
-                // Yellow
-                .replace(ChatColor.YELLOW.toString(), ANSI_YELLOW)
-                .replace(ChatColor.GOLD.toString(), ANSI_YELLOW)
-                // Blue
-                .replace(ChatColor.DARK_BLUE.toString(), ANSI_BLUE)
-                .replace(ChatColor.BLUE.toString(), ANSI_BLUE)
-                // Purple
-                .replace(ChatColor.DARK_PURPLE.toString(), ANSI_PURPLE)
-                .replace(ChatColor.LIGHT_PURPLE.toString(), ANSI_PURPLE)
-                // Cyan
-                .replace(ChatColor.DARK_AQUA.toString(), ANSI_CYAN)
-                .replace(ChatColor.AQUA.toString(), ANSI_CYAN)
-                // White
-                .replace(ChatColor.GRAY.toString(), ANSI_WHITE)
-                .replace(ChatColor.DARK_GRAY.toString(), ANSI_WHITE)
-                .replace(ChatColor.WHITE.toString(), ANSI_WHITE)
-                // Black
-                .replace(ChatColor.BLACK.toString(), ANSI_BLACK)
-        }
+        fun toANSI(string: String): String = string
+            .replace(ChatColor.RESET.toString(), ANSI_RESET)
+            // Red
+            .replace(ChatColor.DARK_RED.toString(), ANSI_RED)
+            .replace(ChatColor.RED.toString(), ANSI_RED)
+            // Green
+            .replace(ChatColor.DARK_GREEN.toString(), ANSI_GREEN)
+            .replace(ChatColor.GREEN.toString(), ANSI_GREEN)
+            // Yellow
+            .replace(ChatColor.YELLOW.toString(), ANSI_YELLOW)
+            .replace(ChatColor.GOLD.toString(), ANSI_YELLOW)
+            // Blue
+            .replace(ChatColor.DARK_BLUE.toString(), ANSI_BLUE)
+            .replace(ChatColor.BLUE.toString(), ANSI_BLUE)
+            // Purple
+            .replace(ChatColor.DARK_PURPLE.toString(), ANSI_PURPLE)
+            .replace(ChatColor.LIGHT_PURPLE.toString(), ANSI_PURPLE)
+            // Cyan
+            .replace(ChatColor.DARK_AQUA.toString(), ANSI_CYAN)
+            .replace(ChatColor.AQUA.toString(), ANSI_CYAN)
+            // White
+            .replace(ChatColor.GRAY.toString(), ANSI_WHITE)
+            .replace(ChatColor.DARK_GRAY.toString(), ANSI_WHITE)
+            .replace(ChatColor.WHITE.toString(), ANSI_WHITE)
+            // Black
+            .replace(ChatColor.BLACK.toString(), ANSI_BLACK)
 
         /**
          * Prints lines to Java's consoles, converting Minecraft color-codes to ANSI color-codes on each line.

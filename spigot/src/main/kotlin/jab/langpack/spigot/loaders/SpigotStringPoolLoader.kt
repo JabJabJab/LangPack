@@ -11,8 +11,5 @@ import org.bukkit.configuration.ConfigurationSection
  * @author Jab
  */
 class SpigotStringPoolLoader : ComplexLoader<SpigotStringPool> {
-
-    override fun load(cfg: ConfigurationSection): SpigotStringPool {
-        return SpigotStringPool(cfg)
-    }
+    override fun load(cfg: ConfigurationSection): SpigotStringPool = SpigotStringPool(cfg)
 }

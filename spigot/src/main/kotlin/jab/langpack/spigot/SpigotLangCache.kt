@@ -26,13 +26,11 @@ class SpigotLangCache(pack: SpigotLangPack) : LangCache<SpigotLangPack>(pack) {
      * @see SpigotLangPack.message
      */
     fun message(player: Player, field: String, vararg args: LangArg) {
-        return pack.message(player, field, *args)
+        pack.message(player, field, *args)
     }
 
     /**
      * @see SpigotLangPack.getLanguage
      */
-    fun getLanguage(player: Player): Language {
-        return pack.getLanguage(player)
-    }
+    fun getLanguage(player: Player): Language = pack.getLanguage(player)
 }

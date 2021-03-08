@@ -33,9 +33,7 @@ interface ComplexLoader<E> {
          *
          * @return Returns the loader assigned to the type. If one is not assigned, null is returned.
          */
-        fun get(type: String): ComplexLoader<*>? {
-            return loaders[type.toLowerCase()]
-        }
+        fun get(type: String): ComplexLoader<*>? = loaders[type.toLowerCase()]
 
         /**
          * Sets a loader for the type.
@@ -65,9 +63,7 @@ interface ComplexLoader<E> {
          *
          * @return Returns true if a loader is assigned to the type.
          */
-        fun contains(type: String): Boolean {
-            return loaders.containsKey(type.toLowerCase())
-        }
+        fun contains(type: String): Boolean = loaders.containsKey(type.toLowerCase())
 
         /**
          * Adds the default loaders for the core.

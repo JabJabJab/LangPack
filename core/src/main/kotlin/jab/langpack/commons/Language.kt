@@ -267,9 +267,7 @@ enum class Language(val abbreviation: String, private val fallBack: String? = nu
     YORUBA("yo_ng");
 
 
-    override fun toString(): String {
-        return "Language(abbreviation='$abbreviation', fallBack=$fallBack)"
-    }
+    override fun toString(): String = "Language(abbreviation='$abbreviation', fallBack=$fallBack)"
 
     /**
      * @return Returns the fallback language. If a fallback language is not defined, null is returned.

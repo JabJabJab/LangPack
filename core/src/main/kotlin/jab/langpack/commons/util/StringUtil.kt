@@ -97,8 +97,7 @@ class StringUtil {
          *
          * @return Returns the colored string.
          */
-        fun color(string: String, colorCode: Char = '&'): String {
-            return ChatColor.translateAlternateColorCodes(colorCode, string)
-        }
+        fun color(string: String, colorCode: Char = '&'): String =
+            ChatColor.translateAlternateColorCodes(colorCode, string)
     }
 }

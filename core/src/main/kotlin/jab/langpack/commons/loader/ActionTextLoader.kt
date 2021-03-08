@@ -9,8 +9,5 @@ import org.bukkit.configuration.ConfigurationSection
  * @author Jab
  */
 class ActionTextLoader : ComplexLoader<ActionText> {
-
-    override fun load(cfg: ConfigurationSection): ActionText {
-        return ActionText(cfg)
-    }
+    override fun load(cfg: ConfigurationSection): ActionText = ActionText(cfg)
 }

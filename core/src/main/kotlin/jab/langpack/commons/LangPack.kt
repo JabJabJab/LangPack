@@ -250,9 +250,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      *
      * @return Returns true if the query resolves.
      */
-    fun contains(lang: Language, query: String): Boolean {
-        return files[lang]?.contains(query.toLowerCase()) ?: false
-    }
+    fun contains(lang: Language, query: String): Boolean = files[lang]?.contains(query.toLowerCase()) ?: false
 
     /**
      * @param lang The language to query.
@@ -260,9 +258,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      *
      * @return Returns true if the field for the language stores a [Complex] object.
      */
-    fun isComplex(lang: Language, query: String): Boolean {
-        return files[lang]?.isComplex(query) ?: false
-    }
+    fun isComplex(lang: Language, query: String): Boolean = files[lang]?.isComplex(query) ?: false
 
     /**
      * @param lang The language to query.
@@ -270,9 +266,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      *
      * @return Returns true if the field for the language stores a [StringPool].
      */
-    fun isStringPool(lang: Language, query: String): Boolean {
-        return files[lang]?.isStringPool(query) ?: false
-    }
+    fun isStringPool(lang: Language, query: String): Boolean = files[lang]?.isStringPool(query) ?: false
 
     /**
      * @param lang The language to query.
@@ -280,9 +274,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      *
      * @return Returns true if the field for the language stores a ActionText.
      */
-    fun isActionText(lang: Language, query: String): Boolean {
-        return files[lang]?.isActionText(query) ?: false
-    }
+    fun isActionText(lang: Language, query: String): Boolean = files[lang]?.isActionText(query) ?: false
 
     companion object {
 

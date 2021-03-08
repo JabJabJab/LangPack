@@ -11,9 +11,5 @@ import org.bukkit.configuration.ConfigurationSection
  * @author Jab
  */
 class SpigotActionTextLoader : ComplexLoader<SpigotActionText> {
-
-    override fun load(cfg: ConfigurationSection): SpigotActionText {
-        return SpigotActionText(cfg)
-    }
-
+    override fun load(cfg: ConfigurationSection): SpigotActionText = SpigotActionText(cfg)
 }

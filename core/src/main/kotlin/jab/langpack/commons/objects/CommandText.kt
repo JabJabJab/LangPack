@@ -20,7 +20,5 @@ class CommandText(val command: String): Complex<ClickEvent> {
         return ClickEvent(ClickEvent.Action.RUN_COMMAND, processed)
     }
 
-    override fun get(): ClickEvent {
-        return ClickEvent(ClickEvent.Action.RUN_COMMAND, command)
-    }
+    override fun get(): ClickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, command)
 }

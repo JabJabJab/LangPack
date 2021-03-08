@@ -51,7 +51,5 @@ class HoverText: Complex<HoverEvent> {
         return HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
     }
 
-    override fun get(): HoverEvent {
-        return HoverEvent(HoverEvent.Action.SHOW_TEXT, lines)
-    }
+    override fun get(): HoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, lines)
 }

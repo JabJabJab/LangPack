@@ -332,36 +332,28 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
      *
      * @return Returns true if the query resolves.
      */
-    fun contains(query: String): Boolean {
-        return fields.containsKey(query.toLowerCase())
-    }
+    fun contains(query: String): Boolean = fields.containsKey(query.toLowerCase())
 
     /**
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
      * @return Returns true if the query resolves and is the type [Complex].
      */
-    fun isComplex(query: String): Boolean {
-        return contains(query) && fields[query.toLowerCase()] is Complex<*>
-    }
+    fun isComplex(query: String): Boolean = contains(query) && fields[query.toLowerCase()] is Complex<*>
 
     /**
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
      * @return Returns true if the query resolves and is the type [StringPool].
      */
-    fun isStringPool(query: String): Boolean {
-        return contains(query) && fields[query.toLowerCase()] is StringPool
-    }
+    fun isStringPool(query: String): Boolean = contains(query) && fields[query.toLowerCase()] is StringPool
 
     /**
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
      * @return Returns true if the query resolves and is the type [ActionText].
      */
-    fun isActionText(query: String): Boolean {
-        return contains(query) && fields[query.toLowerCase()] is ActionText
-    }
+    fun isActionText(query: String): Boolean = contains(query) && fields[query.toLowerCase()] is ActionText
 
     /**
      * The ***Metadata*** class handles all metadata defined for lang sections.

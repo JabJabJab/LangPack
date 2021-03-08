@@ -11,8 +11,5 @@ import org.bukkit.configuration.ConfigurationSection
  * @author Jab
  */
 class BungeeActionTextLoader : ComplexLoader<BungeeActionText> {
-
-    override fun load(cfg: ConfigurationSection): BungeeActionText {
-        return BungeeActionText(cfg)
-    }
+    override fun load(cfg: ConfigurationSection): BungeeActionText = BungeeActionText(cfg)
 }

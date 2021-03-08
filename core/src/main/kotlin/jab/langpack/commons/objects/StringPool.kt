@@ -102,6 +102,7 @@ open class StringPool : Complex<String> {
      * @return Returns the next string-index to use.
      */
     fun roll(): Int {
+
         if (strings.isEmpty()) {
             return -1
         }
@@ -158,9 +159,7 @@ open class StringPool : Complex<String> {
     /**
      * @return Returns true if the StringPool is empty.
      */
-    fun isEmpty(): Boolean {
-        return strings.isNullOrEmpty()
-    }
+    fun isEmpty(): Boolean = strings.isNullOrEmpty()
 
     /**
      * The ***Mode** enum identifies the method of rolling for string pools.

@@ -18,21 +18,15 @@ class BungeeLangCache(pack: BungeeLangPack) : LangCache<BungeeLangPack>(pack) {
     /**
      * @see BungeeLangPack.broadcast
      */
-    fun broadcast(field: String, vararg args: LangArg) {
-        pack.broadcast(field, *args)
-    }
+    fun broadcast(field: String, vararg args: LangArg) = pack.broadcast(field, *args)
 
     /**
      * @see BungeeLangPack.message
      */
-    fun message(player: ProxiedPlayer, field: String, vararg args: LangArg) {
-        return pack.message(player, field, *args)
-    }
+    fun message(player: ProxiedPlayer, field: String, vararg args: LangArg) = pack.message(player, field, *args)
 
     /**
      * @see BungeeLangPack.getLanguage
      */
-    fun getLanguage(player: ProxiedPlayer): Language {
-        return pack.getLanguage(player)
-    }
+    fun getLanguage(player: ProxiedPlayer): Language = pack.getLanguage(player)
 }

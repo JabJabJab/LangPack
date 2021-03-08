@@ -188,13 +188,11 @@ class PercentProcessor : LangProcessor, FieldFormatter {
         return fields
     }
 
-    override fun formatField(field: String): String {
-        return "%${field.toLowerCase()}%"
-    }
+    override fun formatField(field: String): String = "%${field.toLowerCase()}%"
 
-    override fun isField(string: String?): Boolean {
-        return string != null && string.length > 2 && string.startsWith('%') && string.endsWith('%')
-    }
+    override fun isField(string: String?): Boolean =
+        string != null && string.length > 2 && string.startsWith('%') && string.endsWith('%')
+
 
     private fun processText(
         composition: TextComponent,

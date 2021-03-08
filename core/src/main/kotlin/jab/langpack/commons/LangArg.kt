@@ -9,8 +9,5 @@ package jab.langpack.commons
  * @property value The value to store.
  */
 class LangArg(val key: String, val value: Any?) {
-
-    override fun toString(): String {
-        return "{key='$key', value='$value'}"
-    }
+    override fun toString(): String = "{key='$key', value='$value'}"
 }

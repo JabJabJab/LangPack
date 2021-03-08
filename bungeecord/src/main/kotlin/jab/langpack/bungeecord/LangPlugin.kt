@@ -28,9 +28,6 @@ internal class LangPlugin : Plugin() {
         LangEventListener(this)
     }
 
-    override fun onDisable() {
-    }
-
     /**
      * (Borrowed from Bukkit's JavaPlugin)
      *
@@ -78,9 +75,7 @@ internal class LangPlugin : Plugin() {
         }
     }
 
-    private fun getClassLoader(): ClassLoader {
-        return this.javaClass.classLoader
-    }
+    private fun getClassLoader(): ClassLoader = this.javaClass.classLoader
 
     private fun loadLangPacks() {
 
