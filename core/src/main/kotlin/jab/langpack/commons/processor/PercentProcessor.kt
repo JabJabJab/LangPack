@@ -27,7 +27,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
         component: TextComponent,
         pkg: LangPack,
         lang: Language,
-        vararg args: LangArg
+        vararg args: LangArg,
     ): TextComponent {
 
         // There's no need to slice a component that is only a field.
@@ -89,7 +89,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
         string: String,
         pkg: LangPack,
         lang: Language,
-        vararg args: LangArg
+        vararg args: LangArg,
     ): String {
 
         val stringFields = getFields(string)
@@ -161,11 +161,47 @@ class PercentProcessor : LangProcessor, FieldFormatter {
         return color(processedString)
     }
 
+    override fun getFields(string: String): ArrayList<String> {
+
+        val nextField = StringBuilder()
+        val fields = ArrayList<String>()
+        var insideField = false
+
+        for (next in string.chars()) {
+            val c = next.toChar()
+            if (c == '%') {
+                if (insideField) {
+                    if (nextField.isNotEmpty()) {
+                        fields.add(nextField.toString())
+                    }
+                    insideField = false
+                } else {
+                    insideField = true
+                    nextField.clear()
+                }
+            } else {
+                if (insideField) {
+                    nextField.append(c)
+                }
+            }
+        }
+
+        return fields
+    }
+
+    override fun formatField(field: String): String {
+        return "%${field.toLowerCase()}%"
+    }
+
+    override fun isField(string: String?): Boolean {
+        return string != null && string.length > 2 && string.startsWith('%') && string.endsWith('%')
+    }
+
     private fun processText(
         composition: TextComponent,
         pkg: LangPack,
         lang: Language,
-        vararg args: LangArg
+        vararg args: LangArg,
     ): Boolean {
         var eraseText = false
         if (isField(composition.text)) {
@@ -260,7 +296,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
         composition: BaseComponent,
         pkg: LangPack,
         lang: Language,
-        vararg args: LangArg
+        vararg args: LangArg,
     ) {
         if (composition.hoverEvent == null) {
             return
@@ -307,7 +343,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
         composition: BaseComponent,
         pkg: LangPack,
         lang: Language,
-        vararg args: LangArg
+        vararg args: LangArg,
     ) {
         if (composition.clickEvent == null) {
             return
@@ -338,7 +374,7 @@ class PercentProcessor : LangProcessor, FieldFormatter {
         composition: TextComponent,
         pkg: LangPack,
         lang: Language,
-        vararg args: LangArg
+        vararg args: LangArg,
     ) {
         if (composition.extra == null || isField(composition.text)) {
             return
@@ -379,41 +415,5 @@ class PercentProcessor : LangProcessor, FieldFormatter {
 
         composition.extra.clear()
         composition.extra.addAll(newExtras)
-    }
-
-    override fun getFields(string: String): ArrayList<String> {
-
-        val nextField = StringBuilder()
-        val fields = ArrayList<String>()
-        var insideField = false
-
-        for (next in string.chars()) {
-            val c = next.toChar()
-            if (c == '%') {
-                if (insideField) {
-                    if (nextField.isNotEmpty()) {
-                        fields.add(nextField.toString())
-                    }
-                    insideField = false
-                } else {
-                    insideField = true
-                    nextField.clear()
-                }
-            } else {
-                if (insideField) {
-                    nextField.append(c)
-                }
-            }
-        }
-
-        return fields
-    }
-
-    override fun formatField(field: String): String {
-        return "%${field.toLowerCase()}%"
-    }
-
-    override fun isField(string: String?): Boolean {
-        return string != null && string.length > 2 && string.startsWith('%') && string.endsWith('%')
     }
 }

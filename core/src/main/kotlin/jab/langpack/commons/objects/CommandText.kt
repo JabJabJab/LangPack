@@ -6,7 +6,7 @@ import jab.langpack.commons.Language
 import net.md_5.bungee.api.chat.ClickEvent
 
 /**
- * TODO: Document.
+ * The **CommandText** class TODO: Document.
  *
  * @author Jab
  *

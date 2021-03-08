@@ -9,11 +9,29 @@ import jab.langpack.commons.util.ResourceUtil
 import jab.langpack.commons.util.StringUtil
 import java.io.File
 import java.util.*
+import net.md_5.bungee.api.chat.TextComponent
 
 /**
- * The **LangPack** class.
+ * The **LangPack** class is a utility that stores entries for dialog, separated by language. Files are loaded into the
+ * lang-pack as a [LangFile], and queried based on language context when querying dialog.
  *
- * TODO: Document.
+ * Text is processed using a [LangProcessor] implementation. By default, lang-packs use the [PercentProcessor].
+ *
+ * Text is processed dynamically as [TextComponent], allowing for dynamic text to be sent to players, enabling hover &
+ * click events to be used throughout all entries in the lang-pack. If not desired, simply process the query as a
+ * string. All text is processed when queried. If a result is queried more than once and is expected to be the same
+ * result, use implementations of the [LangCache] utility to cache and recall the results of a query.
+ *
+ * LangPack works with contexts, referring to the [defaultLang] property in the lang-pack first, then the global context
+ * last when attempting to resolve a query.
+ *
+ * Example query: ``command.dialog`` language: ``SPANISH_GENERIC``
+ *   - specific langPack -> ``SPANISH_GENERIC``
+ *   - specific langPack -> ``defaultLang``
+ *   - global langPack -> ``SPANISH_GENERIC``
+ *   - global langPack -> ``defaultLang``
+ *
+ * LangPacks can be created and modified during runtime using the [set] method.
  *
  * @author Jab
  *
@@ -107,9 +125,9 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     }
 
     /**
-     * Sets a value for a language.
+     * Sets a entry for a language.
      *
-     * @param lang The language to set.
+     * @param lang The language to modify.
      * @param key The field to set.
      * @param value The value to set.
      */
@@ -119,36 +137,36 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     }
 
     /**
-     * Sets a value for the language.
+     * Sets entries for the language.
      *
-     * @param lang The language to set.
-     * @param args The fields to set.
+     * @param lang The language to modify.
+     * @param entries The entries to set.
      */
-    fun set(lang: Language, vararg args: LangArg) {
+    fun set(lang: Language, vararg entries: LangArg) {
 
         // Make sure that we have fields to set.
-        if (args.isEmpty()) {
+        if (entries.isEmpty()) {
             return
         }
 
         val file: LangFile = files.computeIfAbsent(lang) { LangFile(this, lang, lang.abbreviation) }
-        for (field in args) {
+        for (field in entries) {
             file.set(field.key, field.value)
         }
     }
 
     /**
-     * TODO: Document.
+     * Attempts to resolve a string-list with a query.
      *
-     * @param key
-     * @param lang
-     * @param args
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
+     * @param lang The language to query.
+     * @param args (Optional) Arguments to pass to the processor.
      *
-     * @return
+     * @return Returns the resolved string-list. If nothing is located at the destination of the query, null is returned.
      */
-    fun getList(key: String, lang: Language = defaultLang, vararg args: LangArg): List<String>? {
+    fun getList(query: String, lang: Language = defaultLang, vararg args: LangArg): List<String>? {
 
-        val string = getString(key, lang, *args) ?: return null
+        val string = getString(query, lang, *args) ?: return null
         val rawList = StringUtil.toAList(string)
         val processedList = ArrayList<String>()
         for (raw in rawList) {
@@ -163,16 +181,17 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     }
 
     /**
-     * TODO: Document.
+     * Attempts to resolve a string with a query.
      *
-     * @param key
-     * @param lang
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
+     * @param lang The language to query.
+     * @param args (Optional) Arguments to pass to the processor.
      *
-     * @return
+     * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
-    fun getString(key: String, lang: Language = defaultLang, vararg args: LangArg): String? {
+    fun getString(query: String, lang: Language = defaultLang, vararg args: LangArg): String? {
 
-        val raw = resolve(key, lang)
+        val raw = resolve(lang, query)
         return if (raw != null) {
             when (raw) {
                 is LangComponent -> {
@@ -191,14 +210,14 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     }
 
     /**
-     * TODO: Document.
+     * Attempts to locate a stored value with a query.
      *
-     * @param query
-     * @param lang
+     * @param lang The language to query.
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @return
+     * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
-    fun resolve(query: String, lang: Language): Any? {
+    fun resolve(lang: Language, query: String): Any? {
 
         // Attempt to grab the most relevant LangFile.
         var langFile = files[lang]
@@ -218,29 +237,25 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
 
         // Check global last.
         if (raw == null && this != global) {
-            raw = global.resolve(query, lang)
+            raw = global.resolve(lang, query)
         }
 
         return raw
     }
 
     /**
-     * TODO: Document.
+     * @param lang The language to query.
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @param lang
-     * @param query
-     *
-     * @return
+     * @return Returns true if the query resolves.
      */
     fun contains(lang: Language, query: String): Boolean {
         return files[lang]?.contains(query.toLowerCase()) ?: false
     }
 
     /**
-     * TODO: Document.
-     *
-     * @param lang The language to test.
-     * @param query The field to test.
+     * @param lang The language to query.
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
      * @return Returns true if the field for the language stores a [LangComplex] object.
      */
@@ -249,10 +264,8 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     }
 
     /**
-     * TODO: Document.
-     *
-     * @param lang The language to test.
-     * @param query The field to test.
+     * @param lang The language to query.
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
      * @return Returns true if the field for the language stores a component-based value.
      */
@@ -261,10 +274,8 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     }
 
     /**
-     * TODO: Document.
-     *
-     * @param lang The language to test.
-     * @param query The field to test.
+     * @param lang The language to query.
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
      * @return Returns true if the field for the language stores a [StringPool].
      */
@@ -273,10 +284,8 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     }
 
     /**
-     * TODO: Document.
-     *
-     * @param lang The language to test.
-     * @param query The field to test.
+     * @param lang The language to query.
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
      * @return Returns true if the field for the language stores a ActionText.
      */
@@ -286,15 +295,24 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
 
     companion object {
 
+        /**
+         * The global context for all lang-packs to reference for unresolved queries.
+         */
         val global: LangPack
 
-        /** TODO: Document. */
+        /**
+         * The global directory for lang-packs to load from by default.
+         */
         val GLOBAL_DIRECTORY: File = File("lang")
 
-        /** The standard 'line.separator' for most Java Strings. */
+        /**
+         * The standard 'line.separator' for most Java Strings.
+         */
         const val NEW_LINE: String = "\n"
 
-        /** TODO: Document. */
+        /**
+         * The default [Random] instance to use throughout lang-pack.
+         */
         var DEFAULT_RANDOM: Random = Random()
 
         init {

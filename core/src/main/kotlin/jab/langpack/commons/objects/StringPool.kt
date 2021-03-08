@@ -9,7 +9,7 @@ import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
 /**
- * TODO: Document.
+ * The **StringPool** class TODO: Document.
  *
  * @author Jab
  */
@@ -41,7 +41,7 @@ open class StringPool : LangComplex {
     }
 
     /**
-     * [LangFile] import constructor.
+     * Import constructor.
      *
      * @param cfg The ConfigurationSection to load.
      */

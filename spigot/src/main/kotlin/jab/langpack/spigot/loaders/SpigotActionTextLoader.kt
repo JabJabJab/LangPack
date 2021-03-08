@@ -5,7 +5,8 @@ import jab.langpack.spigot.objects.SpigotActionText
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * TODO: Document.
+ * The **SpigotActionTextLoader** class loads [SpigotActionText] from YAML, overriding the assigned type *"action"*
+ * for the ***Spigot*** environment.
  *
  * @author Jab
  */

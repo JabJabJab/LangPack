@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
 /**
- * TODO: Document.
+ * The **LangPlugin** class TODO: Document.
  *
  * @author Jab
  */

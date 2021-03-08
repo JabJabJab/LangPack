@@ -1,7 +1,7 @@
 package jab.langpack.commons
 
 /**
- * The **LangArg** class is a struct for a stored key->value pair to override & replace fields.
+ * The **LangArg** struct is for a stored key->value pair to override & replace placeholders for lang packs.
  *
  * @author Jab
  *
@@ -11,6 +11,6 @@ package jab.langpack.commons
 class LangArg(val key: String, val value: Any?) {
 
     override fun toString(): String {
-        return "{key='$key', value=$value}"
+        return "{key='$key', value='$value'}"
     }
 }

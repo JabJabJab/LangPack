@@ -5,7 +5,8 @@ import jab.langpack.commons.loader.ComplexLoader
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * TODO: Document.
+ * The **BungeeStringPoolLoader** class loads [BungeeActionText] from YAML, overriding the assigned type *"action"*
+ * for the ***BungeeCord*** environment.
  *
  * @author Jab
  */

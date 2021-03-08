@@ -10,9 +10,27 @@ import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import java.util.*
 
+/**
+ * The **SpigotStringPool** class TODO: Document.
+ *
+ * @author Jab
+ */
+@Suppress("unused")
 class SpigotStringPool: StringPool {
 
+    /**
+     * Basic constructor.
+     *
+     * @param mode (Optional) The mode of the StringPool. (DEFAULT: RANDOM)
+     * @param random (Optional) The random instance to use.
+     */
     constructor(mode: Mode, random: Random) : super(mode, random)
+
+    /**
+     * Import constructor.
+     *
+     * @param cfg The YAML to read.
+     */
     constructor(cfg: ConfigurationSection) : super(cfg)
 
     /**

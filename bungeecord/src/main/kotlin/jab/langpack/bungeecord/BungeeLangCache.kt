@@ -6,7 +6,9 @@ import jab.langpack.commons.Language
 import net.md_5.bungee.api.connection.ProxiedPlayer
 
 /**
- * TODO: Document.
+ * The **BungeeLangCache** class TODO: Document.
+ *
+ * TODO: Implement TextComponent cache.
  *
  * @author Jab
  */

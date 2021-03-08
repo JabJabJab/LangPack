@@ -2,13 +2,6 @@ package jab.langpack.commons
 
 /**
  * The **Language** enum stores the constants for identification of languages supported by the LanguagePackage library.
- *
- * <br/>NOTE: Due to the language support changes for Minecraft, a language enumeration may not be the best implementation
- *   for the library. Instead, a configuation file for language and relationships for those languages might be the best
- *   design to allow for changes to be made for updates to Minecraft and personal adjustments for the server
- *   administrators.
- *
- * ###
  * ### Minecraft's supported languages:</b> https://minecraft.gamepedia.com/Language
  *
  * @author Jab
@@ -274,19 +267,19 @@ enum class Language(val abbreviation: String, private val fallBack: String? = nu
     YORUBA("yo_ng");
 
 
+    override fun toString(): String {
+        return "Language(abbreviation='$abbreviation', fallBack=$fallBack)"
+    }
+
     /**
      * @return Returns the fallback language. If a fallback language is not defined, null is returned.
      */
     fun getFallback(): Language? {
         return if (fallBack != null) {
-            getLanguageAbbrev(fallBack)
+            getAbbrev(fallBack)
         } else {
             null
         }
-    }
-
-    override fun toString(): String {
-        return "Language(abbreviation='$abbreviation', fallBack=$fallBack)"
     }
 
     companion object {
@@ -296,7 +289,7 @@ enum class Language(val abbreviation: String, private val fallBack: String? = nu
          *
          * @return Returns the Language that identifies with the given name. If none identifies, null is returned.
          */
-        fun getLanguage(name: String): Language? {
+        fun get(name: String): Language? {
             for (lang in values()) {
                 if (lang.name.equals(name, true)) {
                     return lang
@@ -310,7 +303,7 @@ enum class Language(val abbreviation: String, private val fallBack: String? = nu
          *
          * @return Returns the Language that identifies with the given abbreviation. If none identifies, null is returned.
          */
-        fun getLanguageAbbrev(abbreviation: String): Language? {
+        fun getAbbrev(abbreviation: String): Language? {
             for (lang in values()) {
                 if (lang.abbreviation.equals(abbreviation, true)) {
                     return lang

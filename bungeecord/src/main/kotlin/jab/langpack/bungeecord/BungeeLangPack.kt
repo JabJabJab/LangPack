@@ -12,7 +12,7 @@ import java.io.File
 import java.util.*
 
 /**
- * TODO: Document.
+ * The **BungeeLangPack class TODO: Document.
  *
  * @author Jab
  */

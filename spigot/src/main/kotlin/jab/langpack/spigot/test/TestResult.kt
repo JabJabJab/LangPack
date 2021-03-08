@@ -1,7 +1,7 @@
 package jab.langpack.spigot.test
 
 /**
- * TODO: Document.
+ * The **TestResult** struct TODO: Document.
  *
  * @author Jab
  *

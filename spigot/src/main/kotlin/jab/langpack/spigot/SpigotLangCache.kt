@@ -6,7 +6,9 @@ import jab.langpack.commons.Language
 import org.bukkit.entity.Player
 
 /**
- * TODO: Document.
+ * The **SpigotLangCache** class TODO: Document.
+ *
+ * TODO: Implement TextComponent cache.
  *
  * @author Jab
  */

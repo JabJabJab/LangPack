@@ -8,7 +8,7 @@ import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 
 /**
- * TODO: Document.
+ * The **ComponentUtil** class TODO: Document.
  *
  * @author Jab
  */

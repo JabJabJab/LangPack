@@ -12,6 +12,14 @@ import org.bukkit.entity.Player
 import java.io.File
 import java.util.*
 
+/**
+ * The **SpigotLangPack** class TODO: Document
+ *
+ * @author Jab
+ *
+ * @param name
+ * @param dir
+ */
 @Suppress("unused")
 class SpigotLangPack(name: String, dir: File = File("lang")) : LangPack(name, dir) {
 

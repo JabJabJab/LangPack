@@ -5,7 +5,8 @@ import jab.langpack.commons.loader.ComplexLoader
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * TODO: Document.
+ * The **BungeeStringPoolLoader** class loads [BungeeStringPool] from YAML, overriding the assigned type *"pool"*
+ * for the ***BungeeCord*** environment.
  *
  * @author Jab
  */

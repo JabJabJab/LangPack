@@ -1,11 +1,13 @@
 package jab.langpack.spigot.loaders
 
 import jab.langpack.commons.loader.ComplexLoader
+import jab.langpack.commons.objects.StringPool
 import jab.langpack.spigot.objects.SpigotStringPool
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * TODO: Document.
+ * The **SpigotStringPoolLoader** class loads [SpigotStringPool] from YAML, overriding the assigned type *"pool"*
+ * for the ***Spigot*** environment.
  *
  * @author Jab
  */

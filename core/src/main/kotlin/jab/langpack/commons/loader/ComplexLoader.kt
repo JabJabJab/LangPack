@@ -3,7 +3,8 @@ package jab.langpack.commons.loader
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * TODO: Document.
+ * The **ComplexLoader** interface allows third-party installments of complex objects that require code extensions in
+ * specific environments such as ***Bukkit***, ***Spigot***, and ***BungeeCord***.
  *
  * @author Jab
  */
@@ -11,11 +12,11 @@ import org.bukkit.configuration.ConfigurationSection
 interface ComplexLoader<E> {
 
     /**
-     * TODO: Document.
+     * Loads a object from configured YAML.
      *
-     * @param cfg
+     * @param cfg The YAML to read.
      *
-     * @return
+     * @return Returns the loaded object.
      */
     fun load(cfg: ConfigurationSection): E?
 
@@ -28,21 +29,19 @@ interface ComplexLoader<E> {
         }
 
         /**
-         * TODO: Document.
+         * @param type The type of complex object.
          *
-         * @param type
-         *
-         * @return
+         * @return Returns the loader assigned to the type. If one is not assigned, null is returned.
          */
         fun get(type: String): ComplexLoader<*>? {
             return loaders[type.toLowerCase()]
         }
 
         /**
-         * TODO: Document.
+         * Sets a loader for the type.
          *
-         * @param type
-         * @param loader
+         * @param type The type of complex object.
+         * @param loader The loader to assign.
          */
         fun set(type: String, loader: ComplexLoader<*>?) {
             if (loader != null) {
@@ -53,23 +52,26 @@ interface ComplexLoader<E> {
         }
 
         /**
-         * TODO: Document.
+         * Removes a loader assigned to the type.
          *
-         * @param type
+         * @param type The type of complex object.
          */
         fun remove(type: String) {
             loaders.remove(type.toLowerCase())
         }
 
         /**
-         * TODO: Document.
+         * @param type The type of complex object.
          *
-         * @param type
+         * @return Returns true if a loader is assigned to the type.
          */
         fun contains(type: String): Boolean {
             return loaders.containsKey(type.toLowerCase())
         }
 
+        /**
+         * Adds the default loaders for the core.
+         */
         fun addDefaultLoaders() {
 
             val actionTextLoader = ActionTextLoader()

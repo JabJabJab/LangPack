@@ -5,8 +5,8 @@ import jab.langpack.commons.LangPack
 import jab.langpack.commons.Language
 
 /**
- * The <i>LangProcessable</i> interface is for complex objects that requires a package
- *   reference when processing data into a string for LangPackage use.
+ * The **LangComplex** interface is for complex objects that requires a package
+ *   reference when processing data into a string for [LangPack] use.
  *
  *   @author Jab
  */

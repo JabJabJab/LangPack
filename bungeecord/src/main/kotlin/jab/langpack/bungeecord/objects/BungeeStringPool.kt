@@ -10,7 +10,7 @@ import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
 /**
- * TODO: Document.
+ * The **BungeeStringPool** class TODO: Document.
  *
  * @author Jab
  */

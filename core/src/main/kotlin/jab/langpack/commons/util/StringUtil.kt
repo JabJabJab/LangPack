@@ -5,7 +5,7 @@ import net.md_5.bungee.api.ChatColor
 import java.util.*
 
 /**
- * The <i>StringUtil</i> class contains static utility methods for management of objects and strings.
+ * The **StringUtil** class contains static utility methods for management of objects and strings.
  *
  * @author Jab
  */

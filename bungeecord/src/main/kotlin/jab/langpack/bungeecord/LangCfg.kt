@@ -4,7 +4,7 @@ import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
 /**
- * TODO: Document.
+ * The **LangCfg** class TODO: Document.
  *
  * @author Jab
  *

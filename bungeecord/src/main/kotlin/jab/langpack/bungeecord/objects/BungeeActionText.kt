@@ -12,7 +12,7 @@ import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
 /**
- * TODO: Document.
+ * The **BungeeActionText** class TODO: Document.
  *
  * @author Jab
  */

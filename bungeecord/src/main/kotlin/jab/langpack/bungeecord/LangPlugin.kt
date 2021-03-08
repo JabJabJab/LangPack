@@ -10,7 +10,7 @@ import java.net.URL
 import java.util.logging.Level
 
 /**
- * TODO: Document.
+ * The **LangPlugin** class TODO: Document.
  *
  * @author Jab
  */

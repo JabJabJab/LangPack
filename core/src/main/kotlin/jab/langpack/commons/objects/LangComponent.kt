@@ -6,7 +6,7 @@ import jab.langpack.commons.Language
 import net.md_5.bungee.api.chat.TextComponent
 
 /**
- * The <i>LangComponent</i> interface is for complex objects that requires a package
+ * The **LangComponent** interface is for complex objects that requires a package
  *   reference when processing data into a string for LangPackage use.
  *
  *   @author Jab

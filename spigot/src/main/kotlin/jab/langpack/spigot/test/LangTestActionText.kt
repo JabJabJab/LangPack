@@ -7,7 +7,7 @@ import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.entity.Player
 
 /**
- * TODO: Document.
+ * The **LangTestActionText** class TODO: Document.
  *
  * @author Jab
  */

@@ -4,7 +4,7 @@ import jab.langpack.commons.objects.StringPool
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * TODO: Document.
+ * The **StringPoolLoader** class loads [StringPool] from YAML with the assigned type *"pool"*.
  *
  * @author Jab
  */

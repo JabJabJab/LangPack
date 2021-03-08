@@ -7,7 +7,7 @@ import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.hover.content.Text
 
 /**
- * The <i>HoverText</i> class handles hover text that is displayed for ActionText instances. The
+ * The **HoverText** class handles hover text that is displayed for ActionText instances. The
  *   HoverText supports dynamic text fields for LangPackages.
  *
  * @author Jab

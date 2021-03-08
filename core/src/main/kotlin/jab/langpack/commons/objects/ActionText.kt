@@ -6,10 +6,9 @@ import jab.langpack.commons.Language
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.configuration.ConfigurationSection
-import kotlin.collections.ArrayList
 
 /**
- * TODO: Document.
+ * The **ActionText** class TODO: Document.
  *
  * @author Jab
  */
@@ -54,9 +53,9 @@ open class ActionText : LangComponent {
     }
 
     /**
-     * TODO: Document.
+     * Import constructor.
      *
-     * @param cfg
+     * @param cfg The YAML to read.
      */
     constructor(cfg: ConfigurationSection) {
 

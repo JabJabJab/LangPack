@@ -9,7 +9,7 @@ import net.md_5.bungee.event.EventHandler
 import java.util.concurrent.TimeUnit
 
 /**
- * TODO: Document.
+ * The **LangEventListener** TODO: Document.
  *
  * @author Jab
  *

@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 /**
- * TODO: Document.
+ * The **LangEventListener** class TODO: Document.
  *
  * @author Jab
  *

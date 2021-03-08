@@ -5,7 +5,8 @@ import java.io.File
 import java.io.FileNotFoundException
 
 /**
- * TODO: Document.
+ * The **LangFile** class acts as a lang section that identifies with a language. The lang files are used to
+ * resolve dialog based on language.
  *
  * @author Jab
  */
@@ -13,31 +14,34 @@ import java.io.FileNotFoundException
 class LangFile : LangSection {
 
     /**
-     * TODO: Document.
+     * The file storing the YAML data.
      */
     var file: File? = null
 
     /**
-     * TODO: Document.
+     * The language that represents the file.
      */
     val lang: Language
 
     /**
-     * TODO: Document.
+     * Runtime constructor.
      *
-     * @param lang
+     * @param pack The lang pack instance.
+     * @param lang The language of the file.
+     * @param name The name of the section.
      */
-    constructor(pkg: LangPack, lang: Language, name: String) : super(pkg, name) {
+    constructor(pack: LangPack, lang: Language, name: String) : super(pack, name) {
         this.lang = lang
     }
 
     /**
-     * TODO: Document.
+     * File constructor.
      *
-     * @param file
-     * @param lang
+     * @param pack The lang pack instance.
+     * @param file The file to read.
+     * @param lang The language of the file.
      */
-    constructor(pkg: LangPack, file: File, lang: Language) : super(pkg, file.nameWithoutExtension) {
+    constructor(pack: LangPack, file: File, lang: Language) : super(pack, file.nameWithoutExtension) {
 
         if (!file.exists()) {
             throw FileNotFoundException(file.path)
@@ -52,7 +56,7 @@ class LangFile : LangSection {
     }
 
     /**
-     * TODO: Document.
+     * Attempts to parse the File to YAML data to read as a lang section.
      *
      * @return Returns the instance of the file for single-line executions.
      */
@@ -69,9 +73,9 @@ class LangFile : LangSection {
     }
 
     /**
-     * TODO: Document.
+     * Appends a YAML file to the lang file.
      *
-     * @param file
+     * @param file The file to parse and append.
      *
      * @return Returns the instance of the file for single-line executions.
      */

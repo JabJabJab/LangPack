@@ -11,30 +11,39 @@ import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
 /**
- * TODO: Document.
+ * The **LangSection** class is a nestable container for objects stored as fields. Lang sections have the ability to be
+ * modified and appended.
+ *
+ * Fields are noted as lower-case strings. Any fields passed with upper-case characters are forced as lowered when
+ * stored. Fields can reference nested objects using periods as a delimiter.
+ * ###
+ * **Examples**:
+ * - **a_field**
+ * - **a_section.a_field**
  *
  * @author Jab
  *
- * @property pack
- * @property parent
+ * @property pack The lang pack instance.
+ * @property name The name of the section.
+ * @property parent (Optional) The parent section.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 open class LangSection(var pack: LangPack, val name: String, var parent: LangSection? = null) {
 
     /**
-     * TODO: Document.
+     * The metadata for the lang section. (Used for imports)
      */
     val meta = Metadata()
 
     /**
-     * TODO: Document.
+     * The stored fields for the lang section. Fields are stored as lower-case.
      */
     val fields = HashMap<String, Any>()
 
     /**
-     * TODO: Document.
+     * Appends YAML data by reading it and adding it to the lang section.
      *
-     * @param cfg
+     * @param cfg The YAML data to read.
      *
      * @return Returns the instance for single-line executions.
      */
@@ -44,17 +53,17 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
     }
 
     /**
-     * TODO: Document.
+     * Reads YAML data, processing it into the lang section.
      *
-     * @param cfg
-     * @param metadata
+     * @param cfg The YAML data to read.
+     * @param metadata The metadata object to process while reading the YAML data.
      *
      * @return Returns the instance for single-line executions.
      */
     fun read(cfg: ConfigurationSection, metadata: Metadata = Metadata()): LangSection {
 
         if (cfg.isConfigurationSection("__metadata__")) {
-            metadata.read(cfg.getConfigurationSection("__metadata__")!!, meta)
+            metadata.read(cfg.getConfigurationSection("__metadata__")!!)
 
             if (pack.debug) {
                 println("[$name] :: imports: ${metadata.imports}")
@@ -129,34 +138,45 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
         return this
     }
 
-    private fun readSection(section: ConfigurationSection) {
-        val langSection = LangSection(pack, section.name, this)
-        langSection.read(section, Metadata())
-        set(section.name, langSection)
+    /**
+     * Processes a YAML section as a lang section.
+     *
+     * @param cfg The YAML section to read.
+     */
+    private fun readSection(cfg: ConfigurationSection) {
+        val langSection = LangSection(pack, cfg.name, this)
+        langSection.read(cfg, Metadata())
+        set(cfg.name, langSection)
     }
 
-    private fun readComplex(section: ConfigurationSection) {
+    /**
+     * Attempts to read a YAML section as a complex object. All complex objects are YAML sections with a defined
+     * **type** string. If the field doesn't exist or is not a string, the YAML section is loaded as a lang section.
+     *
+     * @param cfg The YAML section to read.
+     */
+    private fun readComplex(cfg: ConfigurationSection) {
 
-        if (!section.contains("type") || !section.isString("type")) {
-            readSection(section)
+        if (!cfg.contains("type") || !cfg.isString("type")) {
+            readSection(cfg)
             return
         }
 
-        val type = section.getString("type")!!
+        val type = cfg.getString("type")!!
         val loader = ComplexLoader.get(type)
         if (loader != null) {
-            set(section.name, loader.load(section))
+            set(cfg.name, loader.load(cfg))
         } else {
             System.err.println("Unknown complex type: $type")
         }
     }
 
     /**
-     * TODO: Document.
+     * Attempts to locate a stored value with a query.
      *
-     * @param query
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @return
+     * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
     fun resolve(query: String): Any? {
 
@@ -191,11 +211,11 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
     }
 
     /**
-     * TODO: Document.
+     * Attempts to resolve a string with a query.
      *
-     * @param query
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @return
+     * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
     fun getString(query: String): String? {
         val o = resolve(query)
@@ -208,11 +228,13 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
     }
 
     /**
-     * TODO: Document.
+     * Attempts to resolve a lang section with a query.
      *
-     * @param query
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @return
+     * @return Returns the resolved query.
+     *
+     * @throws RuntimeException Thrown if the query is unresolved or the resolved object is not a lang section.
      */
     fun getSection(query: String): LangSection {
 
@@ -226,11 +248,13 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
     }
 
     /**
-     * TODO: Document.
+     * Attempts to resolve a string pool with a query.
      *
-     * @param query
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @return
+     * @return Returns the resolved query.
+     *
+     * @throws RuntimeException Thrown if the query is unresolved or the resolved object is not a lang section.
      */
     fun getStringPool(query: String): StringPool {
 
@@ -244,11 +268,13 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
     }
 
     /**
-     * TODO: Document.
+     * Attempts to resolve an action text with a query.
      *
-     * @param query
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @return
+     * @return Returns the resolved query.
+     *
+     * @throws RuntimeException Thrown if the query is unresolved or the resolved object is not a lang section.
      */
     fun getActionText(query: String): ActionText {
 
@@ -303,74 +329,87 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
     }
 
     /**
-     * TODO: Document.
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @param field
-     *
-     * @return
+     * @return Returns true if the query resolves.
      */
-    fun contains(field: String): Boolean {
-        return fields.containsKey(field.toLowerCase())
+    fun contains(query: String): Boolean {
+        return fields.containsKey(query.toLowerCase())
     }
 
     /**
-     * TODO: Document.
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @param field
-     *
-     * @return
+     * @return Returns true if the query resolves and is the type [LangComplex].
      */
-    fun isComplex(field: String): Boolean {
-        return contains(field) && fields[field.toLowerCase()] is LangComplex
+    fun isComplex(query: String): Boolean {
+        return contains(query) && fields[query.toLowerCase()] is LangComplex
     }
 
     /**
-     * TODO: Document.
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @param field
-     *
-     * @return
+     * @return Returns true if the query resolves and is the type [LangComponent].
      */
-    fun isLangComponent(field: String): Boolean {
-        val value = fields[field] ?: return false
+    fun isLangComponent(query: String): Boolean {
+        val value = fields[query] ?: return false
         return value is LangComponent
     }
 
     /**
-     * TODO: Document.
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @param field
-     *
-     * @return
+     * @return Returns true if the query resolves and is the type [StringPool].
      */
-    fun isStringPool(field: String): Boolean {
-        return contains(field) && fields[field.toLowerCase()] is StringPool
+    fun isStringPool(query: String): Boolean {
+        return contains(query) && fields[query.toLowerCase()] is StringPool
     }
 
     /**
-     * TODO: Document.
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
-     * @param field
-     *
-     * @return
+     * @return Returns true if the query resolves and is the type [ActionText].
      */
-    fun isActionText(field: String): Boolean {
-        return contains(field) && fields[field.toLowerCase()] is ActionText
+    fun isActionText(query: String): Boolean {
+        return contains(query) && fields[query.toLowerCase()] is ActionText
     }
 
     /**
-     * TODO: Document.
+     * The ***Metadata*** class handles all metadata defined for lang sections.
+     *
+     * Metadata is formed by creating a YAML section inside of the lang section.
+     *
+     * Example:
+     * ```yml
+     * section:
+     *   __metadata__:
+     *     import: ..
+     * ```
+     *
+     * Metadata supports importing from other lang files. Formats are as follows:
+     * - **import:** Imports only one file as a string.
+     * - **imports:** Imports multiple files as a string-list.
+     *
+     * Additionally, file-names can be given without extensions, however the files stored must have the .yml extension.
+     * Files can be referenced by name in the same location as the lang pack's directory. Otherwise, Java-File supported
+     * paths will be tried to locate the lang file.
      *
      * @author Jab
      */
     class Metadata {
 
+        /**
+         * The import files defined in the metadata.
+         */
         val imports = ArrayList<String>()
 
-        fun read(cfg: ConfigurationSection, parent: Metadata? = null) {
-
+        /**
+         * Reads a YAML section as metadata.
+         *
+         * @param cfg The YAML section to read.
+         */
+        fun read(cfg: ConfigurationSection) {
             if (cfg.contains("imports")) {
-
                 if (cfg.isList("imports")) {
                     for (next in cfg.getStringList("imports")) {
                         if (next != null) {
@@ -378,13 +417,10 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
                         }
                     }
                 }
-
             } else if (cfg.contains("import")) {
-
                 if (cfg.isString("import")) {
                     imports.add(cfg.getString("import")!!)
                 }
-
             }
         }
     }

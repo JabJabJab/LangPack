@@ -20,7 +20,6 @@ import org.bukkit.entity.Player
 internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabCompleter {
 
     private val tests = HashMap<String, LangTest>()
-
     private val cache = SpigotLangCache(plugin.pack!!)
 
     init {

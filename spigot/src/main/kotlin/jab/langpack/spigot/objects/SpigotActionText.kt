@@ -12,11 +12,35 @@ import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import java.util.*
 
+/**
+ * The **SpigotActionText** class TODO: Document.
+ *
+ * @author Jab
+ */
 @Suppress("unused")
 class SpigotActionText : ActionText {
 
+    /**
+     * Hover constructor.
+     *
+     * @param text The text to display.
+     * @param hoverText The hover text to display.
+     */
     constructor(text: String, hoverText: HoverText) : super(text, hoverText)
+
+    /**
+     * Command constructor.
+     *
+     * @param text The text to display.
+     * @param command The command to execute.
+     */
     constructor(text: String, command: String) : super(text, command)
+
+    /**
+     * Import constructor.
+     *
+     * @param cfg The YAML to read.
+     */
     constructor(cfg: ConfigurationSection) : super(cfg)
 
     /**

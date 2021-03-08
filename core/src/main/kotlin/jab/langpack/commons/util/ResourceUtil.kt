@@ -4,7 +4,7 @@ import java.io.*
 import java.net.URL
 
 /**
- * The <i>ResourceUtil</i> class stores static-modified methods from Bukkit for global resource
+ * The **ResourceUtil** class stores static-modified methods from Bukkit for global resource
  *   management.
  *
  * @author Bukkit team (Modified by Jab)

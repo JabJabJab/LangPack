@@ -4,20 +4,19 @@ import java.util.*
 
 /**
  * The **LangCache** class proxies the processed calls for [LangPack], storing them as a cached result to be
- *   referred to if called again. The purpose of the cache is to avoid wasted calculations on multiple calls that
- *   returns the same result. If dynamic calls to the same field are passed different arguments or the arguments
- *   referenced in the string processing are dynamic, do not use a cache to call to them, otherwise the first call to
- *   the cache for this string will always return, regardless of successive requests. If you need to clear the cache,
- *   [clear] will clear the cache.
+ * referred to if called again. The purpose of the cache is to avoid wasted calculations on multiple calls that returns
+ * the same result.
  *
- * TODO: Implement TextComponent cache.
+ * If dynamic calls to the same field are passed different arguments or the arguments referenced in the string
+ * processing are dynamic, do not use a cache to call to them, otherwise the first call to the cache for this string
+ * will always return, regardless of successive requests.
  *
  * @author Jab
  *
  * @property pack The LangPackage instance to call to and cache the results.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-open class LangCache<P: LangPack>(val pack: P) {
+open class LangCache<P : LangPack>(val pack: P) {
 
     private val cache: EnumMap<Language, HashMap<String, String>> = EnumMap(Language::class.java)
     private val cacheList: EnumMap<Language, HashMap<String, List<String?>>> = EnumMap(Language::class.java)
@@ -75,8 +74,8 @@ open class LangCache<P: LangPack>(val pack: P) {
     }
 
     /**
-     * Clears results stored in the cache. If no arguments are provided, the entire language section of the cache
-     *   is removed.
+     * Clears results stored in the cache. If no arguments are provided, the entire language section of the cache is
+     * removed.
      *
      * @param lang The language to clear.
      * @param fields The fields to clear.
