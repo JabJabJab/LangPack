@@ -8,6 +8,6 @@ package jab.langpack.commons
  * @property key The key to identify.
  * @property value The value to store.
  */
-class LangArg(val key: String, val value: Any?) {
+data class LangArg(val key: String, val value: Any?) {
     override fun toString(): String = "{key='$key', value='$value'}"
 }

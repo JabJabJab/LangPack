@@ -8,4 +8,4 @@ package jab.langpack.spigot.test
  * @property success Set to true if the test succeeded.
  * @property reason (Optional) The reason the test failed.
  */
-class TestResult(val success: Boolean, val reason: String? = null)
+data class TestResult(val success: Boolean, val reason: String? = null)
