@@ -7,11 +7,11 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 /**
- * The **LangEventListener** class TODO: Document.
+ * The **LangEventListener** class handles event hooks for the Spigot-version of lang-pack.
  *
  * @author Jab
  *
- * @property plugin
+ * @property plugin The spigot plugin instance.
  */
 internal class LangEventListener(private val plugin: LangPlugin) : Listener {
 

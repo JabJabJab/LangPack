@@ -9,11 +9,11 @@ import net.md_5.bungee.event.EventHandler
 import java.util.concurrent.TimeUnit
 
 /**
- * The **LangEventListener** TODO: Document.
+ * The **LangEventListener** class handles event hooks for the Bungeecord-version of lang-pack.
  *
  * @author Jab
  *
- * @property plugin The plugin instance.
+ * @property plugin The bungeecord plugin instance.
  */
 internal class LangEventListener(private val plugin: LangPlugin) : Listener {
 

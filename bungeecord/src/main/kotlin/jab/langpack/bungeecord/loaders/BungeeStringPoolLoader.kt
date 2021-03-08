@@ -12,7 +12,7 @@ import org.bukkit.configuration.ConfigurationSection
  */
 class BungeeStringPoolLoader : ComplexLoader<BungeeStringPool> {
 
-    override fun load(cfg: ConfigurationSection): BungeeStringPool? {
+    override fun load(cfg: ConfigurationSection): BungeeStringPool {
         return BungeeStringPool(cfg)
     }
 }

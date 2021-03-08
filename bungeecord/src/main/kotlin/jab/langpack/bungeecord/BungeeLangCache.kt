@@ -6,7 +6,7 @@ import jab.langpack.commons.Language
 import net.md_5.bungee.api.connection.ProxiedPlayer
 
 /**
- * The **BungeeLangCache** class TODO: Document.
+ * The **BungeeLangCache** class wraps [LangCache] to add methods specific for the Bungeecord environment.
  *
  * TODO: Implement TextComponent cache.
  *

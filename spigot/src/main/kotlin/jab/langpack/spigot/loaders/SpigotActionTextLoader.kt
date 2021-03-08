@@ -12,7 +12,7 @@ import org.bukkit.configuration.ConfigurationSection
  */
 class SpigotActionTextLoader : ComplexLoader<SpigotActionText> {
 
-    override fun load(cfg: ConfigurationSection): SpigotActionText? {
+    override fun load(cfg: ConfigurationSection): SpigotActionText {
         return SpigotActionText(cfg)
     }
 

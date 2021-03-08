@@ -12,14 +12,34 @@ import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
 /**
- * The **BungeeActionText** class TODO: Document.
+ * The **BungeeActionText** class wraps [ActionText] for the Bungeecord environment of lang-pack.
  *
  * @author Jab
  */
+@Suppress("unused")
 class BungeeActionText : ActionText {
 
+    /**
+     * Hover constructor.
+     *
+     * @param text The text to display.
+     * @param hoverText The hover text to display.
+     */
     constructor(text: String, hoverText: HoverText) : super(text, hoverText)
+
+    /**
+     * Command constructor.
+     *
+     * @param text The text to display.
+     * @param command The command to execute.
+     */
     constructor(text: String, command: String) : super(text, command)
+
+    /**
+     * Import constructor.
+     *
+     * @param cfg The YAML to read.
+     */
     constructor(cfg: ConfigurationSection) : super(cfg)
 
     /**

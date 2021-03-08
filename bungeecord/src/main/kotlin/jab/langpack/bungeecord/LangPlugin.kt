@@ -3,14 +3,14 @@ package jab.langpack.bungeecord
 import jab.langpack.bungeecord.loaders.BungeeActionTextLoader
 import jab.langpack.bungeecord.loaders.BungeeStringPoolLoader
 import jab.langpack.commons.loader.ComplexLoader
-import jab.langpack.commons.util.ResourceUtil
 import net.md_5.bungee.api.plugin.Plugin
 import java.io.*
 import java.net.URL
 import java.util.logging.Level
 
 /**
- * The **LangPlugin** class TODO: Document.
+ * The **LangPlugin** class is the Bungeecord-implementation for lang-pack. All initialization for the lang-pack library
+ * occurs here.
  *
  * @author Jab
  */
@@ -31,6 +31,12 @@ internal class LangPlugin : Plugin() {
     override fun onDisable() {
     }
 
+    /**
+     * (Borrowed from Bukkit's JavaPlugin)
+     *
+     * @param resourcePath The path to the resource in the JAR file.
+     * @param replace (Optional) Set to true to overwrite the file if it exists.
+     */
     fun saveResource(resourcePath: String, replace: Boolean = false) {
         var resourcePath2 = resourcePath
         resourcePath2 = resourcePath2.replace('\\', '/')
@@ -83,11 +89,9 @@ internal class LangPlugin : Plugin() {
             langDir.mkdirs()
         }
 
-        ResourceUtil.saveResource("lang/test_en.yml", true)
-        ResourceUtil.saveResource("lang/test_jp.yml", true)
-
         pack = BungeeLangPack("lang")
         pack!!.load(save = true, force = true)
+        pack!!.append("test", save = true, force = true)
     }
 
     companion object {

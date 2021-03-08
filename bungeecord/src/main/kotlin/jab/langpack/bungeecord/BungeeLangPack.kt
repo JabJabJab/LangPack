@@ -11,9 +11,16 @@ import java.io.File
 import java.util.*
 
 /**
- * The **BungeeLangPack class TODO: Document.
+ * The **BungeeLangPack** class wraps [LangPack] to add methods specific for the Bungeecord environment.
+ *
+ * @see LangPack
  *
  * @author Jab
+ *
+ * @property name The String name of the pack.
+ * @property dir (Optional) The File Object for the directory where the LangFiles are stored. DEFAULT: 'lang/'
+ * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory. Thrown if
+ *      the name given is empty.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class BungeeLangPack(name: String, dir: File = File("lang")) : LangPack(name, dir) {
@@ -144,8 +151,6 @@ class BungeeLangPack(name: String, dir: File = File("lang")) : LangPack(name, di
                 locale += "_${player.locale.country}"
             }
             locale = locale.toLowerCase()
-
-            // println("${player.name} locale: $locale")
 
             for (lang in Language.values()) {
                 if (lang.abbreviation.equals(locale, true)) {

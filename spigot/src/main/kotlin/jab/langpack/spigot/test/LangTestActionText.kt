@@ -7,7 +7,7 @@ import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.entity.Player
 
 /**
- * The **LangTestActionText** class TODO: Document.
+ * The **LangTestActionText** class Tests the basic operations for [SpigotActionText].
  *
  * @author Jab
  */

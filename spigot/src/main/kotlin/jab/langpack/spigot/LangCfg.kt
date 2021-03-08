@@ -46,19 +46,19 @@ internal class LangCfg(plugin: LangPlugin) {
     companion object {
 
         /**
-         * If set to true, the server will display join messages for players using %
+         * If set to true, the server will display join messages for players.
          */
         var joinMessages: Boolean = false
             private set
 
         /**
-         * TODO: Document.
+         * If set to true, the server will display leave messages for players.
          */
         var leaveMessages: Boolean = false
             private set
 
         /**
-         * TODO: Document.
+         * If set to true, tests for the spigot module will load and be accessible to authorized players.
          */
         var testsEnabled: Boolean = false
             private set

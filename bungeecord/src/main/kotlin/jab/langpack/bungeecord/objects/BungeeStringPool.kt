@@ -5,19 +5,32 @@ import jab.langpack.commons.LangArg
 import jab.langpack.commons.Language
 import jab.langpack.commons.objects.StringPool
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
 /**
- * The **BungeeStringPool** class TODO: Document.
+ * The **BungeeStringPool** class wraps [StringPool] for the Bungeecord environment of lang-pack.
  *
  * @author Jab
  */
 @Suppress("unused")
 class BungeeStringPool: StringPool {
 
+    /**
+     * Basic constructor.
+     *
+     * @param mode (Optional) The mode of the StringPool. (DEFAULT: [StringPool.Mode.RANDOM])
+     * @param random (Optional) The random instance to use.
+     */
     constructor(mode: Mode, random: Random) : super(mode, random)
+
+    /**
+     * Import constructor.
+     *
+     * @param cfg The ConfigurationSection to load.
+     */
     constructor(cfg: ConfigurationSection) : super(cfg)
 
     /**
@@ -32,7 +45,7 @@ class BungeeStringPool: StringPool {
             return
         }
 
-        player.sendMessage(get())
+        player.sendMessage(TextComponent(get()))
     }
 
     /**
@@ -50,7 +63,7 @@ class BungeeStringPool: StringPool {
             get()
         }
 
-        player.sendMessage(message)
+        player.sendMessage(TextComponent(message))
     }
 
     /**
@@ -60,7 +73,7 @@ class BungeeStringPool: StringPool {
         val message = get()
         val server = ProxyServer.getInstance()
         for (player in server.players) {
-            player.sendMessage(message)
+            player.sendMessage(TextComponent(message))
         }
     }
 
@@ -87,7 +100,7 @@ class BungeeStringPool: StringPool {
                 cache[lang] = message
             }
 
-            player.sendMessage(message)
+            player.sendMessage(TextComponent(message))
         }
     }
 }

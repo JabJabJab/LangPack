@@ -4,7 +4,7 @@ import jab.langpack.spigot.SpigotLangPack
 import org.bukkit.entity.Player
 
 /**
- * The **LangTest** class TODO: Document.
+ * The **LangTest** class serves as a in-game testing implementation for the lang-pack plugin in the Spigot environment.
  *
  * @author Jab
  *
@@ -30,20 +30,20 @@ abstract class LangTest(val name: String) {
             }
 
             return result
-
         } catch (e: Exception) {
 
             val result = TestResult(false, e.message)
             e.printStackTrace(System.err)
 
             return result
-
         }
     }
 
     /**
      * @param pack The lang-pack instance to test.
      * @param player The player running the test.
+     *
+     * @return Returns the result of the test.
      */
     protected abstract fun run(pack: SpigotLangPack, player: Player): TestResult
 }

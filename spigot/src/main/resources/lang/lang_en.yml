@@ -1,7 +1,3 @@
-__metadata__:
-  imports: ['test_en']
-
-
 command_header:
   text: '[LangPack]'
   info: '&7%command_header.text%'

@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 import java.util.*
 
 /**
- * The **SpigotStringPool** class TODO: Document.
+ * The **SpigotStringPool** class wraps [StringPool] for the Spigot environment of lang-pack.
  *
  * @author Jab
  */

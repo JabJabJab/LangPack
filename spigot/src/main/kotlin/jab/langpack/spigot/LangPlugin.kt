@@ -1,21 +1,23 @@
 package jab.langpack.spigot
 
 import jab.langpack.commons.loader.ComplexLoader
-import jab.langpack.commons.util.ResourceUtil
 import jab.langpack.spigot.loaders.SpigotActionTextLoader
 import jab.langpack.spigot.loaders.SpigotStringPoolLoader
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
-
 import java.io.File
 
 /**
- * The **LangPlugin** class TODO: Document.
+ * The **LangPlugin** class is the Spigot-implementation for lang-pack. All initialization for the lang-pack library
+ * occurs here.
  *
  * @author Jab
  */
 internal class LangPlugin : JavaPlugin(), Listener {
 
+    /**
+     * The default lang-pack instance.
+     */
     var pack: SpigotLangPack? = null
 
     override fun onEnable() {
@@ -40,11 +42,9 @@ internal class LangPlugin : JavaPlugin(), Listener {
             langDir.mkdirs()
         }
 
-        ResourceUtil.saveResource("lang/test_en.yml", true)
-        ResourceUtil.saveResource("lang/test_jp.yml", true)
-
         pack = SpigotLangPack("lang")
-        pack!!.load(save = true, force = true)
+        pack!!.load(save = true)
+        pack!!.append("test", save = true)
     }
 
     companion object {
@@ -52,6 +52,9 @@ internal class LangPlugin : JavaPlugin(), Listener {
         var instance: LangPlugin? = null
             private set
 
+        /**
+         * Overrides the generic loaders with spigot-wrappers to add functionality specific to the Spigot environment.
+         */
         fun setSpigotLoaders() {
             ComplexLoader.set("action", SpigotActionTextLoader())
             ComplexLoader.set("pool", SpigotStringPoolLoader())

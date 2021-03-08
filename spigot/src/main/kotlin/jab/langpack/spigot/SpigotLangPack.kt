@@ -12,12 +12,16 @@ import java.io.File
 import java.util.*
 
 /**
- * The **SpigotLangPack** class TODO: Document
+ * The **SpigotLangPack** class wraps [LangPack] to add methods specific for the Spigot environment.
+ *
+ * @see LangPack
  *
  * @author Jab
  *
- * @param name
- * @param dir
+ * @property name The String name of the pack.
+ * @property dir (Optional) The File Object for the directory where the LangFiles are stored. DEFAULT: 'lang/'
+ * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory. Thrown if
+ *      the name given is empty.
  */
 @Suppress("unused")
 class SpigotLangPack(name: String, dir: File = File("lang")) : LangPack(name, dir) {

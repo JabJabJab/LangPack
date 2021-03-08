@@ -6,7 +6,7 @@ import jab.langpack.commons.Language
 import org.bukkit.entity.Player
 
 /**
- * The **SpigotLangCache** class TODO: Document.
+ * The **SpigotLangCache** class wraps [LangCache] to add methods specific for the Spigot environment.
  *
  * TODO: Implement TextComponent cache.
  *

@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import java.util.*
 
 /**
- * The **SpigotActionText** class TODO: Document.
+ * The **SpigotActionText** class wraps [ActionText] for the Spigot environment of lang-pack.
  *
  * @author Jab
  */
