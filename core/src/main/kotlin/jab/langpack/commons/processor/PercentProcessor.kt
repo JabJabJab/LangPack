@@ -5,7 +5,7 @@ import jab.langpack.commons.LangPack
 import jab.langpack.commons.Language
 import jab.langpack.commons.objects.Complex
 import jab.langpack.commons.util.ChatUtil
-import jab.langpack.commons.util.StringUtil.Companion.color
+import jab.langpack.commons.util.StringUtil.color
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent

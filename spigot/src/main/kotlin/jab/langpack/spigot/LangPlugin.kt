@@ -1,8 +1,5 @@
 package jab.langpack.spigot
 
-import jab.langpack.commons.loader.ComplexLoader
-import jab.langpack.spigot.loaders.SpigotActionTextLoader
-import jab.langpack.spigot.loaders.SpigotStringPoolLoader
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -24,7 +21,6 @@ internal class LangPlugin : JavaPlugin(), Listener {
 
         instance = this
 
-        setSpigotLoaders()
         LangCfg(this)
         loadLangPacks()
         LangEventListener(this)
@@ -48,19 +44,7 @@ internal class LangPlugin : JavaPlugin(), Listener {
     }
 
     companion object {
-
         var instance: LangPlugin? = null
             private set
-
-        private val actionTextLoader = SpigotActionTextLoader()
-        private val stringPoolLoader = SpigotStringPoolLoader()
-
-        /**
-         * Overrides the generic loaders with spigot-wrappers to add functionality specific to the Spigot environment.
-         */
-        fun setSpigotLoaders() {
-            ComplexLoader.set("action", actionTextLoader)
-            ComplexLoader.set("pool", stringPoolLoader)
-        }
     }
 }

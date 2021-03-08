@@ -1,8 +1,5 @@
 package jab.langpack.bungeecord
 
-import jab.langpack.bungeecord.loaders.BungeeActionTextLoader
-import jab.langpack.bungeecord.loaders.BungeeStringPoolLoader
-import jab.langpack.commons.loader.ComplexLoader
 import net.md_5.bungee.api.plugin.Plugin
 import java.io.*
 import java.net.URL
@@ -23,9 +20,18 @@ internal class LangPlugin : Plugin() {
 
     override fun onEnable() {
         LangCfg(this)
-        setBungeeLoaders()
         loadLangPacks()
         LangEventListener(this)
+    }
+
+    private fun loadLangPacks() {
+        val langDir = File(dataFolder, "lang")
+        if (!langDir.exists()) {
+            langDir.mkdirs()
+        }
+        pack = BungeeLangPack("lang")
+        pack!!.load(save = true, force = true)
+        pack!!.append("test", save = true, force = true)
     }
 
     /**
@@ -76,27 +82,4 @@ internal class LangPlugin : Plugin() {
     }
 
     private fun getClassLoader(): ClassLoader = this.javaClass.classLoader
-
-    private fun loadLangPacks() {
-
-        val langDir = File(dataFolder, "lang")
-        if (!langDir.exists()) {
-            langDir.mkdirs()
-        }
-
-        pack = BungeeLangPack("lang")
-        pack!!.load(save = true, force = true)
-        pack!!.append("test", save = true, force = true)
-    }
-
-    companion object {
-
-        private val actionTextLoader = BungeeActionTextLoader()
-        private val stringPoolLoader = BungeeStringPoolLoader()
-
-        private fun setBungeeLoaders() {
-            ComplexLoader.set("action", actionTextLoader)
-            ComplexLoader.set("pool", stringPoolLoader)
-        }
-    }
 }
