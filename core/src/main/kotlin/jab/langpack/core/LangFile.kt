@@ -11,7 +11,7 @@ import java.io.FileNotFoundException
  * @author Jab
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class LangFile : LangSection {
+class LangFile : LangGroup {
 
     /**
      * The file storing the YAML data.

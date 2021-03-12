@@ -8,8 +8,8 @@ import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
 /**
- * The **LangSection** class is a nestable container for objects stored as fields. Lang sections have the ability to be
- * modified and appended.
+ * The **LangGroup** class is a nestable container for objects stored as fields. Groups have the ability to be modified
+ * and appended.
  *
  * Fields are noted as lower-case strings. Any fields passed with upper-case characters are forced as lowered when
  * stored. Fields can reference nested objects using periods as a delimiter.
@@ -21,43 +21,43 @@ import java.io.File
  * @author Jab
  *
  * @property pack The lang-pack instance.
- * @property name The name of the section.
- * @property parent (Optional) The parent section.
+ * @property name The name of the group.
+ * @property parent (Optional) The parent group.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-open class LangSection(var pack: LangPack, val name: String, var parent: LangSection? = null) {
+open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup? = null) {
 
     /**
-     * The metadata for the lang section. (Used for imports)
+     * The metadata for the lang group. (Used for imports)
      */
     val meta = Metadata()
 
     /**
-     * The stored fields for the lang section. Fields are stored as lower-case.
+     * The stored fields for the lang group. Fields are stored as lower-case.
      */
     val fields = HashMap<String, Any>()
 
     /**
-     * Appends YAML data by reading it and adding it to the lang section.
+     * Appends YAML data by reading it and adding it to the lang group.
      *
      * @param cfg The YAML data to read.
      *
      * @return Returns the instance for single-line executions.
      */
-    fun append(cfg: ConfigurationSection): LangSection {
+    fun append(cfg: ConfigurationSection): LangGroup {
         read(cfg, meta)
         return this
     }
 
     /**
-     * Reads YAML data, processing it into the lang section.
+     * Reads YAML data, processing it into the lang group.
      *
      * @param cfg The YAML data to read.
      * @param metadata The metadata object to process while reading the YAML data.
      *
      * @return Returns the instance for single-line executions.
      */
-    fun read(cfg: ConfigurationSection, metadata: Metadata = Metadata()): LangSection {
+    fun read(cfg: ConfigurationSection, metadata: Metadata = Metadata()): LangGroup {
 
         if (cfg.isConfigurationSection("__metadata__")) {
             metadata.read(cfg.getConfigurationSection("__metadata__")!!)
@@ -113,18 +113,18 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
 
         for (key in cfg.getKeys(false)) {
 
-            // Exclude the metadata section.
+            // Exclude the metadata group.
             if (key.equals("__metadata__", true)) {
                 continue
             }
 
             if (cfg.isConfigurationSection(key)) {
 
-                val section = cfg.getConfigurationSection(key)!!
-                if (section.contains("type")) {
-                    readComplex(section)
+                val group = cfg.getConfigurationSection(key)!!
+                if (group.contains("type")) {
+                    readComplex(group)
                 } else {
-                    readSection(section)
+                    readSection(group)
                 }
 
             } else {
@@ -136,19 +136,19 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
     }
 
     /**
-     * Processes a YAML section as a lang section.
+     * Processes a YAML section as a lang group.
      *
      * @param cfg The YAML section to read.
      */
     private fun readSection(cfg: ConfigurationSection) {
-        val langSection = LangSection(pack, cfg.name, this)
+        val langSection = LangGroup(pack, cfg.name, this)
         langSection.read(cfg, Metadata())
         set(cfg.name, langSection)
     }
 
     /**
      * Attempts to read a YAML section as a complex object. All complex objects are YAML sections with a defined
-     * **type** string. If the field doesn't exist or is not a string, the YAML section is loaded as a lang section.
+     * **type** string. If the field doesn't exist or is not a string, the YAML section is loaded as a lang group.
      *
      * @param cfg The YAML section to read.
      */
@@ -185,11 +185,11 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
 
             val split = query.split(".")
 
-            val sectionId = split[0]
+            val groupId = split[0]
 
             // Make sure
-            val raw = fields[sectionId.toLowerCase()]
-            if (raw !is LangSection) {
+            val raw = fields[groupId.toLowerCase()]
+            if (raw !is LangGroup) {
                 return null
             }
 
@@ -227,19 +227,19 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
     }
 
     /**
-     * Attempts to resolve a lang section with a query.
+     * Attempts to resolve a lang group with a query.
      *
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
      * @return Returns the resolved query.
      *
-     * @throws RuntimeException Thrown if the query is unresolved or the resolved object is not a lang section.
+     * @throws RuntimeException Thrown if the query is unresolved or the resolved object is not a lang group.
      */
-    fun getSection(query: String): LangSection {
+    fun getSection(query: String): LangGroup {
 
         val value = resolve(query)
 
-        if (value == null || value !is LangSection) {
+        if (value == null || value !is LangGroup) {
             throw RuntimeException("The field $query is not a LangSection.")
         }
 
@@ -253,7 +253,7 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
      *
      * @return Returns the resolved query.
      *
-     * @throws RuntimeException Thrown if the query is unresolved or the resolved object is not a lang section.
+     * @throws RuntimeException Thrown if the query is unresolved or the resolved object is not a lang group.
      */
     fun getStringPool(query: String): StringPool {
 
@@ -273,7 +273,7 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
      *
      * @return Returns the resolved query.
      *
-     * @throws RuntimeException Thrown if the query is unresolved or the resolved object is not a lang section.
+     * @throws RuntimeException Thrown if the query is unresolved or the resolved object is not a lang group.
      */
     fun getActionText(query: String): ActionText {
 
@@ -301,12 +301,12 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
         if (key.contains(".")) {
 
             val split = key.split(".")
-            val sectionId = split[0]
+            val groupId = split[0]
 
-            var raw = fields[sectionId.toLowerCase()]
-            if (raw !is LangSection) {
-                raw = LangSection(pack, name, this)
-                fields[sectionId.toLowerCase()] = raw
+            var raw = fields[groupId.toLowerCase()]
+            if (raw !is LangGroup) {
+                raw = LangGroup(pack, name, this)
+                fields[groupId.toLowerCase()] = raw
             }
 
             var rebuiltQuery = split[1]
@@ -356,13 +356,13 @@ open class LangSection(var pack: LangPack, val name: String, var parent: LangSec
     fun isActionText(query: String): Boolean = contains(query) && fields[query.toLowerCase()] is ActionText
 
     /**
-     * The ***Metadata*** class handles all metadata defined for lang sections.
+     * The ***Metadata*** class handles all metadata defined for lang groups.
      *
-     * Metadata is formed by creating a YAML section inside of the lang section.
+     * Metadata is formed by creating a YAML section inside of the lang group.
      *
      * Example:
      * ```yml
-     * section:
+     * group:
      *   __metadata__:
      *     import: ..
      * ```
