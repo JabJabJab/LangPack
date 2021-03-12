@@ -19,13 +19,13 @@ of text can import from other files for further organization options.
 ### Dynamic text
 
 Text definitions can refer to other definitions using a processor. The processor implements the percentage
-placeholder syntax. Minecraft color codes are supported using the '&' character. `&<color_code>`
+placeholder syntax. `%field%` Calls to the API can also provide arguments for definitions to include when processing text. 
 
-Complex definitions are included in LangPack where pools and actions can be implemented from Bungeecord's BaseComponent API. Complex implementations can be authored and loaded in packs by third-parties.
-
-### Customizable
+Minecraft color codes are supported using the '&' character. `&<color_code>`
 
 Text definitions can be inside group definitions. Group definitions and files can import from other files, allowing for both plugin developers and administrators to manage their language files with more options.
+
+Complex definitions are included in LangPack where pools and actions can be implemented from Bungeecord's BaseComponent API. Complex implementations can be authored and loaded in packs by third-parties.
 
 ### License
 
