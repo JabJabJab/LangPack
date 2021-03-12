@@ -29,6 +29,5 @@ Text definitions can be inside group definitions. Group definitions and files ca
 
 ### License
 
-The source-code License for LangPack is MIT.
-License summary: https://choosealicense.com/licenses/mit/
+The source-code License for LangPack is MIT. LangPack will not force copy-left so that authors can apply this solution both privately and commercially.
 
