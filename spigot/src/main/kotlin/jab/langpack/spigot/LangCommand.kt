@@ -1,7 +1,8 @@
 package jab.langpack.spigot
 
-import jab.langpack.commons.LangArg
-import jab.langpack.spigot.test.LangTest
+import jab.langpack.core.LangArg
+import jab.langpack.core.LangCache
+import jab.langpack.test.LangTest
 import jab.langpack.spigot.test.LangTestActionText
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
@@ -19,8 +20,8 @@ import org.bukkit.entity.Player
  */
 internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabCompleter {
 
-    private val tests = HashMap<String, LangTest>()
-    private val cache = SpigotLangCache(plugin.pack!!)
+    private val tests = HashMap<String, LangTest<Player>>()
+    private val cache = LangCache(plugin.pack!!)
 
     init {
         val command = plugin.getCommand("lang")
@@ -30,7 +31,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
             command.setExecutor(this)
             command.tabCompleter = this
 
-            if (LangCfg.testsEnabled) {
+            if (LangPlugin.CFG.testsEnabled) {
                 addTest(LangTestActionText())
             }
         }
@@ -48,7 +49,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         fun test() {
 
             // Make sure that 'tests_enabled' is set to true in the global config.
-            if (!LangCfg.testsEnabled) {
+            if (!LangPlugin.CFG.testsEnabled) {
                 lang.message(player, "lang_command_test.disabled")
                 return
             }
@@ -202,7 +203,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
     }
 
 
-    private fun addTest(test: LangTest) {
+    private fun addTest(test: LangTest<Player>) {
         tests[test.name] = test
     }
 
