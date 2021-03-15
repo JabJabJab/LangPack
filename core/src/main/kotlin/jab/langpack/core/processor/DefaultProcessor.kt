@@ -27,9 +27,6 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
         component: TextComponent, pack: LangPack, lang: Language, vararg args: LangArg,
     ): TextComponent {
 
-        println("processComponent($component.text)")
-
-
         // There's no need to slice a component that is only a field.
         val composition = if (!formatter.isField(component.text)) {
             ChatUtil.slice(component, pack.formatter)
@@ -40,8 +37,6 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
             }
             comp
         }
-
-        println("\tsliced: $composition")
 
         composition.hoverEvent = component.hoverEvent
         composition.clickEvent = component.clickEvent
@@ -85,8 +80,6 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
     }
 
     override fun process(string: String, pack: LangPack, lang: Language, vararg args: LangArg): String {
-
-        print("processString($string)")
 
         val stringFields = formatter.getFields(string)
         if (stringFields.isEmpty()) return color(string)
@@ -180,7 +173,7 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
                 if (field != null) {
                     when (field.value) {
                         is Complex<*> -> {
-                            val result = field.value
+                            val result = (field.value as Complex<*>).get()
                             val processedComponent: TextComponent = if (result is TextComponent) {
                                 result
                             } else {

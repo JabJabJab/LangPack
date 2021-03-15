@@ -63,7 +63,7 @@ internal class LangPlugin : JavaPlugin(), Listener {
         }
 
         pack = LangPack("lang")
-        pack!!.debug = true
+        // pack!!.debug = true
         pack!!.load(save = true)
         pack!!.append("test", save = true)
     }

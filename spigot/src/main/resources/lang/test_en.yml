@@ -12,7 +12,7 @@ lang_command_test:
 
   disabled: '%command_header.error% The test command for lang is disabled.'
 
-  help: '%command_header.info% &6/lang test &7[&6%test_id%&7]'
+  help: '%command_header.info% &6/lang test &7[&6%lang_command_test.test_id%&7]'
 
   # %test% -> The name of the test.
   not_found: '%command_header.error% The test &6%test%&c is not found or loaded.'
