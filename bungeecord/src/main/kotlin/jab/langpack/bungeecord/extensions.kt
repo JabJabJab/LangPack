@@ -42,22 +42,19 @@ fun LangPack.broadcast(query: String, vararg args: LangArg) {
             continue
         }
 
-        var value = resolve(lang, query)
-        if (value == null) {
+        var resolved = resolve(lang, query)
+        if (resolved == null) {
             lang = defaultLang
-            value = resolve(lang, query)
-        }
-
-        if (debug) {
-            println("query: $query value: $value")
+            resolved = resolve(lang, query)
         }
 
         val component: TextComponent
-        if (value != null) {
+        if (resolved != null) {
+
+            val value = resolved.value
+
             component = when (value) {
-                is TextComponent -> {
-                    value
-                }
+
                 is Complex<*> -> {
                     val result = value.get()
                     val processedComponent: TextComponent = if (result is TextComponent) {
@@ -96,18 +93,16 @@ fun LangPack.message(player: ProxiedPlayer, query: String, vararg args: LangArg)
     val langPlayer = getLanguage(player)
     var lang = langPlayer
 
-    var value = resolve(lang, query)
-    if (value == null) {
+    var resolved = resolve(lang, query)
+    if (resolved == null) {
         lang = defaultLang
-        value = resolve(lang, query)
+        resolved = resolve(lang, query)
     }
 
     val component: TextComponent
-    if (value != null) {
+    if (resolved != null) {
+        val value = resolved.value
         component = when (value) {
-            is TextComponent -> {
-                value
-            }
             is Complex<*> -> {
                 val result = value.get()
                 val processedComponent: TextComponent = if (result is TextComponent) {
@@ -160,18 +155,18 @@ fun LangPack.getLanguage(player: ProxiedPlayer): Language {
 // #############################
 
 /**
- * @see BungeeLangPack.broadcast
+ * @see LangPack.broadcast
  */
 fun LangCache<*>.broadcast(field: String, vararg args: LangArg) = pack.broadcast(field, *args)
 
 /**
- * @see BungeeLangPack.message
+ * @see LangPack.message
  */
 fun LangCache<*>.message(player: ProxiedPlayer, field: String, vararg args: LangArg) =
     pack.message(player, field, *args)
 
 /**
- * @see BungeeLangPack.getLanguage
+ * @see LangPack.getLanguage
  */
 fun LangCache<*>.getLanguage(player: ProxiedPlayer): Language = pack.getLanguage(player)
 

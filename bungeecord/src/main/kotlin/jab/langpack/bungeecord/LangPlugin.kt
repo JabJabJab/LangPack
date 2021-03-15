@@ -20,6 +20,7 @@ import java.util.logging.Level
  *
  * @author Jab
  */
+@Suppress("unused", "MemberVisibilityCanBePrivate")
 internal class LangPlugin : Plugin(), Listener {
 
     /**
