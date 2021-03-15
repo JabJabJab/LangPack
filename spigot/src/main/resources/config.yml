@@ -1,3 +1,3 @@
-tests_enabled: true
-join_messages: true
-leave_messages: true
+tests_enabled: false
+join_messages: false
+leave_messages: false

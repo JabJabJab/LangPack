@@ -5,6 +5,7 @@ header:
   error: '&c%header.text%'
   debug: '&d%header.text%'
 
+
 permission:
   deny: "%header.info% &cYou do not have permission to use this command."
 
@@ -13,12 +14,12 @@ command:
 
   help: '%header.info% &6/lang &7[ &6test&7 | &6tests&7 ]'
 
-  # %command% -> The command given.
+  # command -> The command given.
   not_found: '%header.info% &cCommand not found: %command%'
 
 
 event:
-  # %player% -> The name of the player entering the server.
+  # player -> The name of the player entering the server.
   enter_server:
     type: pool
     mode: random
@@ -27,5 +28,5 @@ event:
       - '&aPlease welcome %player% to the server!'
       - '&a%player% dropped into the server.'
 
-  # %player% -> The name of the player leaving the server.
+  # player -> The name of the player leaving the server.
   leave_server: '&9Goodbye, %player%.'
