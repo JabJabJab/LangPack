@@ -50,5 +50,7 @@ interface FieldFormatter {
      *
      * @return
      */
-    fun needsToResolve(field: String): Boolean
+    fun isResolve(field: String): Boolean
+
+    fun isGlobalScope(field: String): Boolean
 }

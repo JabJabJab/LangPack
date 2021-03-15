@@ -37,7 +37,7 @@ class LangString : Definition<String> {
         val language = parent?.language ?: pack.defaultLang
 
         for (field in fields) {
-            if (formatter.needsToResolve(field)) {
+            if (formatter.isResolve(field)) {
 
                 var fieldDefinition = pack.resolve(language, field)
                 if (fieldDefinition == null) {
