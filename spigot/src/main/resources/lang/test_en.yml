@@ -7,7 +7,7 @@ test:
     - '&7 Description:'
     - '&f    %description%'
     - ''
-    - '%test.click_to_run%'
+    - ' %test.click_to_run%'
     - '&7---------------------------------------------------'
 
   start:
@@ -28,14 +28,14 @@ test:
   # %reason% -> The reason the test failed.
   failure: '%header.debug% %cThe test &6%test%&c failed. Reason: "%reason%"'
 
-  help: '%header.info% &6/lang test &7[&6%test_id%&7]'
+  help: '%header.info% &6/lang test &7[ &f*&6%test_id%&7 ] [ &6run &7]'
 
   # %test% -> The name of the test.
-  not_found: '%header.error% The test &6%test%&c is not found or loaded.'
+  not_found: '%header.info% &cThe test &6%test%&c is not found or loaded.'
 
   tooltip_not_found: '&ctest_id not found.'
 
-  disabled: '%header.error% The test command for lang is disabled.'
+  disabled: '%header.info% &cTests are disabled.'
 
   click_to_run:
     type: action
@@ -53,6 +53,23 @@ test:
       hover: 'This is an example of hover text.'
 
   broadcast:
-    description: '
-    This is a simple test for LangPack.broadcast(query, args).'
+    description:
+      - 'This is a test for:'
+      - '    &fLangPack.broadcast(&6query&f, &6args&f)'
     message: '%header.debug% &7This is a test broadcast.'
+
+tests:
+
+  # test_count -> TODO: Document.
+  start:
+    - ' '
+    - '&7---------------------&6%header.text%&7---------------------'
+    - '    Tests (%test_count%):'
+
+  # test -> TODO: Document.
+  line:
+    type: action
+    text: '    &7- &6%test%'
+    command: '/lang test %test%'
+
+  end: '&7---------------------------------------------------'

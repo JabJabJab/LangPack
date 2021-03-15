@@ -5,7 +5,6 @@ import jab.langpack.core.LangCache
 import jab.langpack.spigot.test.TestAction
 import jab.langpack.spigot.test.TestBroadcast
 import jab.langpack.test.LangTest
-import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -42,84 +41,9 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 
-        if (sender !is Player || !sender.isOp) {
-            return true
-        }
+        if (sender !is Player) return true
 
         val player: Player = sender
-        val lang = plugin.pack!!
-
-        fun test() {
-
-            // Make sure that 'tests_enabled' is set to true in the global config.
-            if (!LangPlugin.CFG.testsEnabled) {
-                lang.message(player, "test.disabled")
-                return
-            }
-
-            // Make sure that a test name is provided.
-            if (args.size < 2 || args.size > 3) {
-                lang.message(player, "test.help")
-                return
-            }
-
-            val testName = args[1].toLowerCase()
-            val argTest = LangArg("test", testName)
-
-            // Make sure the test exists.
-            val test = tests[testName]
-            if (test == null) {
-                lang.message(player, "test.not_found", argTest)
-                return
-            }
-
-            if (args.size == 3) {
-                if (!args[2].equals("run", true)) {
-                    lang.message(player, "test.help")
-                    return
-                }
-
-                lang.message(player, "test.start", argTest)
-
-                // Run the test.
-                val result = test.test(lang, player)
-
-                // Display the result.
-                if (result.success) {
-                    lang.message(player, "test.success", argTest, LangArg("time", result.time))
-                } else {
-                    val argReason = LangArg("reason", result.reason!!)
-                    lang.message(player, "test.failure", argTest, argReason)
-                }
-
-                lang.message(player, "test.end")
-
-                return
-            } else {
-                lang.message(player, "test.description",
-                    LangArg("test", test.name),
-                    LangArg("description", test.description)
-                )
-                return
-            }
-        }
-
-        fun tests() {
-            val builder = StringBuilder("${ChatColor.GRAY}[")
-            val names = ArrayList<String>(tests.keys)
-            if (names.isNotEmpty()) {
-                names.sortBy { it }
-                for (name in names) {
-                    builder.append(ChatColor.GOLD).append(name).append(ChatColor.GRAY).append(",")
-                }
-                builder.setLength(builder.length - 3)
-                builder.append(ChatColor.GRAY).append("]")
-            } else {
-                builder.append("]")
-            }
-
-            player.sendMessage("${ChatColor.GREEN}Tests: $builder")
-        }
 
         var found = false
 
@@ -127,26 +51,27 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         if (args.isNotEmpty()) {
 
             when (args[0].toLowerCase()) {
+
                 "test" -> {
-                    test()
+                    onTestCommand(player, args)
                     found = true
                 }
 
                 "tests" -> {
-                    tests()
+                    onTestsCommand(player)
                     found = true
                 }
             }
 
             // Let the player know the command is invalid before sending the help dialog.
             if (!found) {
-                lang.message(player, "lang_command.not_found", LangArg("command", args[0]))
+                pack.message(player, "command.not_found", LangArg("command", args[0]))
             }
         }
 
         // Display help message if no command is found.
         if (!found) {
-            lang.message(player, "lang_command.help")
+            pack.message(player, "command.help")
         }
 
         return true
@@ -220,6 +145,85 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         return EMPTY_LIST
     }
 
+    private fun onTestCommand(player: Player, args: Array<out String>) {
+
+        if (!player.hasPermission("langpack.test")) {
+            pack.message(player, "permission.deny")
+            return
+        }
+
+        // Make sure that 'tests_enabled' is set to true in the global config.
+        if (!LangPlugin.CFG.testsEnabled) {
+            pack.message(player, "test.disabled")
+            return
+        }
+
+        // Make sure that a test name is provided.
+        if (args.size < 2 || args.size > 3) {
+            pack.message(player, "test.help")
+            return
+        }
+
+        val testName = args[1].toLowerCase()
+        val argTest = LangArg("test", testName)
+
+        // Make sure the test exists.
+        val test = tests[testName]
+        if (test == null) {
+            pack.message(player, "test.not_found", argTest)
+            return
+        }
+
+        if (args.size == 3) {
+            if (!args[2].equals("run", true)) {
+                pack.message(player, "test.help")
+                return
+            }
+
+            pack.message(player, "test.start", argTest)
+
+            // Run the test.
+            val result = test.test(pack, player)
+
+            // Display the result.
+            if (result.success) {
+                pack.message(player, "test.success", argTest, LangArg("time", result.time))
+            } else {
+                val argReason = LangArg("reason", result.reason!!)
+                pack.message(player, "test.failure", argTest, argReason)
+            }
+
+            pack.message(player, "test.end")
+
+            return
+        } else {
+            pack.message(player, "test.description",
+                LangArg("test", test.name),
+                LangArg("description", test.description)
+            )
+            return
+        }
+    }
+
+    private fun onTestsCommand(player: Player) {
+
+        if (!player.hasPermission("langpack.test")) {
+            pack.message(player, "permission.deny")
+            return
+        }
+
+        pack.message(player, "tests.start", LangArg("test_count", tests.size))
+
+        val names = ArrayList<String>(tests.keys)
+        if (names.isNotEmpty()) {
+            names.sortBy { it }
+            for (test in names) {
+                pack.message(player, "tests.line", LangArg("test", test))
+            }
+        }
+
+        pack.message(player, "tests.end")
+    }
 
     private fun addTest(test: LangTest<Player>) {
         tests[test.name] = test
