@@ -3,7 +3,7 @@ package jab.langpack.core.objects
 import jab.langpack.core.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-import jab.langpack.core.processor.LangProcessor
+import jab.langpack.core.processor.Processor
 
 /**
  * The ***Complex*** interface allows resolving for complex results for lang-pack.
@@ -13,7 +13,14 @@ import jab.langpack.core.processor.LangProcessor
 interface Complex<E> {
 
     /**
-     * Process the complex object using the lang-pack's [LangProcessor].
+     * TODO: Document.
+     *
+     * @param definition
+     */
+    fun walk(definition: Definition<*>)
+    
+    /**
+     * Process the complex object using the lang-pack's [Processor].
      *
      * @param pack The lang-pack instance.
      * @param lang The language to query.

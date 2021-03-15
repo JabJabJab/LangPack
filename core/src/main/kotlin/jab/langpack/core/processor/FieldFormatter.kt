@@ -25,7 +25,16 @@ interface FieldFormatter {
      *
      * @return Returns a field in the syntax format.
      */
-    fun formatField(field: String): String
+    fun format(field: String): String
+
+    /**
+     * TODO: Document.
+     *
+     * @param string
+     *
+     * @return
+     */
+    fun strip(string: String): String
 
     /**
      * @param string The string to test.
@@ -33,4 +42,13 @@ interface FieldFormatter {
      * @return Returns true if the string is a field.
      */
     fun isField(string: String?): Boolean
+
+    /**
+     * TODO: Document.
+     *
+     * @param field
+     *
+     * @return
+     */
+    fun needsToResolve(field: String): Boolean
 }

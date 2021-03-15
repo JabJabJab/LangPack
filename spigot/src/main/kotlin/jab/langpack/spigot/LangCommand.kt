@@ -2,8 +2,8 @@ package jab.langpack.spigot
 
 import jab.langpack.core.LangArg
 import jab.langpack.core.LangCache
-import jab.langpack.test.LangTest
 import jab.langpack.spigot.test.LangTestActionText
+import jab.langpack.test.LangTest
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -79,7 +79,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
             if (result.success) {
                 lang.message(player, "lang_command_test.success", argTest)
             } else {
-                val argReason = LangArg("reason", result.reason)
+                val argReason = LangArg("reason", result.reason!!)
                 lang.message(player, "lang_command_test.failure", argTest, argReason)
             }
 
@@ -138,7 +138,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         sender: CommandSender,
         command: Command,
         alias: String,
-        args: Array<out String>
+        args: Array<out String>,
     ): MutableList<String> {
 
         if (args.isEmpty() || sender !is Player) {

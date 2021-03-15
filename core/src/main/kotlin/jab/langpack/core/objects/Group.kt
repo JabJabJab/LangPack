@@ -1,7 +1,8 @@
-package jab.langpack.core
+package jab.langpack.core.objects
 
+import jab.langpack.core.LangPack
+import jab.langpack.core.Language
 import jab.langpack.core.loader.ComplexLoader
-import jab.langpack.core.objects.*
 import jab.langpack.core.util.StringUtil
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
@@ -21,11 +22,12 @@ import java.io.File
  * @author Jab
  *
  * @property pack The lang-pack instance.
+ * @property language TODO: Document.
  * @property name The name of the group.
  * @property parent (Optional) The parent group.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup? = null) {
+open class Group(var pack: LangPack, val language: Language, val name: String, var parent: Group? = null) {
 
     /**
      * The metadata for the lang group. (Used for imports)
@@ -33,9 +35,14 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
     val meta = Metadata()
 
     /**
+     * TODO: Document.
+     */
+    val children = HashMap<String, Group>()
+
+    /**
      * The stored fields for the lang group. Fields are stored as lower-case.
      */
-    val fields = HashMap<String, Any>()
+    val fields = HashMap<String, Definition<*>>()
 
     /**
      * Appends YAML data by reading it and adding it to the lang group.
@@ -44,7 +51,7 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
      *
      * @return Returns the instance for single-line executions.
      */
-    fun append(cfg: ConfigurationSection): LangGroup {
+    fun append(cfg: ConfigurationSection): Group {
         read(cfg, meta)
         return this
     }
@@ -57,14 +64,10 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
      *
      * @return Returns the instance for single-line executions.
      */
-    fun read(cfg: ConfigurationSection, metadata: Metadata = Metadata()): LangGroup {
+    fun read(cfg: ConfigurationSection, metadata: Metadata = Metadata()): Group {
 
         if (cfg.isConfigurationSection("__metadata__")) {
             metadata.read(cfg.getConfigurationSection("__metadata__")!!)
-
-            if (pack.debug) {
-                println("[$name] :: imports: ${metadata.imports}")
-            }
 
             // Load imports prior to in-file fields, potentially overriding a import.
             if (metadata.imports.isNotEmpty()) {
@@ -128,11 +131,24 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
                 }
 
             } else {
-                set(key, StringUtil.toAString(cfg.get(key)!!))
+                val raw = StringUtil.toAString(cfg.get(key)!!)
+                set(key, LangString(pack, this, raw))
             }
         }
 
+        // Walk all definitions after loading and appending.
+        walk()
+
         return this
+    }
+
+    /**
+     * TODO: Document.
+     *
+     * @param group
+     */
+    fun append(group: Group) {
+        children[group.name] = group
     }
 
     /**
@@ -141,9 +157,9 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
      * @param cfg The YAML section to read.
      */
     private fun readSection(cfg: ConfigurationSection) {
-        val langSection = LangGroup(pack, cfg.name, this)
+        val langSection = Group(pack, language, cfg.name.toLowerCase(), this)
         langSection.read(cfg, Metadata())
-        set(cfg.name, langSection)
+        append(langSection)
     }
 
     /**
@@ -162,7 +178,7 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
         val type = cfg.getString("type")!!
         val loader = ComplexLoader.get(type)
         if (loader != null) {
-            set(cfg.name, loader.load(cfg))
+            set(cfg.name, LangComplex(pack, this, loader.load(cfg)))
         } else {
             System.err.println("Unknown complex type: $type")
         }
@@ -175,7 +191,7 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
      *
      * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
-    fun resolve(query: String): Any? {
+    fun resolve(query: String): Definition<*>? {
 
         if (pack.debug) {
             println("[$name] :: resolve($query)")
@@ -188,10 +204,7 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
             val groupId = split[0]
 
             // Make sure
-            val raw = fields[groupId.toLowerCase()]
-            if (raw !is LangGroup) {
-                return null
-            }
+            val raw = children[groupId.toLowerCase()] ?: return null
 
             var rebuiltQuery = split[1]
             if (split.size > 2) {
@@ -200,10 +213,23 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
                 }
             }
 
+            if (pack.debug) {
+                println("[$name] :: rebuiltQuery: $rebuiltQuery")
+            }
+
             return raw.resolve(rebuiltQuery)
 
         } else {
             return fields[query.toLowerCase()]
+        }
+    }
+
+    /**
+     * TODO: Document.
+     */
+    fun walk() {
+        for ((_, field) in fields) {
+            field.walk()
         }
     }
 
@@ -215,15 +241,13 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
      * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
     fun getString(query: String): String? {
-        val o = resolve(query)
-        return when {
-            o is Complex<*> -> {
-                o.get().toString()
-            }
-            o is String -> o
-            o != null -> StringUtil.toAString(o)
-            else -> null
+        val o = resolve(query) ?: return null
+        if (o is LangComplex) {
+            return o.value.get().toString()
+        } else if (o is LangString) {
+            return o.value
         }
+        return null
     }
 
     /**
@@ -235,11 +259,11 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
      *
      * @throws RuntimeException Thrown if the query is unresolved or the resolved object is not a lang group.
      */
-    fun getSection(query: String): LangGroup {
+    fun getSection(query: String): Group {
 
         val value = resolve(query)
 
-        if (value == null || value !is LangGroup) {
+        if (value == null || value !is Group) {
             throw RuntimeException("The field $query is not a LangSection.")
         }
 
@@ -292,7 +316,7 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
      * @param key The ID to assign the value.
      * @param value The value to assign to the ID.
      */
-    fun set(key: String, value: Any?) {
+    fun set(key: String, value: Definition<*>?) {
 
         if (pack.debug) {
             println("[$name] :: set($key, $value)")
@@ -301,12 +325,12 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
         if (key.contains(".")) {
 
             val split = key.split(".")
-            val groupId = split[0]
+            val groupId = split[0].toLowerCase()
 
-            var raw = fields[groupId.toLowerCase()]
-            if (raw !is LangGroup) {
-                raw = LangGroup(pack, name, this)
-                fields[groupId.toLowerCase()] = raw
+            var raw = children[groupId]
+            if (raw !is Group) {
+                raw = Group(pack, language, groupId, this)
+                children[groupId] = raw
             }
 
             var rebuiltQuery = split[1]
@@ -325,6 +349,15 @@ open class LangGroup(var pack: LangPack, val name: String, var parent: LangGroup
                 fields.remove(key.toLowerCase())
             }
         }
+    }
+
+    /**
+     * TODO: Document.
+     *
+     * @param id
+     */
+    fun remove(id: String) {
+        fields.remove(id.toLowerCase())
     }
 
     /**

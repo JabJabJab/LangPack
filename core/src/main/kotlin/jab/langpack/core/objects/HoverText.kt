@@ -39,13 +39,17 @@ class HoverText: Complex<HoverEvent> {
         this.lines = newLines
     }
 
+    override fun walk(definition: Definition<*>) {
+        // TODO: Implement.
+    }
+
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): HoverEvent {
         var array = emptyList<Text>()
 
         // Append all lines as one line with the [NEW_LINE] separator. The lang-pack will
         //   interpret the separator and handle this when displayed to the player.
         for (line in lines) {
-            array = array.plus(Text(pack.processor.processString(line.value as String, pack, lang, *args)))
+            array = array.plus(Text(pack.processor.process(line.value as String, pack, lang, *args)))
         }
 
         return HoverEvent(HoverEvent.Action.SHOW_TEXT, array)

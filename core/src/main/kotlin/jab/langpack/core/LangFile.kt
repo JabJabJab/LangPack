@@ -1,5 +1,6 @@
 package jab.langpack.core
 
+import jab.langpack.core.objects.Group
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.FileNotFoundException
@@ -11,7 +12,7 @@ import java.io.FileNotFoundException
  * @author Jab
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class LangFile : LangGroup {
+class LangFile : Group {
 
     /**
      * The file storing the YAML data.
@@ -19,39 +20,31 @@ class LangFile : LangGroup {
     var file: File? = null
 
     /**
-     * The language that represents the file.
-     */
-    val lang: Language
-
-    /**
      * Runtime constructor.
      *
      * @param pack The lang-pack instance.
-     * @param lang The language of the file.
+     * @param language The language of the file.
      * @param name The name of the section.
      */
-    constructor(pack: LangPack, lang: Language, name: String) : super(pack, name) {
-        this.lang = lang
-    }
+    constructor(pack: LangPack, language: Language, name: String) : super(pack, language, name)
 
     /**
      * File constructor.
      *
      * @param pack The lang-pack instance.
      * @param file The file to read.
-     * @param lang The language of the file.
+     * @param language The language of the file.
      */
-    constructor(pack: LangPack, file: File, lang: Language) : super(pack, file.nameWithoutExtension) {
+    constructor(pack: LangPack, file: File, language: Language) : super(pack, language, file.nameWithoutExtension) {
 
         if (!file.exists()) {
             throw FileNotFoundException(file.path)
         }
 
         this.file = file
-        this.lang = lang
     }
 
-    override fun toString(): String = "LangFile(lang=$lang)"
+    override fun toString(): String = "LangFile(lang=$language)"
 
     /**
      * Attempts to parse the File to YAML data to read as a lang section.

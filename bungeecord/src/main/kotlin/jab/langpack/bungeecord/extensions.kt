@@ -75,7 +75,7 @@ fun LangPack.broadcast(query: String, vararg args: LangArg) {
             component = TextComponent(query)
         }
 
-        val result = processor.processComponent(component, this, langPlayer, *args)
+        val result = processor.process(component, this, langPlayer, *args)
         cache[lang] = result
         cache[langPlayer] = result
 
@@ -126,7 +126,7 @@ fun LangPack.message(player: ProxiedPlayer, query: String, vararg args: LangArg)
     }
 
     player.sendMessage(
-        processor.processComponent(component, this, langPlayer, *args)
+        processor.process(component, this, langPlayer, *args)
     )
 }
 

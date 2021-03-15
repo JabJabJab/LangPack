@@ -13,10 +13,14 @@ import net.md_5.bungee.api.chat.ClickEvent
  * @property command The command to execute when clicked.
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class CommandText(val command: String): Complex<ClickEvent> {
+class CommandText(val command: String) : Complex<ClickEvent> {
+
+    override fun walk(definition: Definition<*>) {
+        // TODO: Implement.
+    }
 
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): ClickEvent {
-        val processed = pack.processor.processString(command, pack, lang, *args)
+        val processed = pack.processor.process(command, pack, lang, *args)
         return ClickEvent(ClickEvent.Action.RUN_COMMAND, processed)
     }
 

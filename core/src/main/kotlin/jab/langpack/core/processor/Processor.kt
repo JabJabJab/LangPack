@@ -11,7 +11,7 @@ import net.md_5.bungee.api.chat.TextComponent
  *
  * @author Jab
  */
-interface LangProcessor {
+interface Processor {
 
     /**
      * Processes a text component, inserting arguments and fields set in the lang-pack.
@@ -23,7 +23,7 @@ interface LangProcessor {
      *
      * @return Returns the processed string.
      */
-    fun processComponent(component: TextComponent, pack: LangPack, lang: Language, vararg args: LangArg): TextComponent
+    fun process(component: TextComponent, pack: LangPack, lang: Language, vararg args: LangArg): TextComponent
 
     /**
      * Processes a text component, inserting provided arguments.
@@ -33,7 +33,7 @@ interface LangProcessor {
      *
      * @return Returns the processed component.
      */
-    fun processComponent(component: TextComponent, vararg args: LangArg): TextComponent
+    fun process(component: TextComponent, vararg args: LangArg): TextComponent
 
     /**
      * Processes a string, inserting arguments and fields set in the lang-pack.
@@ -45,7 +45,7 @@ interface LangProcessor {
      *
      * @return Returns the processed string.
      */
-    fun processString(string: String, pack: LangPack, lang: Language, vararg args: LangArg): String
+    fun process(string: String, pack: LangPack, lang: Language, vararg args: LangArg): String
 
     /**
      * Processes a string, inserting provided arguments.
@@ -55,5 +55,5 @@ interface LangProcessor {
      *
      * @return Returns the processed string.
      */
-    fun processString(string: String, vararg args: LangArg): String
+    fun process(string: String, vararg args: LangArg): String
 }

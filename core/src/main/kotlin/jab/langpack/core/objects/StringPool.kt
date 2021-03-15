@@ -72,11 +72,15 @@ open class StringPool : Complex<String> {
         }
     }
 
+    override fun walk(definition: Definition<*>) {
+        // TODO("Not yet implemented")
+    }
+
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): String {
         return if (strings.isEmpty()) {
             ""
         } else {
-            pack.processor.processString(poll(), pack, lang, *args)
+            pack.processor.process(poll(), pack, lang, *args)
         }
     }
 

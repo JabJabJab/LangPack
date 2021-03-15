@@ -1,5 +1,6 @@
 package jab.langpack.core.loader
 
+import jab.langpack.core.objects.Complex
 import org.bukkit.configuration.ConfigurationSection
 
 /**
@@ -9,7 +10,7 @@ import org.bukkit.configuration.ConfigurationSection
  * @author Jab
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-interface ComplexLoader<E> {
+interface ComplexLoader<E: Complex<*>> {
 
     /**
      * Loads a object from configured YAML.
@@ -18,7 +19,7 @@ interface ComplexLoader<E> {
      *
      * @return Returns the loaded object.
      */
-    fun load(cfg: ConfigurationSection): E?
+    fun load(cfg: ConfigurationSection): E
 
     companion object {
 

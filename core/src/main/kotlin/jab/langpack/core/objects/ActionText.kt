@@ -3,7 +3,7 @@ package jab.langpack.core.objects
 import jab.langpack.core.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-import jab.langpack.core.processor.LangProcessor
+import jab.langpack.core.processor.Processor
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
@@ -14,7 +14,7 @@ import org.bukkit.configuration.ConfigurationSection
  * The **ActionText** class packages defined [HoverEvent] and [ClickEvent] as [HoverText] and [CommandText] wrappers for
  * dynamic [TextComponent] usage for lang-packs.
  *
- * The object is complex and resolvable for [LangProcessor].
+ * The object is complex and resolvable for [Processor].
  *
  * @author Jab
  */
@@ -95,9 +95,13 @@ open class ActionText : Complex<TextComponent> {
         }
     }
 
+    override fun walk(definition: Definition<*>) {
+        // TODO: Implement.
+    }
+
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): TextComponent {
 
-        val text = pack.processor.processString(text, pack, lang, *args)
+        val text = pack.processor.process(text, pack, lang, *args)
         val component = TextComponent(text)
 
         if (hoverText != null) {

@@ -42,23 +42,19 @@ fun LangPack.broadcast(query: String, vararg args: LangArg) {
             continue
         }
 
-        var value = resolve(lang, query)
-        if (value == null) {
+        var resolved = resolve(lang, query)
+        if (resolved == null) {
             lang = defaultLang
-            value = resolve(lang, query)
-        }
-
-        if (debug) {
-            println("query: $query value: $value")
+            resolved = resolve(lang, query)
         }
 
         val component: TextComponent
-        if (value != null) {
+        if (resolved != null) {
+
+            val value = resolved.value
+
             component = when (value) {
 
-                is TextComponent -> {
-                    value
-                }
                 is Complex<*> -> {
                     val result = value.get()
                     val processedComponent: TextComponent = if (result is TextComponent) {
@@ -76,7 +72,7 @@ fun LangPack.broadcast(query: String, vararg args: LangArg) {
             component = TextComponent(query)
         }
 
-        val result = processor.processComponent(component, this, langPlayer, *args)
+        val result = processor.process(component, this, langPlayer, *args)
         cache[lang] = result
         cache[langPlayer] = result
 
@@ -97,18 +93,16 @@ fun LangPack.message(player: Player, query: String, vararg args: LangArg) {
     val langPlayer = getLanguage(player)
     var lang = langPlayer
 
-    var value = resolve(lang, query)
-    if (value == null) {
+    var resolved = resolve(lang, query)
+    if (resolved == null) {
         lang = defaultLang
-        value = resolve(lang, query)
+        resolved = resolve(lang, query)
     }
 
     val component: TextComponent
-    if (value != null) {
+    if (resolved != null) {
+        val value = resolved.value
         component = when (value) {
-            is TextComponent -> {
-                value
-            }
             is Complex<*> -> {
                 val result = value.get()
                 val processedComponent: TextComponent = if (result is TextComponent) {
@@ -127,7 +121,7 @@ fun LangPack.message(player: Player, query: String, vararg args: LangArg) {
     }
 
     player.spigot().sendMessage(
-        processor.processComponent(component, this, langPlayer, *args)
+        processor.process(component, this, langPlayer, *args)
     )
 }
 
@@ -154,11 +148,7 @@ fun LangPack.getLanguage(player: Player): Language {
  * @param lines The lines of text to send.
  */
 fun LangPack.Companion.message(sender: CommandSender, lines: Array<String>) {
-
-    if (lines.isEmpty()) {
-        return
-    }
-
+    if (lines.isEmpty()) return
     sender.sendMessage(lines)
 }
 
@@ -169,14 +159,11 @@ fun LangPack.Companion.message(sender: CommandSender, lines: Array<String>) {
  * @param lines The lines of text to send.
  */
 fun LangPack.Companion.message(sender: CommandSender, lines: List<String>) {
-
     // Convert to an array to send all messages at once.
     var array = emptyArray<String>()
     for (line in lines) {
         array = array.plus(line)
-
     }
-
     sender.sendMessage(array)
 }
 

@@ -1,9 +1,10 @@
 package jab.langpack.core
 
-import jab.langpack.core.objects.Complex
-import jab.langpack.core.objects.StringPool
-import jab.langpack.core.processor.LangProcessor
-import jab.langpack.core.processor.PercentProcessor
+import jab.langpack.core.objects.*
+import jab.langpack.core.processor.DefaultProcessor
+import jab.langpack.core.processor.FieldFormatter
+import jab.langpack.core.processor.PercentFormatter
+import jab.langpack.core.processor.Processor
 import jab.langpack.core.util.ResourceUtil
 import jab.langpack.core.util.StringUtil
 import net.md_5.bungee.api.chat.TextComponent
@@ -14,7 +15,7 @@ import java.util.*
  * The **LangPack** class is a utility that stores entries for dialog, separated by language. Files are loaded into the
  * lang-pack as a [LangFile], and queried based on language context when querying dialog.
  *
- * Text is processed using a [LangProcessor] implementation. By default, lang-packs use the [PercentProcessor].
+ * Text is processed using a [Processor] implementation. By default, lang-packs use the [DefaultProcessor].
  *
  * Text is processed dynamically as [TextComponent], allowing for dynamic text to be sent to players, enabling hover &
  * click events to be used throughout all entries in the lang-pack. If not desired, simply process the query as a
@@ -48,9 +49,14 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     var debug = false
 
     /**
-     * Handles processing of texts for the LanguageFile.
+     * Handles formatting of fields.
      */
-    var processor: LangProcessor = PercentProcessor()
+    var formatter: FieldFormatter = PercentFormatter()
+
+    /**
+     * Handles processing of text.
+     */
+    var processor: Processor = DefaultProcessor(formatter)
 
     /**
      * The language file to default to if a raw string cannot be located with another language.
@@ -123,6 +129,12 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
         }
     }
 
+    fun walk() {
+        for ((_, value) in files) {
+            value.walk()
+        }
+    }
+
     /**
      * Sets a entry for a language.
      *
@@ -132,7 +144,15 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      */
     fun set(lang: Language, key: String, value: Any?) {
         val file: LangFile = files.computeIfAbsent(lang) { LangFile(this, lang, lang.abbreviation) }
-        file.set(key, value)
+        if (value != null) {
+            if (value is Complex<*>) {
+                file.set(key, LangComplex(this, value))
+            } else {
+                file.set(key, LangString(this, StringUtil.toAString(value)))
+            }
+        } else {
+            file.remove(key)
+        }
     }
 
     /**
@@ -148,9 +168,12 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
             return
         }
 
-        val file: LangFile = files.computeIfAbsent(lang) { LangFile(this, lang, lang.abbreviation) }
+        // Make sure the language has a file instance before setting anything.
+        files.computeIfAbsent(lang) { LangFile(this, lang, lang.abbreviation) }
+
+
         for (field in entries) {
-            file.set(field.key, field.value)
+            set(lang, field.key, field.value)
         }
     }
 
@@ -170,7 +193,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
         val processedList = ArrayList<String>()
         for (raw in rawList) {
             if (raw != null) {
-                processedList.add(processor.processString(raw, this, lang, *args))
+                processedList.add(processor.process(raw, this, lang, *args))
             } else {
                 processedList.add("")
             }
@@ -189,24 +212,12 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
     fun getString(query: String, lang: Language = defaultLang, vararg args: LangArg): String? {
-
-        val raw = resolve(lang, query)
-        return if (raw != null) {
-            when (raw) {
-                is Complex<*> -> {
-                    val result = raw.process(this, lang, *args)
-                    if (result is TextComponent) {
-                        result.toPlainText()
-                    } else {
-                        result.toString()
-                    }
-                }
-                else -> {
-                    processor.processString(raw.toString(), this, lang, *args)
-                }
-            }
+        val raw = resolve(lang, query) ?: return null
+        val value = raw.value ?: return null
+        return if (value is Complex<*>) {
+            value.process(this, lang, *args).toString()
         } else {
-            return null
+            processor.process(value.toString(), this, lang, *args)
         }
     }
 
@@ -218,7 +229,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      *
      * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
-    fun resolve(lang: Language, query: String): Any? {
+    fun resolve(lang: Language, query: String): Definition<*>? {
 
         // Attempt to grab the most relevant LangFile.
         var langFile = files[lang]
@@ -231,7 +242,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
             }
         }
 
-        var raw: Any? = null
+        var raw: Definition<*>? = null
         if (langFile != null) {
             raw = langFile.resolve(query)
         }
