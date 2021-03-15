@@ -17,7 +17,7 @@ interface Complex<E> {
      *
      * @param definition
      */
-    fun walk(definition: Definition<*>)
+    fun walk(definition: Definition<*>): Complex<E>
     
     /**
      * Process the complex object using the lang-pack's [Processor].

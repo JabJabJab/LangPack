@@ -95,8 +95,9 @@ open class ActionText : Complex<TextComponent> {
         }
     }
 
-    override fun walk(definition: Definition<*>) {
+    override fun walk(definition: Definition<*>): ActionText {
         // TODO: Implement.
+        return this
     }
 
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): TextComponent {

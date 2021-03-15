@@ -15,8 +15,9 @@ import net.md_5.bungee.api.chat.ClickEvent
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class CommandText(val command: String) : Complex<ClickEvent> {
 
-    override fun walk(definition: Definition<*>) {
+    override fun walk(definition: Definition<*>): CommandText {
         // TODO: Implement.
+        return this
     }
 
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): ClickEvent {

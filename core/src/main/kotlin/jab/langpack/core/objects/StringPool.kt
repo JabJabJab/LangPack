@@ -72,8 +72,9 @@ open class StringPool : Complex<String> {
         }
     }
 
-    override fun walk(definition: Definition<*>) {
-        // TODO("Not yet implemented")
+    override fun walk(definition: Definition<*>): StringPool {
+        // TODO: Implement.
+        return this
     }
 
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): String {

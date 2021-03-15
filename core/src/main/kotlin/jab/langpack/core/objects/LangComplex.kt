@@ -26,13 +26,7 @@ class LangComplex : Definition<Complex<*>> {
      */
     constructor(pack: LangPack, value: Complex<*>) : super(pack, null, value)
 
-    override fun walk() {
-        value.walk(this)
-    }
+    override fun onWalk(): Complex<*> = value.walk(this)
 
-    override fun toString(): String {
-        return "LangComplex(value=$value)"
-    }
-
-
+    override fun toString(): String = "LangComplex(value=$value)"
 }

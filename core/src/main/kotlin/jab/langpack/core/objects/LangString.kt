@@ -11,19 +11,12 @@ class LangString : Definition<String> {
 
     /**
      * TODO: Document.
-     */
-    private val raw: String
-
-    /**
-     * TODO: Document.
      *
      * @param pack
      * @param parent
      * @param value
      */
-    constructor(pack: LangPack, parent: Group, value: String) : super(pack, parent, value) {
-        raw = value
-    }
+    constructor(pack: LangPack, parent: Group, value: String) : super(pack, parent, value)
 
     /**
      * TODO: Document.
@@ -31,32 +24,39 @@ class LangString : Definition<String> {
      * @param pack
      * @param value
      */
-    constructor(pack: LangPack, value: String) : super(pack, null, value) {
-        raw = value
-    }
+    constructor(pack: LangPack, value: String) : super(pack, null, value)
 
-
-    override fun walk() {
+    override fun onWalk(): String {
 
         val processor = pack.processor
         val formatter = pack.formatter
 
-        value = raw
+        var value = raw
 
         val fields = formatter.getFields(value)
+        val language = parent?.language ?: pack.defaultLang
 
         for (field in fields) {
             if (formatter.needsToResolve(field)) {
-                print("Resolving $field..")
-                val language = parent?.language ?: pack.defaultLang
+
+                var fieldDefinition = pack.resolve(language, field)
+                if (fieldDefinition == null) {
+                    fieldDefinition = LangPack.global.resolve(language, field)
+                }
+
+                // If the field cannot resolve, set the placeholder.
+                if (fieldDefinition == null) {
+                    value = value.replace(field, formatter.strip(field))
+                    continue
+                }
+
                 val resolvedField = processor.process(value, pack, language)
-                println("Result: $resolvedField")
                 value = value.replace(field, resolvedField)
             }
         }
+
+        return value
     }
 
-    override fun toString(): String {
-        return "LangString(value='$value')"
-    }
+    override fun toString(): String = "LangString(value='$value')"
 }

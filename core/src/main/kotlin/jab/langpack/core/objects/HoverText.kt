@@ -14,7 +14,7 @@ import net.md_5.bungee.api.chat.hover.content.Text
  *
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class HoverText: Complex<HoverEvent> {
+class HoverText : Complex<HoverEvent> {
 
     /**
      * The lines of text to display.
@@ -39,8 +39,9 @@ class HoverText: Complex<HoverEvent> {
         this.lines = newLines
     }
 
-    override fun walk(definition: Definition<*>) {
+    override fun walk(definition: Definition<*>): HoverText {
         // TODO: Implement.
+        return this
     }
 
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): HoverEvent {
