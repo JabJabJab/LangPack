@@ -30,7 +30,6 @@ class PercentFormatter : FieldFormatter {
                 }
             }
         }
-        println("fields: $fields")
         return fields
     }
 

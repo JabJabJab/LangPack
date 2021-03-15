@@ -2,7 +2,8 @@ package jab.langpack.spigot
 
 import jab.langpack.core.LangArg
 import jab.langpack.core.LangCache
-import jab.langpack.spigot.test.LangTestActionText
+import jab.langpack.spigot.test.TestAction
+import jab.langpack.spigot.test.TestBroadcast
 import jab.langpack.test.LangTest
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
@@ -22,6 +23,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
 
     private val tests = HashMap<String, LangTest<Player>>()
     private val cache = LangCache(plugin.pack!!)
+    private val pack = plugin.pack!!
 
     init {
         val command = plugin.getCommand("lang")
@@ -32,7 +34,8 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
             command.tabCompleter = this
 
             if (LangPlugin.CFG.testsEnabled) {
-                addTest(LangTestActionText())
+                addTest(TestAction(pack.getList("test.action.description")!!))
+                addTest(TestBroadcast(pack.getList("test.broadcast.description")!!))
             }
         }
     }
@@ -50,13 +53,13 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
 
             // Make sure that 'tests_enabled' is set to true in the global config.
             if (!LangPlugin.CFG.testsEnabled) {
-                lang.message(player, "lang_command_test.disabled")
+                lang.message(player, "test.disabled")
                 return
             }
 
             // Make sure that a test name is provided.
-            if (args.size < 2) {
-                lang.message(player, "lang_command_test.help")
+            if (args.size < 2 || args.size > 3) {
+                lang.message(player, "test.help")
                 return
             }
 
@@ -66,24 +69,39 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
             // Make sure the test exists.
             val test = tests[testName]
             if (test == null) {
-                lang.message(player, "lang_command_test.not_found", argTest)
+                lang.message(player, "test.not_found", argTest)
                 return
             }
 
-            lang.message(player, "lang_command_test.run", argTest)
+            if (args.size == 3) {
+                if (!args[2].equals("run", true)) {
+                    lang.message(player, "test.help")
+                    return
+                }
 
-            // Run the test.
-            val result = test.test(lang, player)
+                lang.message(player, "test.start", argTest)
 
-            // Display the result.
-            if (result.success) {
-                lang.message(player, "lang_command_test.success", argTest)
+                // Run the test.
+                val result = test.test(lang, player)
+
+                // Display the result.
+                if (result.success) {
+                    lang.message(player, "test.success", argTest, LangArg("time", result.time))
+                } else {
+                    val argReason = LangArg("reason", result.reason!!)
+                    lang.message(player, "test.failure", argTest, argReason)
+                }
+
+                lang.message(player, "test.end")
+
+                return
             } else {
-                val argReason = LangArg("reason", result.reason!!)
-                lang.message(player, "lang_command_test.failure", argTest, argReason)
+                lang.message(player, "test.description",
+                    LangArg("test", test.name),
+                    LangArg("description", test.description)
+                )
+                return
             }
-
-            return
         }
 
         fun tests() {
@@ -190,7 +208,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
                         }
 
                         if (list.isEmpty()) {
-                            list.add(cache.getString("lang_command_test.tooltip_not_found", lang))
+                            list.add(cache.getString("test.tooltip_not_found", lang))
                         }
 
                         return list

@@ -1,16 +1,17 @@
-command_header:
+header:
   text: '[LangPack]'
-  info: '&7%command_header.text%'
-  success: '&a%command_header.text%'
-  error: '&c%command_header.text%'
+  info: '&7%header.text%'
+  success: '&a%header.text%'
+  error: '&c%header.text%'
+  debug: '&d%header.text%'
 
 
 lang_command:
 
-  help: '%command_header.info% &6/lang &7[&6test&7]'
+  help: '%header.info% &6/lang &7[&6test&7]'
 
   # %command% -> The command given.
-  not_found: '%command_header.error% Command not found: %command%'
+  not_found: '%header.error% Command not found: %command%'
 
 
 event:

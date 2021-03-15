@@ -1,26 +1,58 @@
-lang_command_test:
+test:
+
+  description:
+    - '&7---------------------&6%header.text%&7---------------------'
+    - '&7 Test: &6%test%'
+    - ''
+    - '&7 Description:'
+    - '&f    %description%'
+    - ''
+    - '%test.click_to_run%'
+    - '&7---------------------------------------------------'
+
+  start:
+    - ' '
+    - '&7-----------------------&d%[TEST]%&7-----------------------'
+    - '%header.debug%&7 Running the test "%test%"..'
+  end: '&7---------------------------------------------------'
 
   # %test% -> The name of the test.
-  run: '%command_header.info% Running the test "%test%"..'
+  run: '%header.debug% &7Running the test "%test%"..'
 
   # %test% -> The name of the test.
-  success: '%command_header.success% The test &6%test%&a ran successfully.'
+  success:
+    - '%header.debug% &aThe test &6%test%&a ran successfully.'
+    - '%header.debug% &7Took &6%time% &7ms.'
 
   # %test% -> The name of the test.
   # %reason% -> The reason the test failed.
-  failure: '%command_header.error% The test &6%test%&c failed. Reason: "%reason%"'
+  failure: '%header.debug% %cThe test &6%test%&c failed. Reason: "%reason%"'
 
-  disabled: '%command_header.error% The test command for lang is disabled.'
-
-  help: '%command_header.info% &6/lang test &7[&6%lang_command_test.test_id%&7]'
+  help: '%header.info% &6/lang test &7[&6%test_id%&7]'
 
   # %test% -> The name of the test.
-  not_found: '%command_header.error% The test &6%test%&c is not found or loaded.'
+  not_found: '%header.error% The test &6%test%&c is not found or loaded.'
 
   tooltip_not_found: '&ctest_id not found.'
 
-  test_id:
+  disabled: '%header.error% The test command for lang is disabled.'
+
+  click_to_run:
     type: action
-    text: "test_id"
-    hover_text: "Click to show list of loaded tests."
-    command: "/lang tests"
+    text: '&a[Run]'
+    hover: 'Click to run this test'
+    command: '/lang test %test% run'
+
+  action:
+    description: '
+    This is a simple test for ActionText runtime creation and messaging
+    of a command and hover setup'
+    message:
+      type: action
+      text: '%header.debug% &7This is an example hover ActionText.'
+      hover: 'This is an example of hover text.'
+
+  broadcast:
+    description: '
+    This is a simple test for LangPack.broadcast(query, args).'
+    message: '%header.debug% &7This is a test broadcast.'

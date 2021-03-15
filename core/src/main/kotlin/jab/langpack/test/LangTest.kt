@@ -8,8 +8,9 @@ import jab.langpack.core.LangPack
  * @author Jab
  *
  * @property name The name of the test.
+ * @property description TODO: Document.
  */
-abstract class LangTest<Commander>(val name: String) {
+abstract class LangTest<Commander>(val name: String, val description: List<String>) {
 
     /**
      * Executes the test procedure.
@@ -23,7 +24,9 @@ abstract class LangTest<Commander>(val name: String) {
 
         try {
 
+            val time = System.currentTimeMillis()
             val result = run(pack, player)
+            result.time = System.currentTimeMillis() - time
             if (!result.success) {
                 return result
             }

@@ -67,10 +67,10 @@ open class ActionText : Complex<TextComponent> {
 
         val readHoverText = fun(cfg: ConfigurationSection) {
 
-            if (cfg.contains("hover_text")) {
+            if (cfg.contains("hover")) {
                 val lines = ArrayList<Text>()
-                if (cfg.isList("hover_text")) {
-                    for (arg in cfg.getStringList("hover_text")) {
+                if (cfg.isList("hover")) {
+                    for (arg in cfg.getStringList("hover")) {
                         if (lines.isEmpty()) {
                             lines.add(Text(arg))
                         } else {
@@ -78,20 +78,20 @@ open class ActionText : Complex<TextComponent> {
                         }
                     }
                 } else {
-                    lines.add(Text(cfg.getString("hover_text")))
+                    lines.add(Text(cfg.getString("hover")))
                 }
                 hoverText = HoverText(lines)
-            }
-
-            if (cfg.contains("command")) {
-                val line = cfg.getString("command")!!
-                this.commandText = CommandText(line)
             }
         }
 
         text = cfg.getString("text")!!
-        if (cfg.contains("hover_text")) {
+        if (cfg.contains("hover")) {
             readHoverText(cfg)
+        }
+
+        if (cfg.contains("command")) {
+            val line = cfg.getString("command")!!
+            this.commandText = CommandText(line)
         }
     }
 

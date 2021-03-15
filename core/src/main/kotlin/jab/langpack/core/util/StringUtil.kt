@@ -20,16 +20,14 @@ object StringUtil {
      * @return Returns the result String.
      */
     fun toAString(value: Any): String {
-
-        return if (value is List<*>) {
+        return if (value is Collection<*>) {
 
             val builder: StringBuilder = StringBuilder()
             for (next in value) {
-                val line = value.toString()
                 if (builder.isEmpty()) {
-                    builder.append(line)
+                    builder.append(next.toString())
                 } else {
-                    builder.append(NEW_LINE).append(line)
+                    builder.append(NEW_LINE).append(next.toString())
                 }
             }
 

@@ -36,7 +36,6 @@ class LangString : Definition<String> {
     }
 
 
-
     override fun walk() {
 
         val processor = pack.processor
