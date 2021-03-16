@@ -1,8 +1,13 @@
+@file:Suppress("unused")
+
 package jab.langpack.core
 
+import jab.langpack.core.objects.LangArg
 import java.util.*
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **LangCache** class proxies the processed calls for [LangPack], storing them as a cached result to be
  * referred to if called again. The purpose of the cache is to avoid wasted calculations on multiple calls that returns
  * the same result.
@@ -15,7 +20,6 @@ import java.util.*
  *
  * @property pack The lang-pack instance to call to and cache the results.
  */
-@Suppress("unused", "MemberVisibilityCanBePrivate")
 open class LangCache<P : LangPack>(val pack: P) {
 
     private val cache: EnumMap<Language, HashMap<String, String>> = EnumMap(Language::class.java)

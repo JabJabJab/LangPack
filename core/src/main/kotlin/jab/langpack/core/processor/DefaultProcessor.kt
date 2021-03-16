@@ -1,11 +1,11 @@
 package jab.langpack.core.processor
 
-import jab.langpack.core.LangArg
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-import jab.langpack.core.objects.Complex
-import jab.langpack.core.objects.Definition
-import jab.langpack.core.objects.LangString
+import jab.langpack.core.objects.complex.Complex
+import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.objects.definition.StringDefinition
 import jab.langpack.core.util.ChatUtil
 import jab.langpack.core.util.StringUtil
 import jab.langpack.core.util.StringUtil.color
@@ -17,6 +17,8 @@ import net.md_5.bungee.api.chat.hover.content.Content
 import net.md_5.bungee.api.chat.hover.content.Text
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The ***DefaultProcessor*** class implements the default field syntax for lang-packs.
  *
  *  @author Jab
@@ -158,7 +160,7 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
                 var field: Definition<*>? = null
                 for (arg in args) {
                     if (arg.key.equals(fField, true)) {
-                        field = LangString(pack, StringUtil.toAString(arg.value))
+                        field = StringDefinition(pack, StringUtil.toAString(arg.value))
                         found = true
                         break
                     }

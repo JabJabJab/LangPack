@@ -1,6 +1,15 @@
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+
 package jab.langpack.core
 
-import jab.langpack.core.objects.*
+import jab.langpack.core.objects.LangArg
+import jab.langpack.core.objects.LangFile
+import jab.langpack.core.objects.LangGroup
+import jab.langpack.core.objects.complex.Complex
+import jab.langpack.core.objects.complex.StringPool
+import jab.langpack.core.objects.definition.ComplexDefinition
+import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.objects.definition.StringDefinition
 import jab.langpack.core.processor.DefaultProcessor
 import jab.langpack.core.processor.FieldFormatter
 import jab.langpack.core.processor.PercentFormatter
@@ -42,7 +51,6 @@ import java.util.*
  * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory. Thrown if
  *      the name given is empty.
  */
-@Suppress("MemberVisibilityCanBePrivate", "unused")
 open class LangPack(val name: String, val dir: File = File("lang")) {
 
     /**
@@ -161,9 +169,9 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
         val file: LangFile = files.computeIfAbsent(lang) { LangFile(this, lang, lang.abbreviation) }
         if (value != null) {
             if (value is Complex<*>) {
-                file.set(key, LangComplex(this, value))
+                file.set(key, ComplexDefinition(this, value))
             } else {
-                file.set(key, LangString(this, StringUtil.toAString(value)))
+                file.set(key, StringDefinition(this, StringUtil.toAString(value)))
             }
         } else {
             file.remove(key)
@@ -244,7 +252,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     /**
      * Pretty-print the contents of the pack to the console. (Debug purposes)
      */
-    fun prettyPrintln(prefix: String = "") {
+    private fun prettyPrintln(prefix: String = "") {
 
         val list = ArrayList<String>()
         var prefixActual = prefix
@@ -265,7 +273,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
             line("($key) = ${definition.value}")
         }
 
-        fun group(group: Group) {
+        fun group(group: LangGroup) {
             line("[${group.name}]:")
             indent()
             for ((_, child) in group.children) {

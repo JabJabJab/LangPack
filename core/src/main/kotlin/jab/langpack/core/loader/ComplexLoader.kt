@@ -1,9 +1,11 @@
 package jab.langpack.core.loader
 
-import jab.langpack.core.objects.Complex
+import jab.langpack.core.objects.complex.Complex
 import org.bukkit.configuration.ConfigurationSection
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **ComplexLoader** interface allows third-party installments of complex objects that require code extensions in
  * specific environments such as ***Bukkit***, ***Spigot***, and ***BungeeCord***.
  *

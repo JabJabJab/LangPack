@@ -1,8 +1,12 @@
-package jab.langpack.core.objects
+@file:Suppress("MemberVisibilityCanBePrivate")
 
-import jab.langpack.core.LangArg
+package jab.langpack.core.objects.complex
+
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
+import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.processor.FieldFormatter
 import jab.langpack.core.processor.Processor
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
@@ -11,6 +15,8 @@ import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.configuration.ConfigurationSection
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **ActionText** class packages defined [HoverEvent] and [ClickEvent] as [HoverText] and [CommandText] wrappers for
  * dynamic [TextComponent] usage for lang-packs.
  *
@@ -18,7 +24,6 @@ import org.bukkit.configuration.ConfigurationSection
  *
  * @author Jab
  */
-@Suppress("MemberVisibilityCanBePrivate", "unused")
 open class ActionText : Complex<TextComponent> {
 
     /**
@@ -35,6 +40,15 @@ open class ActionText : Complex<TextComponent> {
      * The command to execute for resolved [TextComponent] when clicked in chat.
      */
     var commandText: CommandText? = null
+
+    /**
+     * None constructor.
+     *
+     * @param text The text to display.
+     */
+    constructor(text: String) {
+        this.text = text
+    }
 
     /**
      * Hover constructor.
@@ -56,6 +70,32 @@ open class ActionText : Complex<TextComponent> {
     constructor(text: String, command: String) {
         this.text = text
         this.commandText = CommandText(command)
+    }
+
+    /**
+     * Full primitives constructor
+     *
+     * @param text The text to display.
+     * @param command The command to execute.
+     * @param hover The hover text to display.
+     */
+    constructor(text: String, command: String, hover: List<String>) {
+        this.text = text
+        this.commandText = CommandText(command)
+        this.hoverText = HoverText(hover)
+    }
+
+    /**
+     * Full objects constructor
+     *
+     * @param text The text to display.
+     * @param commandText The command to execute.
+     * @param hoverText The hover text to display.
+     */
+    constructor(text: String, commandText: CommandText, hoverText: HoverText) {
+        this.text = text
+        this.commandText = commandText
+        this.hoverText = hoverText
     }
 
     /**
@@ -95,11 +135,6 @@ open class ActionText : Complex<TextComponent> {
         }
     }
 
-    override fun walk(definition: Definition<*>): ActionText {
-        // TODO: Implement.
-        return this
-    }
-
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): TextComponent {
 
         val text = pack.processor.process(text, pack, lang, *args)
@@ -115,6 +150,20 @@ open class ActionText : Complex<TextComponent> {
         return component
     }
 
+    override fun walk(definition: Definition<*>): ActionText {
+        val walked = ActionText(definition.walk(text))
+        if (commandText != null) walked.commandText = commandText!!.walk(definition)
+        if (hoverText != null) walked.hoverText = hoverText!!.walk(definition)
+        return walked
+    }
+
+    override fun needsWalk(formatter: FieldFormatter): Boolean {
+        if (formatter.needsWalk(text)) return true
+        if (commandText != null && commandText!!.needsWalk(formatter)) return true
+        else if (hoverText != null && hoverText!!.needsWalk(formatter)) return true
+        return false
+    }
+
     override fun get(): TextComponent {
 
         val component = TextComponent(text)
@@ -127,12 +176,5 @@ open class ActionText : Complex<TextComponent> {
         }
 
         return component
-    }
-
-    override fun needsWalk(): Boolean {
-        // TODO: Implement.
-        if (commandText != null && commandText!!.needsWalk()) return true
-        else if (hoverText != null && hoverText!!.needsWalk()) return true
-        return false
     }
 }

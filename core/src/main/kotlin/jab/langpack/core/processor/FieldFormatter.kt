@@ -1,6 +1,10 @@
 package jab.langpack.core.processor
 
+import jab.langpack.core.util.StringUtil
+
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The ***FieldFormatter*** interface implements methods for the following:
  *  <br/>
  * - **Field detection**
@@ -52,5 +56,42 @@ interface FieldFormatter {
      */
     fun isResolve(field: String): Boolean
 
+    /**
+     * TODO: Document.
+     *
+     * @param string
+     *
+     * @return
+     */
     fun isGlobalScope(field: String): Boolean
+
+    /**
+     * TODO: Document.
+     *
+     * @param list
+     *
+     * @return
+     */
+    fun needsWalk(list: List<*>): Boolean {
+        for (string in list) {
+            if (string != null && needsWalk(string)) return true
+        }
+        return false
+    }
+
+    /**
+     * TODO: Document.
+     *
+     * @param value
+     *
+     * @return
+     */
+    fun needsWalk(value: Any): Boolean {
+        val valueActual = StringUtil.toAString(value)
+        val fields = getFields(valueActual)
+        for (field in fields) {
+            if (isResolve(field)) return true
+        }
+        return false
+    }
 }

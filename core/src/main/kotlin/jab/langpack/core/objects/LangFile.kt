@@ -1,18 +1,20 @@
-package jab.langpack.core
+package jab.langpack.core.objects
 
-import jab.langpack.core.objects.Group
+import jab.langpack.core.LangPack
+import jab.langpack.core.Language
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.FileNotFoundException
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **LangFile** class acts as a lang section that identifies with a language. The lang-files are used to
  * resolve dialog based on language.
  *
  * @author Jab
  */
-@Suppress("MemberVisibilityCanBePrivate", "unused")
-class LangFile : Group {
+class LangFile : LangGroup {
 
     /**
      * The file storing the YAML data.

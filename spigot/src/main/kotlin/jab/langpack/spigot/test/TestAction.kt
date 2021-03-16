@@ -1,7 +1,7 @@
 package jab.langpack.spigot.test
 
 import jab.langpack.core.LangPack
-import jab.langpack.core.objects.ActionText
+import jab.langpack.core.objects.complex.ActionText
 import jab.langpack.spigot.message
 import jab.langpack.test.LangTest
 import jab.langpack.test.TestResult

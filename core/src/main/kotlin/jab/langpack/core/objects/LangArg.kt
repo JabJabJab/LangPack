@@ -1,6 +1,8 @@
-package jab.langpack.core
+package jab.langpack.core.objects
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **LangArg** struct is for a stored key->value pair to override & replace fields.
  *
  * @author Jab

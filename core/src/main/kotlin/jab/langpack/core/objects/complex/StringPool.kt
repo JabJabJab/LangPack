@@ -1,19 +1,24 @@
-package jab.langpack.core.objects
+@file:Suppress("MemberVisibilityCanBePrivate", "unused")
 
-import jab.langpack.core.LangArg
+package jab.langpack.core.objects.complex
+
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-import jab.langpack.core.objects.StringPool.Mode
+import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.objects.complex.StringPool.Mode
+import jab.langpack.core.processor.FieldFormatter
 import jab.langpack.core.util.StringUtil
 import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **StringPool** class allows for storage of multiple strings to be polled based on a set [Mode].
  *
  * @author Jab
  */
-@Suppress("MemberVisibilityCanBePrivate", "unused")
 open class StringPool : Complex<String> {
 
     /**
@@ -26,8 +31,8 @@ open class StringPool : Complex<String> {
      */
     var random: Random
 
-    private var strings: Array<String> = emptyArray()
-    private var index: Int = 0
+    private var strings = ArrayList<String>()
+    private var index = 0
 
     /**
      * Basic constructor.
@@ -38,6 +43,12 @@ open class StringPool : Complex<String> {
     constructor(mode: Mode = Mode.RANDOM, random: Random = LangPack.DEFAULT_RANDOM) {
         this.mode = mode
         this.random = random
+    }
+
+    constructor(mode: Mode = Mode.RANDOM, random: Random = LangPack.DEFAULT_RANDOM, strings: ArrayList<String>) {
+        this.mode = mode
+        this.random = random
+        this.strings = strings
     }
 
     /**
@@ -72,11 +83,6 @@ open class StringPool : Complex<String> {
         }
     }
 
-    override fun walk(definition: Definition<*>): StringPool {
-        // TODO: Implement.
-        return this
-    }
-
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): String {
         return if (strings.isEmpty()) {
             ""
@@ -84,6 +90,10 @@ open class StringPool : Complex<String> {
             pack.processor.process(poll(), pack, lang, *args)
         }
     }
+
+    override fun walk(definition: Definition<*>): StringPool = StringPool(mode, random, definition.walk(strings))
+
+    override fun needsWalk(formatter: FieldFormatter): Boolean = formatter.needsWalk(strings)
 
     override fun get(): String {
         return if (strings.isEmpty()) {
@@ -93,18 +103,11 @@ open class StringPool : Complex<String> {
         }
     }
 
-    override fun needsWalk(): Boolean {
-        // TODO: Implement.
-        return false
-    }
-
     /**
      * @return Returns the next result in the pool.
      */
     fun poll(): String {
-        if (strings.isEmpty()) {
-            throw RuntimeException("The StringPool is empty and cannot poll.")
-        }
+        require(strings.isNotEmpty()) { "The StringPool is empty and cannot poll." }
         return strings[roll()]
     }
 
@@ -112,28 +115,20 @@ open class StringPool : Complex<String> {
      * @return Returns the next string-index to use.
      */
     fun roll(): Int {
-
-        if (strings.isEmpty()) {
-            return -1
-        }
-
-        when (mode) {
+        if (strings.isEmpty()) return -1
+        return when (mode) {
             Mode.RANDOM -> {
-                return random.nextInt(strings.size)
+                random.nextInt(strings.size)
             }
             Mode.SEQUENTIAL -> {
                 val result = index++
-                if (index == strings.size) {
-                    index = 0
-                }
-                return result
+                if (index == strings.size) index = 0
+                result
             }
             Mode.SEQUENTIAL_REVERSED -> {
                 val result = index--
-                if (index == -1) {
-                    index = strings.lastIndex
-                }
-                return result
+                if (index == -1) index = strings.lastIndex
+                result
             }
         }
     }
@@ -144,13 +139,7 @@ open class StringPool : Complex<String> {
      * @param string The string to add.
      */
     fun add(string: String) {
-        if (strings.isEmpty()) {
-            strings = arrayOf(string)
-            return
-        }
-
-        strings = strings.plus(string)
-
+        strings.add(string)
         index = if (mode == Mode.SEQUENTIAL_REVERSED) {
             strings.lastIndex
         } else {
@@ -162,7 +151,7 @@ open class StringPool : Complex<String> {
      * Clears all strings from the pool.
      */
     fun clear() {
-        strings = emptyArray()
+        strings.clear()
         index = 0
     }
 
@@ -192,9 +181,7 @@ open class StringPool : Complex<String> {
             fun getType(id: String): Mode? {
                 if (id.isNotEmpty()) {
                     for (next in values()) {
-                        if (next.name.equals(id, true)) {
-                            return next
-                        }
+                        if (next.name.equals(id, true)) return next
                     }
                 }
                 return null

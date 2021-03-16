@@ -1,12 +1,14 @@
 package jab.langpack.core.processor
 
-import jab.langpack.core.LangArg
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
 
 import net.md_5.bungee.api.chat.TextComponent
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **LangProcessor** interface is for implementing syntax formats for use in [LangPack].
  *
  * @author Jab

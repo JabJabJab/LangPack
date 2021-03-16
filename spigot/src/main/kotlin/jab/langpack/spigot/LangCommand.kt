@@ -1,6 +1,6 @@
 package jab.langpack.spigot
 
-import jab.langpack.core.LangArg
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangCache
 import jab.langpack.spigot.test.TestAction
 import jab.langpack.spigot.test.TestBroadcast

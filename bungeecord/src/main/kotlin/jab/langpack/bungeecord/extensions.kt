@@ -2,13 +2,13 @@
 
 package jab.langpack.bungeecord
 
-import jab.langpack.core.LangArg
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangCache
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-import jab.langpack.core.objects.ActionText
-import jab.langpack.core.objects.Complex
-import jab.langpack.core.objects.StringPool
+import jab.langpack.core.objects.complex.ActionText
+import jab.langpack.core.objects.complex.Complex
+import jab.langpack.core.objects.complex.StringPool
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer

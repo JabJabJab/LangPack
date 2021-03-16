@@ -1,6 +1,8 @@
 package jab.langpack.core.processor
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **PercentFormatter** class. TODO: Document.
  *
  * @author Jab
@@ -41,19 +43,12 @@ class PercentFormatter : FieldFormatter {
         return false
     }
 
-    override fun isResolve(field: String): Boolean {
-        val result = field.indexOf('!') > -1
-//        println("isResolve($field) = $result")
-        return result
-    }
+    override fun isResolve(field: String): Boolean = field.indexOf('!') > -1
 
-    override fun isGlobalScope(field: String): Boolean {
-        return field.indexOf('~') > -1
-    }
+    override fun isGlobalScope(field: String): Boolean = field.indexOf('~') > -1
 
     override fun format(field: String): String = "%${field.toLowerCase()}%"
 
-    override fun strip(string: String): String {
-        return string.replace("%", "").replace("!", "").replace("~", "")
-    }
+    override fun strip(string: String): String = string.replace("%", "").replace("!", "").replace("~", "")
+
 }

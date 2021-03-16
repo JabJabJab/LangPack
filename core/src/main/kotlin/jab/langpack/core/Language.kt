@@ -1,6 +1,10 @@
+@file:Suppress("SpellCheckingInspection")
+
 package jab.langpack.core
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **Language** enum stores the constants for identification of languages supported by the lang-pack library.
  * ### Minecraft's supported languages:</b> https://minecraft.gamepedia.com/Language
  *
@@ -9,7 +13,6 @@ package jab.langpack.core
  * @property abbreviation The abbreviation of the Language.
  * @property fallBack The fallback language to refer to.
  */
-@Suppress("unused", "SpellCheckingInspection")
 enum class Language(val abbreviation: String, private val fallBack: String? = null) {
 
     // Afrikaans

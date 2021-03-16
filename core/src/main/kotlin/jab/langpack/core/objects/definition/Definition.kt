@@ -1,6 +1,10 @@
-package jab.langpack.core.objects
+@file:Suppress("MemberVisibilityCanBePrivate")
+
+package jab.langpack.core.objects.definition
 
 import jab.langpack.core.LangPack
+import jab.langpack.core.objects.LangGroup
+import jab.langpack.core.processor.FieldFormatter
 
 /**
  * The **Definition** class. TODO: Document.
@@ -9,7 +13,7 @@ import jab.langpack.core.LangPack
  * @property parent
  * @property value
  */
-abstract class Definition<E>(val pack: LangPack, val parent: Group?, val raw: E) {
+abstract class Definition<E>(val pack: LangPack, val parent: LangGroup?, val raw: E) {
 
     var value: E = raw
     var walked: Boolean = false
@@ -18,7 +22,7 @@ abstract class Definition<E>(val pack: LangPack, val parent: Group?, val raw: E)
      * TODO: Document.
      */
     fun walk() {
-        if (!walked && needsWalk()) {
+        if (!walked && needsWalk(pack.formatter)) {
             value = onWalk()
             walked = true
         }
@@ -44,7 +48,20 @@ abstract class Definition<E>(val pack: LangPack, val parent: Group?, val raw: E)
      *
      * @return
      */
-    abstract fun needsWalk(): Boolean
+    abstract fun needsWalk(formatter: FieldFormatter): Boolean
+
+    /**
+     * TODO: Document.
+     *
+     * @param list
+     *
+     * @return
+     */
+    fun walk(list: List<String>): ArrayList<String> {
+        val walkedList = ArrayList<String>()
+        for (string in list) walkedList.add(walk(string))
+        return walkedList
+    }
 
     /**
      * TODO: Document.
@@ -53,7 +70,7 @@ abstract class Definition<E>(val pack: LangPack, val parent: Group?, val raw: E)
      *
      * @return
      */
-    protected fun walkString(string: String): String {
+    fun walk(string: String): String {
         if (pack.debug) {
             println("Walking ($string)..")
         }
@@ -103,21 +120,5 @@ abstract class Definition<E>(val pack: LangPack, val parent: Group?, val raw: E)
         }
 
         return value
-    }
-
-    /**
-     * TODO: Document.
-     *
-     * @param string
-     *
-     * @return
-     */
-    protected fun stringNeedsWalk(string: String): Boolean {
-        val formatter = pack.formatter
-        val fields = formatter.getFields(string)
-        for (field in fields) {
-            if (formatter.isResolve(field)) return true
-        }
-        return false
     }
 }

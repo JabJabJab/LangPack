@@ -2,9 +2,12 @@ package jab.langpack.core.util
 
 import jab.langpack.core.LangPack.Companion.NEW_LINE
 import net.md_5.bungee.api.ChatColor
+import net.md_5.bungee.api.chat.hover.content.Text
 import java.util.*
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **StringUtil** class contains static utility methods for management of objects and strings.
  *
  * @author Jab
@@ -20,20 +23,28 @@ object StringUtil {
      * @return Returns the result String.
      */
     fun toAString(value: Any): String {
-        return if (value is Collection<*>) {
+        return when (value) {
 
-            val builder: StringBuilder = StringBuilder()
-            for (next in value) {
-                if (builder.isEmpty()) {
-                    builder.append(next.toString())
-                } else {
-                    builder.append(NEW_LINE).append(next.toString())
+            is Collection<*> -> {
+                val builder: StringBuilder = StringBuilder()
+                for (next in value) {
+                    if (builder.isEmpty()) {
+                        builder.append(next.toString())
+                    } else {
+                        builder.append(NEW_LINE).append(next.toString())
+                    }
                 }
+
+                builder.toString()
             }
 
-            builder.toString()
-        } else {
-            value.toString()
+            is Text -> {
+                value.value.toString()
+            }
+
+            else -> {
+                value.toString()
+            }
         }
     }
 

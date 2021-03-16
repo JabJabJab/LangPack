@@ -1,19 +1,25 @@
-package jab.langpack.core.objects
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
-import jab.langpack.core.LangArg
+package jab.langpack.core.objects.complex
+
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
+import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.processor.FieldFormatter
+import jab.langpack.core.util.StringUtil
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.hover.content.Text
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **HoverText** class handles hover text that is displayed for ActionText instances. The
  *   HoverText supports dynamic text fields for processors.
  *
  * @author Jab
  *
  */
-@Suppress("MemberVisibilityCanBePrivate", "unused")
 class HoverText : Complex<HoverEvent> {
 
     /**
@@ -24,8 +30,23 @@ class HoverText : Complex<HoverEvent> {
     /**
      * @param lines The lines of text to display.
      */
-    constructor(lines: List<Text>) {
-        this.lines = lines
+    constructor(lines: List<*>) {
+
+        val packagedLines = ArrayList<Text>()
+
+        for(line in lines) {
+            if(line == null) {
+                packagedLines.add(Text(" "))
+            } else {
+                if (line is Text) {
+                    packagedLines.add(line)
+                } else {
+                    packagedLines.add(Text(StringUtil.toAString(line)))
+                }
+            }
+        }
+
+        this.lines = packagedLines
     }
 
     /**
@@ -37,11 +58,6 @@ class HoverText : Complex<HoverEvent> {
             newLines.add(line)
         }
         this.lines = newLines
-    }
-
-    override fun walk(definition: Definition<*>): HoverText {
-        // TODO: Implement.
-        return this
     }
 
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): HoverEvent {
@@ -56,10 +72,16 @@ class HoverText : Complex<HoverEvent> {
         return HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
     }
 
+    override fun walk(definition: Definition<*>): HoverText {
+        val walkedLines = ArrayList<Text>()
+        for (text in lines) {
+            walkedLines.add(Text(definition.walk(text.value.toString())))
+        }
+        return HoverText(walkedLines)
+    }
+
+    override fun needsWalk(formatter: FieldFormatter): Boolean = formatter.needsWalk(lines)
+
     override fun get(): HoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, lines)
 
-    override fun needsWalk(): Boolean {
-        // TODO: Implement.
-        return false
-    }
 }

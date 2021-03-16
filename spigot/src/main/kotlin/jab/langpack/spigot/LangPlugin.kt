@@ -1,6 +1,6 @@
 package jab.langpack.spigot
 
-import jab.langpack.core.LangArg
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.event.EventHandler
@@ -63,7 +63,7 @@ internal class LangPlugin : JavaPlugin(), Listener {
         }
 
         pack = LangPack("lang")
-        pack!!.debug = true
+        // pack!!.debug = true
         pack!!.load(save = true, force = true)
         pack!!.append("test", save = true, force = true)
     }

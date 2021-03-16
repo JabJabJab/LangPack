@@ -1,6 +1,6 @@
 package jab.langpack.bungeecord
 
-import jab.langpack.core.LangArg
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.event.PlayerDisconnectEvent
