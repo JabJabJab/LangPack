@@ -93,6 +93,11 @@ open class StringPool : Complex<String> {
         }
     }
 
+    override fun needsWalk(): Boolean {
+        // TODO: Implement.
+        return false
+    }
+
     /**
      * @return Returns the next result in the pool.
      */

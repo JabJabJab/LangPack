@@ -29,4 +29,9 @@ class LangComplex : Definition<Complex<*>> {
     override fun onWalk(): Complex<*> = value.walk(this)
 
     override fun toString(): String = "LangComplex(value=$value)"
+
+    override fun needsWalk(): Boolean {
+        // TODO: Implement.
+        return raw.needsWalk()
+    }
 }

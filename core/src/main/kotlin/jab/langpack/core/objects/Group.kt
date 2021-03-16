@@ -136,9 +136,6 @@ open class Group(var pack: LangPack, val language: Language, val name: String, v
             }
         }
 
-        // Walk all definitions after loading and appending.
-        walk()
-
         return this
     }
 
@@ -228,9 +225,16 @@ open class Group(var pack: LangPack, val language: Language, val name: String, v
      * TODO: Document.
      */
     fun walk() {
-        for ((_, field) in fields) {
-            field.walk()
-        }
+        for ((_, child) in children) child.walk()
+        for ((_, field) in fields) field.walk()
+    }
+
+    /**
+     * TODO: Document.
+     */
+    fun unWalk() {
+        for ((_, child) in children) child.unWalk()
+        for ((_, field) in fields) field.unWalk()
     }
 
     /**

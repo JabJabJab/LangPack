@@ -1,9 +1,9 @@
 header:
   text: '[LangPack]'
-  info: '&7%header.text%'
-  success: '&a%header.text%'
-  error: '&c%header.text%'
-  debug: '&d%header.text%'
+  info: '&7%!header.text%'
+  success: '&a%!header.text%'
+  error: '&c%!header.text%'
+  debug: '&d%!header.text%'
 
 
 permission:

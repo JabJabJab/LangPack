@@ -36,4 +36,6 @@ interface Complex<E> {
      * @return Returns the processed result.
      */
     fun get(): E
+
+    fun needsWalk(): Boolean
 }

@@ -57,4 +57,9 @@ class HoverText : Complex<HoverEvent> {
     }
 
     override fun get(): HoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, lines)
+
+    override fun needsWalk(): Boolean {
+        // TODO: Implement.
+        return false
+    }
 }

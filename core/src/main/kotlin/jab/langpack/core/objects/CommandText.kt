@@ -26,4 +26,9 @@ class CommandText(val command: String) : Complex<ClickEvent> {
     }
 
     override fun get(): ClickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, command)
+
+    override fun needsWalk(): Boolean {
+        // TODO: Implement.
+        return false
+    }
 }

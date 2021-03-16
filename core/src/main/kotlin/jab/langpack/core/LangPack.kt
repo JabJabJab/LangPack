@@ -12,6 +12,8 @@ import java.io.File
 import java.util.*
 
 /**
+ * TODO: Update documentation to reflect Definition API update.
+ *
  * The **LangPack** class is a utility that stores entries for dialog, separated by language. Files are loaded into the
  * lang-pack as a [LangFile], and queried based on language context when querying dialog.
  *
@@ -97,6 +99,11 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      * @param force (Optional) Set to true to save resources, even if they are already present.
      */
     fun append(name: String, save: Boolean = false, force: Boolean = false) {
+
+        if (debug) {
+            println("[$name] :: append($name)")
+        }
+
         // Save any resources detected.
         if (save) {
 
@@ -127,12 +134,20 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
                 }
             }
         }
+
+        if (debug) {
+            prettyPrintln()
+        }
+
+        walk()
     }
 
+    /**
+     * TODO: Document.
+     */
     fun walk() {
-        for ((_, value) in files) {
-            value.walk()
-        }
+        for ((_, file) in files) file.unWalk()
+        for ((_, file) in files) file.walk()
     }
 
     /**
@@ -212,12 +227,68 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
     fun getString(query: String, lang: Language = defaultLang, vararg args: LangArg): String? {
+
+        if (debug) {
+            print("[$name] :: getString($query)")
+        }
+
         val raw = resolve(lang, query) ?: return null
         val value = raw.value ?: return null
         return if (value is Complex<*>) {
             value.process(this, lang, *args).toString()
         } else {
             processor.process(value.toString(), this, lang, *args)
+        }
+    }
+
+    /**
+     * Pretty-print the contents of the pack to the console. (Debug purposes)
+     */
+    fun prettyPrintln(prefix: String = "") {
+
+        val list = ArrayList<String>()
+        var prefixActual = prefix
+
+        fun indent() {
+            prefixActual += "  "
+        }
+
+        fun unIndent() {
+            prefixActual = prefixActual.substring(0, prefixActual.length - 2)
+        }
+
+        fun line(line: String) {
+            list.add("$prefixActual$line")
+        }
+
+        fun definition(key: String, definition: Definition<*>) {
+            line("($key) = ${definition.value}")
+        }
+
+        fun group(group: Group) {
+            line("[${group.name}]:")
+            indent()
+            for ((_, child) in group.children) {
+                group(child)
+            }
+            for ((key, field) in group.fields) {
+                definition(key, field)
+            }
+            unIndent()
+        }
+
+        line("LangPack($name) {")
+        indent()
+
+        for ((_, file) in files) {
+            group(file)
+        }
+
+        unIndent()
+        line("}")
+
+        for (line in list) {
+            println(line)
         }
     }
 
@@ -230,6 +301,10 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
     fun resolve(lang: Language, query: String): Definition<*>? {
+
+        if (debug) {
+            print("resolve($lang, $query)")
+        }
 
         // Attempt to grab the most relevant LangFile.
         var langFile = files[lang]
@@ -250,6 +325,10 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
         // Check global last.
         if (raw == null && this != global) {
             raw = global.resolve(lang, query)
+        }
+
+        if (debug) {
+            println(" result: $raw")
         }
 
         return raw

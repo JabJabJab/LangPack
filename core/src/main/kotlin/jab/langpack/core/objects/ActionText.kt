@@ -128,4 +128,11 @@ open class ActionText : Complex<TextComponent> {
 
         return component
     }
+
+    override fun needsWalk(): Boolean {
+        // TODO: Implement.
+        if (commandText != null && commandText!!.needsWalk()) return true
+        else if (hoverText != null && hoverText!!.needsWalk()) return true
+        return false
+    }
 }

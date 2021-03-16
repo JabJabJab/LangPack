@@ -42,14 +42,18 @@ class PercentFormatter : FieldFormatter {
     }
 
     override fun isResolve(field: String): Boolean {
-        return isField(field) && strip(field).indexOf('!') > -1
+        val result = field.indexOf('!') > -1
+//        println("isResolve($field) = $result")
+        return result
     }
 
     override fun isGlobalScope(field: String): Boolean {
-        return isField(field) && strip(field).indexOf('~') > -1
+        return field.indexOf('~') > -1
     }
 
     override fun format(field: String): String = "%${field.toLowerCase()}%"
 
-    override fun strip(string: String): String = string.replace("%", "")
+    override fun strip(string: String): String {
+        return string.replace("%", "").replace("!", "").replace("~", "")
+    }
 }

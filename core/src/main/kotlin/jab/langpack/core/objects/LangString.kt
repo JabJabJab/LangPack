@@ -27,36 +27,12 @@ class LangString : Definition<String> {
     constructor(pack: LangPack, value: String) : super(pack, null, value)
 
     override fun onWalk(): String {
-
-        val processor = pack.processor
-        val formatter = pack.formatter
-
-        var value = raw
-
-        val fields = formatter.getFields(value)
-        val language = parent?.language ?: pack.defaultLang
-
-        for (field in fields) {
-            if (formatter.isResolve(field)) {
-
-                var fieldDefinition = pack.resolve(language, field)
-                if (fieldDefinition == null) {
-                    fieldDefinition = LangPack.global.resolve(language, field)
-                }
-
-                // If the field cannot resolve, set the placeholder.
-                if (fieldDefinition == null) {
-                    value = value.replace(field, formatter.strip(field))
-                    continue
-                }
-
-                val resolvedField = processor.process(value, pack, language)
-                value = value.replace(field, resolvedField)
-            }
-        }
-
-        return value
+        return walkString(raw)
     }
 
-    override fun toString(): String = "LangString(value='$value')"
+    override fun needsWalk(): Boolean {
+        return stringNeedsWalk(raw)
+    }
+
+    override fun toString(): String = "LangString($value)"
 }
