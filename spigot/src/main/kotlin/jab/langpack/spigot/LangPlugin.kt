@@ -28,7 +28,13 @@ internal class LangPlugin : JavaPlugin(), Listener {
         instance = this
 
         CFG(this)
-        loadLangPacks()
+
+        val langDir = File(dataFolder, "lang")
+        if (!langDir.exists()) langDir.mkdirs()
+        pack = LangPack("lang")
+        pack!!.load(save = true, force = true)
+        pack!!.append("test", save = true, force = true)
+
         LangCommand(this)
 
         server.pluginManager.registerEvents(this, this)
@@ -52,20 +58,6 @@ internal class LangPlugin : JavaPlugin(), Listener {
                 pack?.broadcast("event.leave_server", LangArg("player", player.displayName))
             }
         }
-    }
-
-
-    private fun loadLangPacks() {
-
-        val langDir = File(dataFolder, "lang")
-        if (!langDir.exists()) {
-            langDir.mkdirs()
-        }
-
-        pack = LangPack("lang")
-        // pack!!.debug = true
-        pack!!.load(save = true, force = true)
-        pack!!.append("test", save = true, force = true)
     }
 
     companion object {
