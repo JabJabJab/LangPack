@@ -24,9 +24,9 @@ event:
     type: pool
     mode: random
     pool:
-      - '&aHello, %player%!'
-      - '&aPlease welcome %player% to the server!'
-      - '&a%player% dropped into the server.'
+      - '&aHello, %player=(Unknown Player)%!'
+      - '&aPlease welcome %player=(Unknown Player)% to the server!'
+      - '&a%player=(An Unknown Player)% dropped into the server.'
 
   # player -> The name of the player leaving the server.
   leave_server: '&9Goodbye, %player%.'

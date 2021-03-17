@@ -3,6 +3,7 @@ package jab.langpack.core.objects.complex
 import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
+import jab.langpack.core.objects.LangGroup
 import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.objects.formatter.FieldFormatter
 import jab.langpack.core.processor.LangProcessor
@@ -32,7 +33,7 @@ interface Complex<E> {
      *
      * @return Returns the processed result.
      */
-    fun process(pack: LangPack, lang: Language, vararg args: LangArg): E
+    fun process(pack: LangPack, lang: Language, context: LangGroup?, vararg args: LangArg): E
 
     /**
      * TODO: Document.

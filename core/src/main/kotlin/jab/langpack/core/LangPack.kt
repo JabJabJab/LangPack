@@ -10,10 +10,10 @@ import jab.langpack.core.objects.complex.StringPool
 import jab.langpack.core.objects.definition.ComplexDefinition
 import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.objects.definition.StringDefinition
-import jab.langpack.core.processor.DefaultProcessor
 import jab.langpack.core.objects.formatter.FieldFormatter
-import jab.langpack.core.processor.LangProcessor
 import jab.langpack.core.objects.formatter.PercentFormatter
+import jab.langpack.core.processor.DefaultProcessor
+import jab.langpack.core.processor.LangProcessor
 import jab.langpack.core.util.ResourceUtil
 import jab.langpack.core.util.StringUtil
 import net.md_5.bungee.api.chat.TextComponent
@@ -224,17 +224,34 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
     fun getString(query: String, lang: Language = defaultLang, vararg args: LangArg): String? {
+        return getString(query, lang, null, *args)
+    }
+
+    /**
+     * Attempts to resolve a string with a query.
+     *
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
+     * @param lang The language to query.
+     * @param context (Optional) TODO: Document.
+     * @param args (Optional) Arguments to pass to the processor.
+     *
+     * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
+     */
+    fun getString(query: String, lang: Language = defaultLang, context: LangGroup?, vararg args: LangArg): String? {
 
         if (debug) {
-            print("[$name] :: getString($query)")
+            println("[$name] :: getString(query=$query, ${lang.abbreviation}, $context)")
         }
 
-        val raw = resolve(query, lang) ?: return null
+        val raw = resolve(query, lang, context) ?: return null
+
+        println(raw)
+
         val value = raw.value ?: return null
         return if (value is Complex<*>) {
-            value.process(this, lang, *args).toString()
+            value.process(this, lang, raw.parent ?: context, *args).toString()
         } else {
-            processor.process(value.toString(), this, lang, raw.parent, *args)
+            processor.process(value.toString(), this, lang, raw.parent ?: context, *args)
         }
     }
 
@@ -250,7 +267,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     fun resolve(query: String, lang: Language, context: LangGroup? = null): LangDefinition<*>? {
 
         if (debug) {
-            print("resolve($lang, $query, $context)")
+            println("[$name] :: resolve($query, ${lang.abbreviation}, $context)")
         }
 
         var raw: LangDefinition<*>? = null
@@ -286,7 +303,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
         }
 
         if (debug) {
-            println(" result: $raw")
+            println("[$name] :: resolve($query, $lang, $context) = $raw")
         }
 
         return raw

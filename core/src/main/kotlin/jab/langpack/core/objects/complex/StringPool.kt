@@ -5,6 +5,7 @@ package jab.langpack.core.objects.complex
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
 import jab.langpack.core.objects.LangArg
+import jab.langpack.core.objects.LangGroup
 import jab.langpack.core.objects.complex.StringPool.Mode
 import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.objects.formatter.FieldFormatter
@@ -83,11 +84,11 @@ open class StringPool : Complex<String> {
         }
     }
 
-    override fun process(pack: LangPack, lang: Language, vararg args: LangArg): String {
+    override fun process(pack: LangPack, lang: Language, context: LangGroup?, vararg args: LangArg): String {
         return if (strings.isEmpty()) {
             ""
         } else {
-            pack.processor.process(poll(), pack, lang, null, *args)
+            pack.processor.process(poll(), pack, lang, context, *args)
         }
     }
 

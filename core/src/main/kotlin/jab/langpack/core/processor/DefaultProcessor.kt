@@ -105,16 +105,20 @@ class DefaultProcessor(private val formatter: FieldFormatter) : LangProcessor {
             for (arg in args) {
                 if (arg.key.equals(field.name, true)) {
                     found = true
-                    processed = processed.replace(field.raw,  arg.value.toString(), true)
+                    processed = processed.replace(field.raw, arg.value.toString(), true)
                 }
                 break
             }
 
             // Check lang-pack for the defined field.
             if (!found) {
-                val stringGot = pack.getString(field.name, lang, *args)
-                if (stringGot != null) {
-                    processed = processed.replace(field.raw, stringGot, true)
+
+                val stringGot = pack.getString(field.name, lang, context, *args)
+
+                processed = if (stringGot != null) {
+                    processed.replace(field.raw, stringGot, true)
+                } else {
+                    processed.replace(field.raw, field.placeholder, true)
                 }
             }
         }
@@ -163,21 +167,21 @@ class DefaultProcessor(private val formatter: FieldFormatter) : LangProcessor {
         with(component) {
             var eraseText = false
             if (formatter.isField(text)) {
-                val fField = formatter.strip(text)
+                val fieldStripped = formatter.strip(text)
 
                 var found = false
                 var field: LangDefinition<*>? = null
                 for (arg in args) {
-                    if (arg.key.equals(fField, true)) {
-                        field = StringDefinition(pack, StringUtil.toAString(arg.value))
+                    if (arg.key.equals(fieldStripped, true)) {
+                        field = StringDefinition(pack, context, StringUtil.toAString(arg.value))
                         found = true
                         break
                     }
                 }
                 if (!found) {
-                    field = pack.resolve(fField, lang)
+                    field = pack.resolve(fieldStripped, lang, context)
                     if (field == null) {
-                        field = pack.resolve(fField, pack.defaultLang)
+                        field = pack.resolve(fieldStripped, pack.defaultLang, context)
                     }
                 }
 
@@ -202,11 +206,11 @@ class DefaultProcessor(private val formatter: FieldFormatter) : LangProcessor {
                             eraseText = true
                         }
                         else -> {
-                            text = process(field.value.toString(), pack, lang, context, *args)
+                            text = process(field.value.toString(), pack, lang, field.parent, *args)
                         }
                     }
                 } else {
-                    text = fField
+                    text = color(formatter.getPlaceholder(text))
                 }
             } else {
                 text = color(text)

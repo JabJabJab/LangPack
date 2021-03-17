@@ -18,7 +18,7 @@ class StringDefinition : LangDefinition<String> {
      * @param parent
      * @param value
      */
-    constructor(pack: LangPack, parent: LangGroup, value: String) : super(pack, parent, value)
+    constructor(pack: LangPack, parent: LangGroup?, value: String) : super(pack, parent, value)
 
     /**
      * TODO: Document.
@@ -36,5 +36,5 @@ class StringDefinition : LangDefinition<String> {
         return formatter.needsWalk(raw)
     }
 
-    override fun toString(): String = "LangString($value)"
+    override fun toString(): String = "StringDefinition(raw=$raw, value=$value)"
 }

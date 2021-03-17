@@ -2,9 +2,10 @@
 
 package jab.langpack.core.objects.complex
 
-import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
+import jab.langpack.core.objects.LangArg
+import jab.langpack.core.objects.LangGroup
 import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.objects.formatter.FieldFormatter
 import jab.langpack.core.processor.LangProcessor
@@ -135,18 +136,11 @@ open class ActionText : Complex<TextComponent> {
         }
     }
 
-    override fun process(pack: LangPack, lang: Language, vararg args: LangArg): TextComponent {
-
-        val text = pack.processor.process(text, pack, lang, null, *args)
+    override fun process(pack: LangPack, lang: Language, context: LangGroup?, vararg args: LangArg): TextComponent {
+        val text = pack.processor.process(text, pack, lang, context, *args)
         val component = TextComponent(text)
-
-        if (hoverText != null) {
-            component.hoverEvent = hoverText!!.process(pack, lang, *args)
-        }
-        if (commandText != null) {
-            component.clickEvent = commandText!!.process(pack, lang, *args)
-        }
-
+        if (hoverText != null) component.hoverEvent = hoverText!!.process(pack, lang, context, *args)
+        if (commandText != null) component.clickEvent = commandText!!.process(pack, lang, context, *args)
         return component
     }
 

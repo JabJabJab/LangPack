@@ -109,7 +109,7 @@ class PercentFormatter : FieldFormatter {
         // Remove placeholder
         val index = string.indexOf("=")
         if (index > -1) {
-            stripped = stripped.substring(0, stripped.indexOf("=") - 1)
+            stripped = stripped.substring(0, stripped.indexOf("="))
         }
 
         return stripped.toLowerCase()

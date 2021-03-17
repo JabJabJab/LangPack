@@ -2,10 +2,10 @@
 
 package jab.langpack.spigot
 
-import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangCache
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.objects.complex.ActionText
 import jab.langpack.core.objects.complex.Complex
 import jab.langpack.core.objects.complex.StringPool
@@ -261,7 +261,7 @@ fun ActionText.message(player: Player) {
  */
 fun ActionText.send(player: Player, pack: LangPack? = null, vararg args: LangArg) {
     val textComponent = if (pack != null) {
-        process(pack, pack.getLanguage(player), *args)
+        process(pack, pack.getLanguage(player), null, *args)
     } else {
         get()
     }
@@ -308,7 +308,7 @@ fun ActionText.broadcast(pack: LangPack, vararg args: LangArg) {
         if (cache[lang] != null) {
             textComponent = cache[lang]!!
         } else {
-            textComponent = process(pack, pack.getLanguage(player), *args)
+            textComponent = process(pack, pack.getLanguage(player), null, *args)
             cache[lang] = textComponent
         }
 
@@ -334,7 +334,7 @@ fun ActionText.broadcast(world: World, pack: LangPack, vararg args: LangArg) {
         if (cache[lang] != null) {
             textComponent = cache[lang]!!
         } else {
-            textComponent = process(pack, lang, *args)
+            textComponent = process(pack, lang, null, *args)
             cache[lang] = textComponent
         }
 
@@ -365,7 +365,7 @@ fun StringPool.message(player: Player) {
  */
 fun StringPool.send(player: Player, pack: LangPack? = null, vararg args: LangArg) {
     val message = if (pack != null) {
-        process(pack, pack.getLanguage(player), *args)
+        process(pack, pack.getLanguage(player), null, *args)
     } else {
         get()
     }
@@ -412,7 +412,7 @@ fun StringPool.broadcast(pack: LangPack, vararg args: LangArg) {
         if (cache[lang] != null) {
             message = cache[lang]!!
         } else {
-            message = process(pack, pack.getLanguage(player), *args)
+            message = process(pack, pack.getLanguage(player), null, *args)
             cache[lang] = message
         }
 
@@ -438,7 +438,7 @@ fun StringPool.broadcast(world: World, pack: LangPack, vararg args: LangArg) {
         if (cache[lang] != null) {
             message = cache[lang]!!
         } else {
-            message = process(pack, lang, *args)
+            message = process(pack, lang, null, *args)
             cache[lang] = message
         }
 

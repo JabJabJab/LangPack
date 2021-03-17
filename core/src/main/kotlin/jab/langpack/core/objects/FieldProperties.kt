@@ -20,4 +20,8 @@ class FieldProperties(
 ) {
     override fun toString(): String =
         "FieldProperties(raw='$raw', name='$name', placeholder='$placeholder', resolve=$resolve, packageScope=$packageScope)"
+
+//    init {
+//        println(this)
+//    }
 }

@@ -19,7 +19,7 @@ class ComplexDefinition : LangDefinition<Complex<*>> {
      * @param parent
      * @param value
      */
-    constructor(pack: LangPack, parent: LangGroup, value: Complex<*>) : super(pack, parent, value)
+    constructor(pack: LangPack, parent: LangGroup?, value: Complex<*>) : super(pack, parent, value)
 
     /**
      * TODO: Document.
@@ -33,5 +33,5 @@ class ComplexDefinition : LangDefinition<Complex<*>> {
 
     override fun needsWalk(formatter: FieldFormatter): Boolean = raw.needsWalk(formatter)
 
-    override fun toString(): String = "LangComplex(value=$value)"
+    override fun toString(): String = "ComplexDefinition(value=$value)"
 }
