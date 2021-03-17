@@ -42,10 +42,10 @@ fun LangPack.broadcast(query: String, vararg args: LangArg) {
             continue
         }
 
-        var resolved = resolve(lang, query)
+        var resolved = resolve(query, lang)
         if (resolved == null) {
             lang = defaultLang
-            resolved = resolve(lang, query)
+            resolved = resolve(query, lang)
         }
 
         val component: TextComponent
@@ -72,7 +72,7 @@ fun LangPack.broadcast(query: String, vararg args: LangArg) {
             component = TextComponent(query)
         }
 
-        val result = processor.process(component, this, langPlayer, *args)
+        val result = processor.process(component, this, langPlayer, null, *args)
         cache[lang] = result
         cache[langPlayer] = result
 
@@ -93,10 +93,10 @@ fun LangPack.message(player: Player, query: String, vararg args: LangArg) {
     val langPlayer = getLanguage(player)
     var lang = langPlayer
 
-    var resolved = resolve(lang, query)
+    var resolved = resolve(query, lang)
     if (resolved == null) {
         lang = defaultLang
-        resolved = resolve(lang, query)
+        resolved = resolve(query, lang)
     }
 
     val component: TextComponent
@@ -121,7 +121,7 @@ fun LangPack.message(player: Player, query: String, vararg args: LangArg) {
     }
 
     player.spigot().sendMessage(
-        processor.process(component, this, langPlayer, *args)
+        processor.process(component, this, langPlayer, null, *args)
     )
 }
 

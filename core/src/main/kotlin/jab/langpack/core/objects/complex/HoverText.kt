@@ -5,7 +5,7 @@ package jab.langpack.core.objects.complex
 import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.processor.FieldFormatter
 import jab.langpack.core.util.StringUtil
 import net.md_5.bungee.api.chat.HoverEvent
@@ -66,13 +66,13 @@ class HoverText : Complex<HoverEvent> {
         // Append all lines as one line with the [NEW_LINE] separator. The lang-pack will
         //   interpret the separator and handle this when displayed to the player.
         for (line in lines) {
-            array = array.plus(Text(pack.processor.process(line.value as String, pack, lang, *args)))
+            array = array.plus(Text(pack.processor.process(line.value as String, pack, lang, null, *args)))
         }
 
         return HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
     }
 
-    override fun walk(definition: Definition<*>): HoverText {
+    override fun walk(definition: LangDefinition<*>): HoverText {
         val walkedLines = ArrayList<Text>()
         for (text in lines) {
             walkedLines.add(Text(definition.walk(text.value.toString())))

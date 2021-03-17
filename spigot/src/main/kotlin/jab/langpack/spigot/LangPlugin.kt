@@ -34,6 +34,7 @@ internal class LangPlugin : JavaPlugin(), Listener {
         pack = LangPack("lang")
         pack!!.load(save = true, force = true)
         pack!!.append("test", save = true, force = true)
+        // pack!!.debug = true
 
         LangCommand(this)
 

@@ -1,9 +1,9 @@
 package jab.langpack.core.processor
 
-import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-
+import jab.langpack.core.objects.LangArg
+import jab.langpack.core.objects.LangGroup
 import net.md_5.bungee.api.chat.TextComponent
 
 /**
@@ -13,7 +13,7 @@ import net.md_5.bungee.api.chat.TextComponent
  *
  * @author Jab
  */
-interface Processor {
+interface LangProcessor {
 
     /**
      * Processes a text component, inserting arguments and fields set in the lang-pack.
@@ -25,7 +25,13 @@ interface Processor {
      *
      * @return Returns the processed string.
      */
-    fun process(component: TextComponent, pack: LangPack, lang: Language, vararg args: LangArg): TextComponent
+    fun process(
+        component: TextComponent,
+        pack: LangPack,
+        lang: Language,
+        context: LangGroup? = null,
+        vararg args: LangArg,
+    ): TextComponent
 
     /**
      * Processes a text component, inserting provided arguments.
@@ -47,7 +53,7 @@ interface Processor {
      *
      * @return Returns the processed string.
      */
-    fun process(string: String, pack: LangPack, lang: Language, vararg args: LangArg): String
+    fun process(string: String, pack: LangPack, lang: Language, context: LangGroup? = null, vararg args: LangArg): String
 
     /**
      * Processes a string, inserting provided arguments.

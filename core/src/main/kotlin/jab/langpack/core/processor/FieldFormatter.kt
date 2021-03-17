@@ -63,7 +63,7 @@ interface FieldFormatter {
      *
      * @return
      */
-    fun isGlobalScope(field: String): Boolean
+    fun isPackageScope(field: String): Boolean
 
     /**
      * TODO: Document.

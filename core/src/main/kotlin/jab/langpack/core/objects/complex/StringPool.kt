@@ -2,11 +2,11 @@
 
 package jab.langpack.core.objects.complex
 
-import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.objects.complex.StringPool.Mode
+import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.processor.FieldFormatter
 import jab.langpack.core.util.StringUtil
 import org.bukkit.configuration.ConfigurationSection
@@ -87,11 +87,11 @@ open class StringPool : Complex<String> {
         return if (strings.isEmpty()) {
             ""
         } else {
-            pack.processor.process(poll(), pack, lang, *args)
+            pack.processor.process(poll(), pack, lang, null, *args)
         }
     }
 
-    override fun walk(definition: Definition<*>): StringPool = StringPool(mode, random, definition.walk(strings))
+    override fun walk(definition: LangDefinition<*>): StringPool = StringPool(mode, random, definition.walk(strings))
 
     override fun needsWalk(formatter: FieldFormatter): Boolean = formatter.needsWalk(strings)
 

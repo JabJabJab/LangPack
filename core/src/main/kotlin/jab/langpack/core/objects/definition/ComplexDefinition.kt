@@ -10,7 +10,7 @@ import jab.langpack.core.processor.FieldFormatter
  *
  * @author Jab
  */
-class ComplexDefinition : Definition<Complex<*>> {
+class ComplexDefinition : LangDefinition<Complex<*>> {
 
     /**
      * TODO: Document.

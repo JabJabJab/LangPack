@@ -5,6 +5,7 @@ package jab.langpack.core.objects.definition
 import jab.langpack.core.LangPack
 import jab.langpack.core.objects.LangGroup
 import jab.langpack.core.processor.FieldFormatter
+import jab.langpack.core.util.StringUtil
 
 /**
  * The **Definition** class. TODO: Document.
@@ -13,7 +14,7 @@ import jab.langpack.core.processor.FieldFormatter
  * @property parent
  * @property value
  */
-abstract class Definition<E>(val pack: LangPack, val parent: LangGroup?, val raw: E) {
+abstract class LangDefinition<E>(val pack: LangPack, val parent: LangGroup?, val raw: E) {
 
     var value: E = raw
     var walked: Boolean = false
@@ -81,16 +82,22 @@ abstract class Definition<E>(val pack: LangPack, val parent: LangGroup?, val raw
         val fields = formatter.getFields(value)
         val language = parent?.language ?: pack.defaultLang
 
-        val fieldMap = HashMap<String, Definition<*>>()
+        val fieldMap = HashMap<String, LangDefinition<*>>()
         for (field in fields) {
+            val context = if (formatter.isPackageScope(field)) {
+                null
+            } else {
+                parent
+            }
             val fField = formatter.strip(field)
-            val def = pack.resolve(language, fField) ?: continue
+            val def = pack.resolve(fField, language, context) ?: continue
             if (!def.walked) def.walk()
             fieldMap[field] = def
         }
 
         for (field in fields) {
             if (pack.formatter.isResolve(field)) {
+                val strippedField = formatter.strip(field)
                 val formattedField = formatter.format(field)
                 val fieldDefinition = fieldMap[field]
 
@@ -104,10 +111,19 @@ abstract class Definition<E>(val pack: LangPack, val parent: LangGroup?, val raw
                     continue
                 }
 
-                var resolvedField = pack.getString(formatter.strip(field), language)
-                if (resolvedField == null) {
-                    resolvedField = formatter.strip(field)
+                val context = if (formatter.isPackageScope(field)) {
+                    null
+                } else {
+                    parent
                 }
+
+                val resolved = pack.resolve(strippedField, language, context)
+                val resolvedField = if (resolved != null) {
+                    StringUtil.toAString(resolved.value!!)
+                } else {
+                    strippedField
+                }
+
                 if (pack.debug) {
                     println("Replacing resolve field $field with: $resolvedField")
                 }

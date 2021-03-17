@@ -9,7 +9,7 @@ import jab.langpack.core.processor.FieldFormatter
  *
  * @author Jab
  */
-class StringDefinition : Definition<String> {
+class StringDefinition : LangDefinition<String> {
 
     /**
      * TODO: Document.

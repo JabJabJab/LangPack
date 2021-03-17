@@ -5,7 +5,7 @@ package jab.langpack.core.objects.complex
 import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.processor.FieldFormatter
 import net.md_5.bungee.api.chat.ClickEvent
 
@@ -21,11 +21,11 @@ import net.md_5.bungee.api.chat.ClickEvent
 class CommandText(val command: String) : Complex<ClickEvent> {
 
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): ClickEvent {
-        val processed = pack.processor.process(command, pack, lang, *args)
+        val processed = pack.processor.process(command, pack, lang, null, *args)
         return ClickEvent(ClickEvent.Action.RUN_COMMAND, processed)
     }
 
-    override fun walk(definition: Definition<*>): CommandText = CommandText(definition.walk(command))
+    override fun walk(definition: LangDefinition<*>): CommandText = CommandText(definition.walk(command))
 
     override fun needsWalk(formatter: FieldFormatter): Boolean = formatter.needsWalk(command)
 

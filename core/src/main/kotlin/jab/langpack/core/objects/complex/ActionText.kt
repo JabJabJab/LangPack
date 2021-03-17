@@ -5,9 +5,9 @@ package jab.langpack.core.objects.complex
 import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.processor.FieldFormatter
-import jab.langpack.core.processor.Processor
+import jab.langpack.core.processor.LangProcessor
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
@@ -20,7 +20,7 @@ import org.bukkit.configuration.ConfigurationSection
  * The **ActionText** class packages defined [HoverEvent] and [ClickEvent] as [HoverText] and [CommandText] wrappers for
  * dynamic [TextComponent] usage for lang-packs.
  *
- * The object is complex and resolvable for [Processor].
+ * The object is complex and resolvable for [LangProcessor].
  *
  * @author Jab
  */
@@ -137,7 +137,7 @@ open class ActionText : Complex<TextComponent> {
 
     override fun process(pack: LangPack, lang: Language, vararg args: LangArg): TextComponent {
 
-        val text = pack.processor.process(text, pack, lang, *args)
+        val text = pack.processor.process(text, pack, lang, null, *args)
         val component = TextComponent(text)
 
         if (hoverText != null) {
@@ -150,7 +150,7 @@ open class ActionText : Complex<TextComponent> {
         return component
     }
 
-    override fun walk(definition: Definition<*>): ActionText {
+    override fun walk(definition: LangDefinition<*>): ActionText {
         val walked = ActionText(definition.walk(text))
         if (commandText != null) walked.commandText = commandText!!.walk(definition)
         if (hoverText != null) walked.hoverText = hoverText!!.walk(definition)

@@ -1,10 +1,11 @@
 package jab.langpack.core.processor
 
-import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
+import jab.langpack.core.objects.LangArg
+import jab.langpack.core.objects.LangGroup
 import jab.langpack.core.objects.complex.Complex
-import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.objects.definition.StringDefinition
 import jab.langpack.core.util.ChatUtil
 import jab.langpack.core.util.StringUtil
@@ -23,10 +24,10 @@ import net.md_5.bungee.api.chat.hover.content.Text
  *
  *  @author Jab
  */
-class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
+class DefaultProcessor(private val formatter: FieldFormatter) : LangProcessor {
 
     override fun process(
-        component: TextComponent, pack: LangPack, lang: Language, vararg args: LangArg,
+        component: TextComponent, pack: LangPack, lang: Language, context: LangGroup?, vararg args: LangArg,
     ): TextComponent {
 
         // There's no need to slice a component that is only a field.
@@ -44,10 +45,10 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
         composition.clickEvent = component.clickEvent
 
         // Process fields as extras, removing the text after processing it.
-        val eraseText = processText(composition, pack, lang, *args)
-        processHoverEvent(composition, pack, lang, *args)
-        processClickEvent(composition, pack, lang, *args)
-        processExtras(composition, pack, lang, *args)
+        val eraseText = processText(composition, pack, lang, context, *args)
+        processHoverEvent(composition, pack, lang, context, *args)
+        processClickEvent(composition, pack, lang, context, *args)
+        processExtras(composition, pack, lang, context, *args)
         if (eraseText) composition.text = ""
 
         ChatUtil.spreadColor(composition)
@@ -81,7 +82,13 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
         return composition
     }
 
-    override fun process(string: String, pack: LangPack, lang: Language, vararg args: LangArg): String {
+    override fun process(
+        string: String,
+        pack: LangPack,
+        lang: Language,
+        context: LangGroup?,
+        vararg args: LangArg,
+    ): String {
 
         val stringFields = formatter.getFields(string)
         if (stringFields.isEmpty()) return color(string)
@@ -91,6 +98,7 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
         // Process all fields in the string.
         for (stringField in stringFields) {
 
+            val strippedField = formatter.strip(stringField)
             val fField = formatter.format(stringField)
             var found = false
 
@@ -106,7 +114,7 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
 
             // Check lang-pack for the defined field.
             if (!found) {
-                val field = pack.getString(stringField, lang, *args)
+                val field = pack.getString(strippedField, lang, *args)
                 if (field != null) {
                     processedString = processedString.replace(fField, field, true)
                 }
@@ -150,14 +158,20 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
         return color(processedString)
     }
 
-    private fun processText(component: TextComponent, pack: LangPack, lang: Language, vararg args: LangArg): Boolean {
+    private fun processText(
+        component: TextComponent,
+        pack: LangPack,
+        lang: Language,
+        context: LangGroup?,
+        vararg args: LangArg,
+    ): Boolean {
         with(component) {
             var eraseText = false
             if (formatter.isField(text)) {
                 val fField = formatter.strip(text)
 
                 var found = false
-                var field: Definition<*>? = null
+                var field: LangDefinition<*>? = null
                 for (arg in args) {
                     if (arg.key.equals(fField, true)) {
                         field = StringDefinition(pack, StringUtil.toAString(arg.value))
@@ -166,9 +180,9 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
                     }
                 }
                 if (!found) {
-                    field = pack.resolve(lang, fField)
+                    field = pack.resolve(fField, lang)
                     if (field == null) {
-                        field = pack.resolve(pack.defaultLang, fField)
+                        field = pack.resolve(fField, pack.defaultLang)
                     }
                 }
 
@@ -181,11 +195,19 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
                             } else {
                                 TextComponent(result.toString())
                             }
-                            addExtra(process(processedComponent, *args))
+
+                            // If the reference is forced to global scope, do not provide context.
+                            val parent = if (formatter.isPackageScope(text)) {
+                                null
+                            } else {
+                                field.parent
+                            }
+
+                            addExtra(process(processedComponent, pack, lang, parent, *args))
                             eraseText = true
                         }
                         else -> {
-                            text = process(field.value.toString(), pack, lang, *args)
+                            text = process(field.value.toString(), pack, lang, context, *args)
                         }
                     }
                 } else {
@@ -243,7 +265,13 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
         }
     }
 
-    private fun processHoverEvent(component: BaseComponent, pack: LangPack, lang: Language, vararg args: LangArg) {
+    private fun processHoverEvent(
+        component: BaseComponent,
+        pack: LangPack,
+        lang: Language,
+        context: LangGroup?,
+        vararg args: LangArg,
+    ) {
         with(component) {
             if (hoverEvent == null) return
             if (hoverEvent.contents != null) {
@@ -252,7 +280,7 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
                 val newContents = ArrayList<Content>()
                 for (content in contents) {
                     if (content is Text) {
-                        newContents.add(Text(process(content.value as String, pack, lang, *args)))
+                        newContents.add(Text(process(content.value as String, pack, lang, context, *args)))
                     } else {
                         newContents.add(content)
                     }
@@ -281,12 +309,18 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
         }
     }
 
-    private fun processClickEvent(component: BaseComponent, pack: LangPack, lang: Language, vararg args: LangArg) {
+    private fun processClickEvent(
+        component: BaseComponent,
+        pack: LangPack,
+        lang: Language,
+        context: LangGroup?,
+        vararg args: LangArg,
+    ) {
         with(component) {
             if (clickEvent == null) return
             if (clickEvent.value != null) {
                 val action = clickEvent.action
-                val value = process(clickEvent.value, pack, lang, *args)
+                val value = process(clickEvent.value, pack, lang, context, *args)
                 clickEvent = ClickEvent(action, value)
             }
         }
@@ -303,7 +337,13 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
         }
     }
 
-    private fun processExtras(component: TextComponent, pack: LangPack, lang: Language, vararg args: LangArg) {
+    private fun processExtras(
+        component: TextComponent,
+        pack: LangPack,
+        lang: Language,
+        context: LangGroup?,
+        vararg args: LangArg,
+    ) {
         with(component) {
             if (extra == null || formatter.isField(text)) return
             val newExtras = ArrayList<BaseComponent>()
@@ -314,7 +354,7 @@ class DefaultProcessor(private val formatter: FieldFormatter) : Processor {
                     newExtras.add(next)
                     continue
                 } else {
-                    newExtras.add(process(next, pack, lang, *args))
+                    newExtras.add(process(next, pack, lang, context, *args))
                 }
             }
             extra.clear()

@@ -9,7 +9,7 @@ import jab.langpack.core.objects.complex.ActionText
 import jab.langpack.core.objects.complex.Complex
 import jab.langpack.core.objects.complex.StringPool
 import jab.langpack.core.objects.definition.ComplexDefinition
-import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.objects.definition.StringDefinition
 import jab.langpack.core.util.StringUtil
 import org.bukkit.configuration.ConfigurationSection
@@ -51,7 +51,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
     /**
      * The stored fields for the lang group. Fields are stored as lower-case.
      */
-    val fields = HashMap<String, Definition<*>>()
+    val fields = HashMap<String, LangDefinition<*>>()
 
     /**
      * Appends YAML data by reading it and adding it to the lang group.
@@ -197,7 +197,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      *
      * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
-    fun resolve(query: String): Definition<*>? {
+    fun resolve(query: String): LangDefinition<*>? {
 
         if (pack.debug) {
             println("[$name] :: resolve($query)")
@@ -314,7 +314,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      * @param key The ID to assign the value.
      * @param value The value to assign to the ID.
      */
-    fun set(key: String, value: Definition<*>?) {
+    fun set(key: String, value: LangDefinition<*>?) {
 
         if (pack.debug) {
             println("[$name] :: set($key, $value)")
@@ -385,6 +385,19 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      * @return Returns true if the query resolves and is the type [ActionText].
      */
     fun isActionText(query: String): Boolean = contains(query) && fields[query.toLowerCase()] is ActionText
+
+    /**
+     * TODO: Document.
+     *
+     * @return
+     */
+    fun getPath(): String {
+        return if (parent != null && parent !is LangFile) {
+            "${parent!!.getPath()}.$name"
+        } else {
+            name
+        }
+    }
 
     /**
      * The ***Metadata*** class handles all metadata defined for lang groups.

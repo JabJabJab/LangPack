@@ -45,10 +45,13 @@ class PercentFormatter : FieldFormatter {
 
     override fun isResolve(field: String): Boolean = field.indexOf('!') > -1
 
-    override fun isGlobalScope(field: String): Boolean = field.indexOf('~') > -1
+    override fun isPackageScope(field: String): Boolean = field.indexOf('~') > -1
 
     override fun format(field: String): String = "%${field.toLowerCase()}%"
 
-    override fun strip(string: String): String = string.replace("%", "").replace("!", "").replace("~", "")
+    override fun strip(string: String): String =
+        string.replace("%", "")
+            .replace("!", "")
+            .replace("~", "")
 
 }

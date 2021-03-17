@@ -3,9 +3,9 @@ package jab.langpack.core.objects.complex
 import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.processor.FieldFormatter
-import jab.langpack.core.processor.Processor
+import jab.langpack.core.processor.LangProcessor
 
 /**
  * TODO: Update documentation to reflect Definition API update.
@@ -21,10 +21,10 @@ interface Complex<E> {
      *
      * @param definition
      */
-    fun walk(definition: Definition<*>): Complex<E>
+    fun walk(definition: LangDefinition<*>): Complex<E>
 
     /**
-     * Process the complex object using the lang-pack's [Processor].
+     * Process the complex object using the lang-pack's [LangProcessor].
      *
      * @param pack The lang-pack instance.
      * @param lang The language to query.

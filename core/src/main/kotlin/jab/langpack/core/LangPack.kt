@@ -8,12 +8,12 @@ import jab.langpack.core.objects.LangGroup
 import jab.langpack.core.objects.complex.Complex
 import jab.langpack.core.objects.complex.StringPool
 import jab.langpack.core.objects.definition.ComplexDefinition
-import jab.langpack.core.objects.definition.Definition
+import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.objects.definition.StringDefinition
 import jab.langpack.core.processor.DefaultProcessor
 import jab.langpack.core.processor.FieldFormatter
+import jab.langpack.core.processor.LangProcessor
 import jab.langpack.core.processor.PercentFormatter
-import jab.langpack.core.processor.Processor
 import jab.langpack.core.util.ResourceUtil
 import jab.langpack.core.util.StringUtil
 import net.md_5.bungee.api.chat.TextComponent
@@ -26,7 +26,7 @@ import java.util.*
  * The **LangPack** class is a utility that stores entries for dialog, separated by language. Files are loaded into the
  * lang-pack as a [LangFile], and queried based on language context when querying dialog.
  *
- * Text is processed using a [Processor] implementation. By default, lang-packs use the [DefaultProcessor].
+ * Text is processed using a [LangProcessor] implementation. By default, lang-packs use the [DefaultProcessor].
  *
  * Text is processed dynamically as [TextComponent], allowing for dynamic text to be sent to players, enabling hover &
  * click events to be used throughout all entries in the lang-pack. If not desired, simply process the query as a
@@ -66,7 +66,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     /**
      * Handles processing of text.
      */
-    var processor: Processor = DefaultProcessor(formatter)
+    var processor: LangProcessor = DefaultProcessor(formatter)
 
     /**
      * The language file to default to if a raw string cannot be located with another language.
@@ -114,11 +114,8 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
 
         // Save any resources detected.
         if (save) {
-
             for (lang in Language.values()) {
-
                 val resourcePath = "${dir.path}${File.separator}${name}_${lang.abbreviation}.yml"
-
                 try {
                     ResourceUtil.saveResource(resourcePath, force)
                 } catch (e: Exception) {
@@ -143,10 +140,6 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
             }
         }
 
-        if (debug) {
-            prettyPrintln()
-        }
-
         walk()
     }
 
@@ -156,6 +149,24 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     fun walk() {
         for ((_, file) in files) file.unWalk()
         for ((_, file) in files) file.walk()
+    }
+
+    /**
+     * Sets entries for the language.
+     *
+     * @param lang The language to modify.
+     * @param entries The entries to set.
+     */
+    fun set(lang: Language, vararg entries: LangArg) {
+        // Make sure that we have fields to set.
+        if (entries.isEmpty()) return
+
+        // Make sure the language has a file instance before setting anything.
+        files.computeIfAbsent(lang) { LangFile(this, lang, lang.abbreviation) }
+
+        for (field in entries) {
+            set(lang, field.key, field.value)
+        }
     }
 
     /**
@@ -179,28 +190,6 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     }
 
     /**
-     * Sets entries for the language.
-     *
-     * @param lang The language to modify.
-     * @param entries The entries to set.
-     */
-    fun set(lang: Language, vararg entries: LangArg) {
-
-        // Make sure that we have fields to set.
-        if (entries.isEmpty()) {
-            return
-        }
-
-        // Make sure the language has a file instance before setting anything.
-        files.computeIfAbsent(lang) { LangFile(this, lang, lang.abbreviation) }
-
-
-        for (field in entries) {
-            set(lang, field.key, field.value)
-        }
-    }
-
-    /**
      * Attempts to resolve a string-list with a query.
      *
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
@@ -211,12 +200,12 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
      */
     fun getList(query: String, lang: Language = defaultLang, vararg args: LangArg): List<String>? {
 
-        val string = getString(query, lang, *args) ?: return null
-        val rawList = StringUtil.toAList(string)
+        val resolved = resolve(query, lang, null) ?: return null
+        val rawList = StringUtil.toAList(resolved.value!!)
         val processedList = ArrayList<String>()
         for (raw in rawList) {
             if (raw != null) {
-                processedList.add(processor.process(raw, this, lang, *args))
+                processedList.add(processor.process(raw, this, lang, resolved.parent, *args))
             } else {
                 processedList.add("")
             }
@@ -240,84 +229,46 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
             print("[$name] :: getString($query)")
         }
 
-        val raw = resolve(lang, query) ?: return null
+        val raw = resolve(query, lang) ?: return null
         val value = raw.value ?: return null
         return if (value is Complex<*>) {
             value.process(this, lang, *args).toString()
         } else {
-            processor.process(value.toString(), this, lang, *args)
-        }
-    }
-
-    /**
-     * Pretty-print the contents of the pack to the console. (Debug purposes)
-     */
-    private fun prettyPrintln(prefix: String = "") {
-
-        val list = ArrayList<String>()
-        var prefixActual = prefix
-
-        fun indent() {
-            prefixActual += "  "
-        }
-
-        fun unIndent() {
-            prefixActual = prefixActual.substring(0, prefixActual.length - 2)
-        }
-
-        fun line(line: String) {
-            list.add("$prefixActual$line")
-        }
-
-        fun definition(key: String, definition: Definition<*>) {
-            line("($key) = ${definition.value}")
-        }
-
-        fun group(group: LangGroup) {
-            line("[${group.name}]:")
-            indent()
-            for ((_, child) in group.children) {
-                group(child)
-            }
-            for ((key, field) in group.fields) {
-                definition(key, field)
-            }
-            unIndent()
-        }
-
-        line("LangPack($name) {")
-        indent()
-
-        for ((_, file) in files) {
-            group(file)
-        }
-
-        unIndent()
-        line("}")
-
-        for (line in list) {
-            println(line)
+            processor.process(value.toString(), this, lang, raw.parent, *args)
         }
     }
 
     /**
      * Attempts to locate a stored value with a query.
      *
-     * @param lang The language to query.
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
+     * @param lang The language to query.
+     * @param context TODO: Document.
      *
      * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
      */
-    fun resolve(lang: Language, query: String): Definition<*>? {
+    fun resolve(query: String, lang: Language, context: LangGroup? = null): LangDefinition<*>? {
 
         if (debug) {
-            print("resolve($lang, $query)")
+            print("resolve($lang, $query, $context)")
+        }
+
+        var raw: LangDefinition<*>? = null
+
+        // If a context is provided, try to look up the absolute path + the query first.
+        // Else, treat as Package scope.
+        if (context != null && context !is LangFile) {
+            var nextContext = context
+            while (nextContext != null && nextContext !is LangFile) {
+                raw = resolve("${context.getPath()}.$query", lang)
+                if (raw != null) return raw
+                nextContext = nextContext.parent
+            }
         }
 
         // Attempt to grab the most relevant LangFile.
         var langFile = files[lang]
         if (langFile == null) {
-
             // Check language fallbacks if the file is not defined.
             val fallBack = lang.getFallback()
             if (fallBack != null) {
@@ -325,14 +276,13 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
             }
         }
 
-        var raw: Definition<*>? = null
         if (langFile != null) {
             raw = langFile.resolve(query)
         }
 
         // Check global last.
         if (raw == null && this != global) {
-            raw = global.resolve(lang, query)
+            raw = global.resolve(query, lang)
         }
 
         if (debug) {
