@@ -7,7 +7,7 @@ import jab.langpack.core.Language
 import jab.langpack.core.objects.LangArg
 import jab.langpack.core.objects.complex.StringPool.Mode
 import jab.langpack.core.objects.definition.LangDefinition
-import jab.langpack.core.processor.FieldFormatter
+import jab.langpack.core.objects.formatter.FieldFormatter
 import jab.langpack.core.util.StringUtil
 import org.bukkit.configuration.ConfigurationSection
 import java.util.*

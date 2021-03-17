@@ -7,6 +7,7 @@ import jab.langpack.core.objects.LangGroup
 import jab.langpack.core.objects.complex.Complex
 import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.objects.definition.StringDefinition
+import jab.langpack.core.objects.formatter.FieldFormatter
 import jab.langpack.core.util.ChatUtil
 import jab.langpack.core.util.StringUtil
 import jab.langpack.core.util.StringUtil.color
@@ -90,69 +91,63 @@ class DefaultProcessor(private val formatter: FieldFormatter) : LangProcessor {
         vararg args: LangArg,
     ): String {
 
-        val stringFields = formatter.getFields(string)
-        if (stringFields.isEmpty()) return color(string)
+        val fields = formatter.getFields(string)
+        if (fields.isEmpty()) return color(string)
 
-        var processedString = string
+        var processed = string
 
         // Process all fields in the string.
-        for (stringField in stringFields) {
+        for (field in fields) {
 
-            val strippedField = formatter.strip(stringField)
-            val fField = formatter.format(stringField)
             var found = false
 
             // Check the passed fields for the defined field.
-            for (field in args) {
-                if (field.key.equals(stringField, true)) {
+            for (arg in args) {
+                if (arg.key.equals(field.name, true)) {
                     found = true
-                    val value = field.value.toString()
-                    processedString = processedString.replace(fField, value, true)
+                    processed = processed.replace(field.raw,  arg.value.toString(), true)
                 }
                 break
             }
 
             // Check lang-pack for the defined field.
             if (!found) {
-                val field = pack.getString(strippedField, lang, *args)
-                if (field != null) {
-                    processedString = processedString.replace(fField, field, true)
+                val stringGot = pack.getString(field.name, lang, *args)
+                if (stringGot != null) {
+                    processed = processed.replace(field.raw, stringGot, true)
                 }
             }
         }
 
         // Remove all field characters.
-        for (stringField in stringFields) {
-            processedString = processedString.replace(stringField, formatter.strip(stringField))
+        for (field in fields) {
+            processed = processed.replace(field.raw, field.placeholder, true)
         }
 
-        return color(processedString)
+        return color(processed)
     }
 
     override fun process(string: String, vararg args: LangArg): String {
 
-        val stringFields = formatter.getFields(string)
-        if (stringFields.isEmpty()) {
-            return color(string)
-        }
+        val fields = formatter.getFields(string)
+        if (fields.isEmpty()) return color(string)
 
         var processedString = string
 
         // Process all fields in the string.
-        for (stringField in stringFields) {
-            for (field in args) {
-                if (field.key.equals(stringField, true)) {
-                    val fField = formatter.format(stringField)
-                    val value = field.value.toString()
-                    processedString = processedString.replace(fField, value, true)
+        for (field in fields) {
+            for (arg in args) {
+                if (arg.key.equals(field.name, true)) {
+                    val value = arg.value.toString()
+                    processedString = processedString.replace(field.raw, value, true)
                 }
                 break
             }
         }
 
         // Remove all field characters.
-        for (stringField in stringFields) {
-            processedString = processedString.replace(stringField, formatter.strip(stringField))
+        for (field in fields) {
+            processedString = processedString.replace(field.raw, field.placeholder)
         }
 
         return color(processedString)

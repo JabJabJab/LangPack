@@ -1,6 +1,6 @@
 package jab.langpack.core.util
 
-import jab.langpack.core.processor.FieldFormatter
+import jab.langpack.core.objects.formatter.FieldFormatter
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.ClickEvent
@@ -28,20 +28,18 @@ object ChatUtil {
 
         val composition = TextComponent()
         val text = textComponent.text ?: return TextComponent(textComponent.text)
+        if (textComponent.text.isEmpty()) return TextComponent("")
 
         // Make sure that we have fields to sort, otherwise return the color-formatted text.
-        val stringFields = formatter.getFields(text)
-        if (stringFields.isEmpty()) {
-            return TextComponent(StringUtil.color(text))
-        }
+        val fields = formatter.getFields(text)
+        if (fields.isEmpty()) return TextComponent(StringUtil.color(text))
 
         var next = text
-        for (stringField in stringFields) {
-            val fField = "%$stringField%"
-            val offset = next.indexOf(fField, 0, true)
+        for (field in fields) {
+            val offset = next.indexOf(field.raw, 0, true)
             composition.addExtra(TextComponent(next.substring(0, offset)))
-            composition.addExtra(TextComponent(fField))
-            next = next.substring(offset + fField.length)
+            composition.addExtra(TextComponent(field.raw))
+            next = next.substring(offset + field.raw.length)
         }
         if (next.isNotEmpty()) {
             composition.addExtra(TextComponent(next))

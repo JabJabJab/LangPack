@@ -4,7 +4,7 @@ package jab.langpack.core.objects.definition
 
 import jab.langpack.core.LangPack
 import jab.langpack.core.objects.LangGroup
-import jab.langpack.core.processor.FieldFormatter
+import jab.langpack.core.objects.formatter.FieldFormatter
 import jab.langpack.core.util.StringUtil
 
 /**
@@ -76,58 +76,49 @@ abstract class LangDefinition<E>(val pack: LangPack, val parent: LangGroup?, val
             println("Walking ($string)..")
         }
 
-        val formatter = pack.formatter
         var value = string
-
-        val fields = formatter.getFields(value)
+        val fields = pack.formatter.getFields(value)
         val language = parent?.language ?: pack.defaultLang
 
-        val fieldMap = HashMap<String, LangDefinition<*>>()
+        val walkedDefinitions = ArrayList<String>()
+
         for (field in fields) {
-            val context = if (formatter.isPackageScope(field)) {
+
+            val context = if (field.packageScope) {
                 null
             } else {
                 parent
             }
-            val fField = formatter.strip(field)
-            val def = pack.resolve(fField, language, context) ?: continue
-            if (!def.walked) def.walk()
-            fieldMap[field] = def
-        }
 
-        for (field in fields) {
-            if (pack.formatter.isResolve(field)) {
-                val strippedField = formatter.strip(field)
-                val formattedField = formatter.format(field)
-                val fieldDefinition = fieldMap[field]
+            if (!walkedDefinitions.contains(field.raw)) {
+                val def = pack.resolve(field.name, language, context)
+                if (def != null && !def.walked) def.walk()
+                walkedDefinitions.add(field.raw)
+            }
 
+            if (field.resolve) {
                 // If the field cannot resolve, set the placeholder.
-                if (fieldDefinition == null) {
-                    val placeholder = formatter.strip(field)
+                if (!walkedDefinitions.contains(field.raw)) {
                     if (pack.debug) {
-                        println("Failed to locate resolve field: $field. Using placeholder instead. ($placeholder)")
+                        println(
+                            """Failed to locate resolve field: "$field". Using placeholder instead: "$field.placeholder"."""
+                        )
                     }
-                    value = value.replace(formattedField, placeholder)
+                    value = value.replace(field.raw, field.placeholder)
                     continue
                 }
 
-                val context = if (formatter.isPackageScope(field)) {
-                    null
-                } else {
-                    parent
-                }
-
-                val resolved = pack.resolve(strippedField, language, context)
-                val resolvedField = if (resolved != null) {
+                val resolved = pack.resolve(field.name, language, context)
+                val result = if (resolved != null) {
                     StringUtil.toAString(resolved.value!!)
                 } else {
-                    strippedField
+                    field.placeholder
                 }
 
                 if (pack.debug) {
-                    println("Replacing resolve field $field with: $resolvedField")
+                    println("""Replacing resolve field "$field" with: "$result".""")
                 }
-                value = value.replace(formattedField, resolvedField)
+                value = value.replace(field.raw, result)
             }
         }
 

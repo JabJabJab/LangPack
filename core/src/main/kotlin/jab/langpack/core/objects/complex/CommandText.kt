@@ -6,7 +6,7 @@ import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
 import jab.langpack.core.objects.definition.LangDefinition
-import jab.langpack.core.processor.FieldFormatter
+import jab.langpack.core.objects.formatter.FieldFormatter
 import net.md_5.bungee.api.chat.ClickEvent
 
 /**

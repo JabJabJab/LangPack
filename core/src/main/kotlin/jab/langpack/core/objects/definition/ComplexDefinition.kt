@@ -3,7 +3,7 @@ package jab.langpack.core.objects.definition
 import jab.langpack.core.LangPack
 import jab.langpack.core.objects.LangGroup
 import jab.langpack.core.objects.complex.Complex
-import jab.langpack.core.processor.FieldFormatter
+import jab.langpack.core.objects.formatter.FieldFormatter
 
 /**
  * The **ComplexDefinition** class. TODO: Document.

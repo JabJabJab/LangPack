@@ -1,5 +1,6 @@
-package jab.langpack.core.processor
+package jab.langpack.core.objects.formatter
 
+import jab.langpack.core.objects.FieldProperties
 import jab.langpack.core.util.StringUtil
 
 /**
@@ -22,15 +23,43 @@ interface FieldFormatter {
      *
      * @return Returns the fields in the unprocessed string.
      */
-    fun getFields(string: String): ArrayList<String>
+    fun getFields(string: String): List<FieldProperties>
 
     /**
-     * @param field the Field to process.
-     * @param properties (Optional) TODO: Document.
+     * TODO: Document.
      *
-     * @return Returns a field in the syntax format.
+     * @param string
+     *
+     * @return
      */
-    fun format(field: String, properties: FieldProperties? = null): String
+    fun getRawFields(string: String): List<String>
+
+    /**
+     * TODO: Document.
+     *
+     * @param field
+     *
+     * @return
+     */
+    fun getProperties(field: String): FieldProperties
+
+    /**
+     * TODO: Document.
+     *
+     * @param string
+     *
+     * @return
+     */
+    fun getFieldCount(string: String): Int = getRawFields(string).size
+
+    /**
+     * TODO: Document.
+     *
+     * @param string
+     *
+     * @return
+     */
+    fun getPlaceholder(string: String): String
 
     /**
      * TODO: Document.
@@ -42,20 +71,18 @@ interface FieldFormatter {
     fun strip(string: String): String
 
     /**
+     * @param field the Field to process.
+     *
+     * @return Returns a field in the syntax format.
+     */
+    fun format(field: String): String
+
+    /**
      * @param string The string to test.
      *
      * @return Returns true if the string is a field.
      */
     fun isField(string: String?): Boolean
-
-    /**
-     * TODO: Document.
-     *
-     * @param string
-     *
-     * @return
-     */
-    fun getFallback(string: String): String?
 
     /**
      * TODO: Document.
@@ -100,18 +127,8 @@ interface FieldFormatter {
         val valueActual = StringUtil.toAString(value)
         val fields = getFields(valueActual)
         for (field in fields) {
-            if (isResolve(field)) return true
+            if (field.resolve) return true
         }
         return false
     }
-
-    /**
-     * TODO: Document.
-     *
-     * @param field
-     *
-     * @return
-     */
-    fun getProperties(field: String): FieldProperties =
-        FieldProperties(strip(field), getFallback(field), isResolve(field), isPackageScope(field))
 }

@@ -11,9 +11,9 @@ import jab.langpack.core.objects.definition.ComplexDefinition
 import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.objects.definition.StringDefinition
 import jab.langpack.core.processor.DefaultProcessor
-import jab.langpack.core.processor.FieldFormatter
+import jab.langpack.core.objects.formatter.FieldFormatter
 import jab.langpack.core.processor.LangProcessor
-import jab.langpack.core.processor.PercentFormatter
+import jab.langpack.core.objects.formatter.PercentFormatter
 import jab.langpack.core.util.ResourceUtil
 import jab.langpack.core.util.StringUtil
 import net.md_5.bungee.api.chat.TextComponent
