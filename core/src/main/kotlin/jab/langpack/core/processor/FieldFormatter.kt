@@ -26,10 +26,11 @@ interface FieldFormatter {
 
     /**
      * @param field the Field to process.
+     * @param properties (Optional) TODO: Document.
      *
      * @return Returns a field in the syntax format.
      */
-    fun format(field: String): String
+    fun format(field: String, properties: FieldProperties? = null): String
 
     /**
      * TODO: Document.
@@ -50,11 +51,11 @@ interface FieldFormatter {
     /**
      * TODO: Document.
      *
-     * @param field
+     * @param string
      *
      * @return
      */
-    fun isResolve(field: String): Boolean
+    fun getFallback(string: String): String?
 
     /**
      * TODO: Document.
@@ -63,7 +64,16 @@ interface FieldFormatter {
      *
      * @return
      */
-    fun isPackageScope(field: String): Boolean
+    fun isResolve(string: String): Boolean
+
+    /**
+     * TODO: Document.
+     *
+     * @param string
+     *
+     * @return
+     */
+    fun isPackageScope(string: String): Boolean
 
     /**
      * TODO: Document.
@@ -94,4 +104,14 @@ interface FieldFormatter {
         }
         return false
     }
+
+    /**
+     * TODO: Document.
+     *
+     * @param field
+     *
+     * @return
+     */
+    fun getProperties(field: String): FieldProperties =
+        FieldProperties(strip(field), getFallback(field), isResolve(field), isPackageScope(field))
 }

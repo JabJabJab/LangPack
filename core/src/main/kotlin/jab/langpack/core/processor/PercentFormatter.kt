@@ -43,15 +43,51 @@ class PercentFormatter : FieldFormatter {
         return false
     }
 
-    override fun isResolve(field: String): Boolean = field.indexOf('!') > -1
+    override fun getFallback(string: String): String? {
+        return if (string.contains("=")) {
+            string.substring(string.indexOf('=') + 1).replace("%", "")
+        } else {
+            null
+        }
+    }
 
-    override fun isPackageScope(field: String): Boolean = field.indexOf('~') > -1
+    override fun isResolve(string: String): Boolean = string.indexOf('!') > -1
 
-    override fun format(field: String): String = "%${field.toLowerCase()}%"
+    override fun isPackageScope(string: String): Boolean = string.indexOf('~') > -1
 
-    override fun strip(string: String): String =
-        string.replace("%", "")
+    override fun format(field: String, properties: FieldProperties?): String {
+
+        var built = field.toLowerCase()
+
+        if (properties != null) {
+            if (properties.fallBack != null && !properties.fallBack.equals(built, true)) {
+                built += "=${properties.fallBack}"
+            }
+            if (properties.resolve) {
+                built = "!$built"
+            }
+            if (properties.packageScope) {
+                built = "~$built"
+            }
+        }
+
+        return "%$built%"
+    }
+
+    override fun strip(string: String): String {
+        // Invalid placeholder. Don't cause a runtime exception for substring.
+        if (string.startsWith("=")) return ""
+
+        var stripped = string.replace("%", "")
             .replace("!", "")
             .replace("~", "")
 
+        // Remove placeholder
+        val index = string.indexOf("=")
+        if (index > -1) {
+            stripped = stripped.substring(0, stripped.indexOf("=") - 1)
+        }
+
+        return stripped
+    }
 }
