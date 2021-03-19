@@ -46,12 +46,16 @@ import java.util.*
  *
  * @author Jab
  *
- * @property name The String name of the pack.
+ * @property classLoader (Optional) (Recommended) Pass the plugin classloader instance to use the save features for the
+ * library.
  * @property dir (Optional) The File Object for the directory where the LangFiles are stored. DEFAULT: 'lang/'
  * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory. Thrown if
  *      the name given is empty.
  */
-open class LangPack(val name: String, val dir: File = File("lang")) {
+open class LangPack(
+    private val classLoader: ClassLoader = this::class.java.classLoader,
+    val dir: File = File("lang"),
+) {
 
     /**
      * Set to true to print all debug information to the Java console.
@@ -79,28 +83,23 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     private val files: EnumMap<Language, LangFile> = EnumMap(Language::class.java)
 
     init {
-        if (!dir.exists()) {
-            throw IllegalArgumentException("""The directory "$dir" doesn't exist.""")
-        } else if (!dir.isDirectory) {
-            throw IllegalArgumentException("""The path "$dir" is not a valid directory.""")
-        }
-        if (name.isEmpty()) {
-            throw IllegalArgumentException("""The name "$name" is empty.""")
-        }
+
+        require(dir.isDirectory) { """The path "$dir" is not a valid directory.""" }
+        if (!dir.exists()) require(dir.mkdirs()) { """The directory "$dir" could not be created.""" }
     }
 
     /**
-     * Reads and loads the pack.
-     *
-     * @param save (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
-     * @param force (Optional) Set to true to save resources, even if they are already present.
+     * TODO: Document.
      */
-    fun load(save: Boolean = false, force: Boolean = false) {
-        append(name, save, force)
+    fun clear() {
+        this.files.clear()
     }
 
     /**
      * Appends a pack.
+     *
+     * > **WARNING:** Not passing the classloader for the plugin calling this method will not save any lang files stored in
+     * the plugin's JAR file.
      *
      * @param name The name of the package to append.
      * @param save (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
@@ -117,7 +116,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
             for (lang in Language.values()) {
                 val resourcePath = "${dir.path}${File.separator}${name}_${lang.abbreviation}.yml"
                 try {
-                    ResourceUtil.saveResource(resourcePath, force)
+                    ResourceUtil.saveResource(resourcePath, classLoader, force)
                 } catch (e: Exception) {
                     System.err.println("Failed to save resource: $resourcePath")
                     e.printStackTrace(System.err)
@@ -240,7 +239,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     fun getString(query: String, lang: Language = defaultLang, context: LangGroup?, vararg args: LangArg): String? {
 
         if (debug) {
-            println("[$name] :: getString(query=$query, ${lang.abbreviation}, $context)")
+            println("[LangPack] :: getString(query=$query, ${lang.abbreviation}, $context)")
         }
 
         val raw = resolve(query, lang, context) ?: return null
@@ -267,7 +266,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
     fun resolve(query: String, lang: Language, context: LangGroup? = null): LangDefinition<*>? {
 
         if (debug) {
-            println("[$name] :: resolve($query, ${lang.abbreviation}, $context)")
+            println("[LangPack] :: resolve($query, ${lang.abbreviation}, $context)")
         }
 
         var raw: LangDefinition<*>? = null
@@ -303,7 +302,7 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
         }
 
         if (debug) {
-            println("[$name] :: resolve($query, $lang, $context) = $raw")
+            println("[LangPack] :: resolve($query, $lang, $context) = $raw")
         }
 
         return raw
@@ -372,11 +371,11 @@ open class LangPack(val name: String, val dir: File = File("lang")) {
 
             // Store all global lang-files present in the jar.
             for (lang in Language.values()) {
-                ResourceUtil.saveResource("lang${File.separator}global_${lang.abbreviation}.yml")
+                ResourceUtil.saveResource("lang${File.separator}global_${lang.abbreviation}.yml", null)
             }
 
-            global = LangPack("global")
-            global.load()
+            global = LangPack()
+            global.append("global", save = true, force = false)
         }
     }
 }

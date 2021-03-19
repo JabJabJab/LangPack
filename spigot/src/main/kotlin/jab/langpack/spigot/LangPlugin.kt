@@ -1,12 +1,8 @@
 package jab.langpack.spigot
 
 import jab.langpack.core.LangPack
-import jab.langpack.core.objects.LangArg
 import org.bukkit.configuration.ConfigurationSection
-import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
@@ -31,34 +27,14 @@ internal class LangPlugin : JavaPlugin(), Listener {
 
         val langDir = File(dataFolder, "lang")
         if (!langDir.exists()) langDir.mkdirs()
-        pack = LangPack("lang")
-        pack!!.load(save = true, force = true)
-        pack!!.append("test", save = true, force = true)
-//         pack!!.debug = true
+        pack = LangPack(this::class.java.classLoader)
+        pack!!.append("lang", save = true, force = true)
+        pack!!.append("lang_test", save = true, force = true)
+        // pack!!.debug = true
 
         LangCommand(this)
 
         server.pluginManager.registerEvents(this, this)
-    }
-
-    @EventHandler
-    fun on(event: PlayerJoinEvent) {
-        if (CFG.joinMessages) {
-            server.scheduler.runTaskLater(this, Runnable {
-                with(event) {
-                    pack?.broadcast("event.enter_server", LangArg("player", player.displayName))
-                }
-            }, 20L)
-        }
-    }
-
-    @EventHandler
-    fun on(event: PlayerQuitEvent) {
-        if (CFG.leaveMessages) {
-            with(event) {
-                pack?.broadcast("event.leave_server", LangArg("player", player.displayName))
-            }
-        }
     }
 
     companion object {

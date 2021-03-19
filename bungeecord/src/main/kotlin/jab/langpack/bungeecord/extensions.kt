@@ -199,7 +199,7 @@ fun ActionText.message(player: ProxiedPlayer) {
 fun ActionText.send(player: ProxiedPlayer, pack: LangPack? = null, vararg args: LangArg) {
 
     val textComponent = if (pack != null) {
-        process(pack, pack.getLanguage(player), *args)
+        process(pack, pack.getLanguage(player), null, *args)
     } else {
         get()
     }
@@ -237,7 +237,7 @@ fun ActionText.broadcast(pack: LangPack, vararg args: LangArg) {
         if (cache[lang] != null) {
             textComponent = cache[lang]!!
         } else {
-            textComponent = process(pack, pack.getLanguage(player), *args)
+            textComponent = process(pack, pack.getLanguage(player), null, *args)
             cache[lang] = textComponent
         }
 
@@ -271,7 +271,7 @@ fun StringPool.message(player: ProxiedPlayer) {
  */
 fun StringPool.send(player: ProxiedPlayer, pack: LangPack? = null, vararg args: LangArg) {
     val message = if (pack != null) {
-        process(pack, pack.getLanguage(player), *args)
+        process(pack, pack.getLanguage(player), null, *args)
     } else {
         get()
     }
@@ -308,7 +308,7 @@ fun StringPool.broadcast(pack: LangPack, vararg args: LangArg) {
         if (cache[lang] != null) {
             message = cache[lang]!!
         } else {
-            message = process(pack, lang, *args)
+            message = process(pack, lang, null, *args)
             cache[lang] = message
         }
 

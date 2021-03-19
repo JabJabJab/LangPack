@@ -5,17 +5,3 @@
 # コマンド
 header:
   text: '[ラングパック]'
-
-
-event:
-  # %player% -> サーバーに入るプレーヤーの名前。
-  enter_server:
-    type: pool
-    mode: random
-    pool:
-      - '&aこんにちは, %player%!'
-      - '&a%player% をサーバーに歓迎してください！'
-      - '&a%player%がサーバーにドロップされました。'
-
-  # %player% -> サーバーを離れるプレーヤーの名前。
-  leave_server: '&9さようなら, %player%.'

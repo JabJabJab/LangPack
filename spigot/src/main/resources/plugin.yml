@@ -1,5 +1,5 @@
 name: LangPack
-version: 1.0.0
+version: 1.0_0
 main: jab.langpack.spigot.LangPlugin
 authors:
   - Jab

@@ -36,7 +36,7 @@ test {
 }
 
 jar {
-    baseName "LangPack-bungeecord"
+    baseName "LangPack-Bungeecord"
     archiveName "${baseName}-${version}.${extension}"
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {

@@ -27,7 +27,7 @@ dependencies {
     // CraftBukkit / NMS code registered locally via maven.
     compileOnly 'net.minecraft:nms:1.16.5'
     compileOnly 'me.clip:placeholderapi:2.10.9'
-    shade project(":core")
+    compileOnly project(":spigot")
 }
 
 test {
@@ -35,7 +35,7 @@ test {
 }
 
 jar {
-    baseName "LangPack-Spigot"
+    baseName "LangPack-Spigot-Example-Kotlin"
     archiveName "${baseName}-${version}.${extension}"
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {

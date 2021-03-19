@@ -1,7 +1,7 @@
 package jab.langpack.bungeecord
 
-import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
+import jab.langpack.core.objects.LangArg
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.event.PlayerDisconnectEvent
 import net.md_5.bungee.api.event.PostLoginEvent
@@ -28,11 +28,23 @@ internal class LangPlugin : Plugin(), Listener {
      */
     var pack: LangPack? = null
 
-    override fun onEnable() {
-        LangCfg(this)
-        loadLangPacks()
-        ProxyServer.getInstance().pluginManager.registerListener(this, this)
+    /**
+     * If set to true, connection events will be broadcast to all connections on the network.
+     */
+    private var broadcastEvents = false
 
+    override fun onEnable() {
+
+        saveResource("config.yml")
+        val cfg = YamlConfiguration.loadConfiguration(File(dataFolder, "config.yml"))
+        if (cfg.isBoolean("broadcast_connection_events")) {
+            broadcastEvents = cfg.getBoolean("broadcast_connection_events")
+        }
+
+        pack = LangPack(this::class.java.classLoader)
+        pack!!.append("lang", save = true, force = true)
+
+        ProxyServer.getInstance().pluginManager.registerListener(this, this)
     }
 
     @EventHandler
@@ -49,16 +61,6 @@ internal class LangPlugin : Plugin(), Listener {
         server.scheduler.schedule(this, {
             pack?.broadcast("event.disconnect", LangArg("player", event.player.name))
         }, 1L, TimeUnit.SECONDS)
-    }
-
-    private fun loadLangPacks() {
-        val langDir = File(dataFolder, "lang")
-        if (!langDir.exists()) {
-            langDir.mkdirs()
-        }
-        pack = LangPack("lang")
-        pack!!.load(save = true, force = true)
-        pack!!.append("test", save = true, force = true)
     }
 
     /**
@@ -109,36 +111,4 @@ internal class LangPlugin : Plugin(), Listener {
     }
 
     private fun getClassLoader(): ClassLoader = this.javaClass.classLoader
-
-    /**
-     * The **LangCfg** class handles the config.yml for the Bungeecord lang-pack environment.
-     *
-     * @author Jab
-     *
-     * @param plugin The plugin instance.
-     */
-    @Suppress("unused")
-    internal class LangCfg(plugin: LangPlugin) {
-
-        init {
-
-            plugin.saveResource("config.yml")
-            val cfg = YamlConfiguration.loadConfiguration(
-                File(plugin.dataFolder, "config.yml")
-            )
-
-            if (cfg.isBoolean("broadcast_connection_events")) {
-                broadcastConnectionEvents = cfg.getBoolean("broadcast_connection_events")
-            }
-        }
-
-        companion object {
-
-            /**
-             * If set to true, connection events will be broadcast to all connections on the network.
-             */
-            var broadcastConnectionEvents = false
-        }
-    }
-
 }

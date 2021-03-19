@@ -33,7 +33,7 @@ test {
 }
 
 jar {
-    baseName "LangPack-core"
+    baseName "LangPack-Core"
     archiveName "${baseName}-${version}.${extension}"
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {
