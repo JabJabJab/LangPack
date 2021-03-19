@@ -1,0 +1,12 @@
+event:
+  # player -> The name of the player entering the server.
+  enter_server:
+    type: pool
+    mode: random
+    pool:
+      - '&aHello, %player=(Unknown Player)%!'
+      - '&aPlease welcome %player=(Unknown Player)% to the server!'
+      - '&a%player=(An Unknown Player)% dropped into the server.'
+
+  # player -> The name of the player leaving the server.
+  leave_server: '&9Goodbye, %player%.'
