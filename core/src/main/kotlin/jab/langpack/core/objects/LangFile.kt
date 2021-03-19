@@ -54,14 +54,9 @@ class LangFile : LangGroup {
      * @return Returns the instance of the file for single-line executions.
      */
     fun load(): LangFile {
-
         // Clear the current entries and reload from file.
         fields.clear()
-
-        if (file != null) {
-            read(YamlConfiguration.loadConfiguration(file!!))
-        }
-
+        if (file != null) append(YamlConfiguration.loadConfiguration(file!!))
         return this
     }
 
@@ -73,7 +68,7 @@ class LangFile : LangGroup {
      * @return Returns the instance of the file for single-line executions.
      */
     fun append(file: File): LangFile {
-        read(YamlConfiguration.loadConfiguration(file))
+        append(YamlConfiguration.loadConfiguration(file))
         return this
     }
 }

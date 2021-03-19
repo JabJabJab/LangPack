@@ -1,0 +1,7 @@
+name: LangPack
+version: 1.0_0
+author: Jab
+api-version: 1.14
+main: LangPlugin
+commands:
+  lang: {}

@@ -4,7 +4,6 @@ package jab.langpack.core.objects
 
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
-import jab.langpack.core.loader.ComplexLoader
 import jab.langpack.core.objects.complex.ActionText
 import jab.langpack.core.objects.complex.Complex
 import jab.langpack.core.objects.complex.StringPool
@@ -61,7 +60,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      * @return Returns the instance for single-line executions.
      */
     fun append(cfg: ConfigurationSection): LangGroup {
-        read(cfg, meta)
+        append(cfg, meta)
         return this
     }
 
@@ -73,7 +72,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      *
      * @return Returns the instance for single-line executions.
      */
-    fun read(cfg: ConfigurationSection, metadata: Metadata = Metadata()): LangGroup {
+    fun append(cfg: ConfigurationSection, metadata: Metadata = Metadata()): LangGroup {
 
         if (cfg.isConfigurationSection("__metadata__")) {
             metadata.read(cfg.getConfigurationSection("__metadata__")!!)
@@ -98,7 +97,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
                             println("[$name] :: Loading import: ${importFile.path}")
                         }
 
-                        read(YamlConfiguration.loadConfiguration(importFile))
+                        append(YamlConfiguration.loadConfiguration(importFile))
                         continue
                     }
 
@@ -117,7 +116,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
                         println("[$name] :: Loading import: ${importFile.path}")
                     }
 
-                    read(YamlConfiguration.loadConfiguration(importFile))
+                    append(YamlConfiguration.loadConfiguration(importFile))
                 }
             }
 
@@ -164,7 +163,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      */
     private fun readGroup(cfg: ConfigurationSection) {
         val langSection = LangGroup(pack, language, cfg.name.toLowerCase(), this)
-        langSection.read(cfg, Metadata())
+        langSection.append(cfg, Metadata())
         append(langSection)
     }
 
@@ -182,7 +181,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
         }
 
         val type = cfg.getString("type")!!
-        val loader = ComplexLoader.get(type)
+        val loader = pack.getLoader(type)
         if (loader != null) {
             set(cfg.name, ComplexDefinition(pack, this, loader.load(cfg)))
         } else {

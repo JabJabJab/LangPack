@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 group "jab"
@@ -20,12 +20,14 @@ repositories {
 }
 
 dependencies {
-    // shade "org.jetbrains.kotlin:kotlin-stdlib"
+    shade "org.jetbrains.kotlin:kotlin-stdlib"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-
-    compileOnly 'net.md-5:bungeecord-api:1.16-R0.4'
-    implementation files('../libs/bukkit-configuration-1.16.5.jar')
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    // CraftBukkit / NMS code registered locally via maven.
+    compileOnly 'net.minecraft:nms:1.16.5'
+    compileOnly 'me.clip:placeholderapi:2.10.9'
+    shade project(":core")
 }
 
 test {
@@ -33,7 +35,7 @@ test {
 }
 
 jar {
-    baseName "LangPack-Core"
+    baseName "LangPack-Spigot"
     archiveName "${baseName}-${version}.${extension}"
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {

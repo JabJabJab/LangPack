@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package jab.langpack.test
 
 import jab.langpack.core.LangPack
@@ -9,8 +11,11 @@ import jab.langpack.core.LangPack
  *
  * @property name The name of the test.
  * @property description TODO: Document.
+ *
+ * @param Pack TODO: Document.
+ * @param Commander TODO: Document.
  */
-abstract class LangTest<Commander>(val name: String, val description: List<String>) {
+abstract class LangTest<Pack : LangPack, Commander>(val name: String, val description: List<String>) {
 
     /**
      * Executes the test procedure.
@@ -20,7 +25,7 @@ abstract class LangTest<Commander>(val name: String, val description: List<Strin
      *
      * @return Returns true if the test succeeds. Returns false if the test fails.
      */
-    fun test(pack: LangPack, player: Commander): TestResult {
+    fun test(pack: Pack, player: Commander): TestResult {
 
         try {
 
@@ -47,5 +52,5 @@ abstract class LangTest<Commander>(val name: String, val description: List<Strin
      *
      * @return Returns the result of the test.
      */
-    protected abstract fun run(pack: LangPack, player: Commander): TestResult
+    protected abstract fun run(pack: Pack, player: Commander): TestResult
 }

@@ -1,6 +1,7 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 group "jab"
@@ -20,12 +21,14 @@ repositories {
 }
 
 dependencies {
-    // shade "org.jetbrains.kotlin:kotlin-stdlib"
+    shade "org.jetbrains.kotlin:kotlin-stdlib"
+    shade "commons-lang:commons-lang:2.3"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
+    shade files('../../libs/bukkit-configuration-1.16.5.jar')
 
-    compileOnly 'net.md-5:bungeecord-api:1.16-R0.4'
-    implementation files('../libs/bukkit-configuration-1.16.5.jar')
+    shade project(":core")
 }
 
 test {
@@ -33,11 +36,17 @@ test {
 }
 
 jar {
-    baseName "LangPack-Core"
+    baseName "LangPack-Bungeecord"
     archiveName "${baseName}-${version}.${extension}"
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {
             exclude "META-INF", "META-INF/**", "**/about.html", "*/about.html", "about.html"
         }
     }
+}
+
+shadowJar {
+    baseName "LangPack-bungeecord"
+    archiveName "${baseName}-${version}.${extension}"
+//    relocate 'org.apache.commons.lang3', 'org.apache.commons.lang'
 }

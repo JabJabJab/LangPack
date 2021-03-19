@@ -7,6 +7,7 @@ import jab.langpack.core.objects.LangGroup
 import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.objects.formatter.FieldFormatter
 import jab.langpack.core.processor.LangProcessor
+import org.bukkit.configuration.ConfigurationSection
 
 /**
  * TODO: Update documentation to reflect Definition API update.
@@ -50,4 +51,25 @@ interface Complex<E> {
      * @return Returns the processed result.
      */
     fun get(): E
+
+    /**
+     * TODO: Update documentation to reflect Definition API update.
+     *
+     * The **ComplexLoader** interface allows third-party installments of complex objects that require code extensions in
+     * specific environments such as ***Bukkit***, ***Spigot***, and ***BungeeCord***.
+     *
+     * @author Jab
+     */
+    @Suppress("MemberVisibilityCanBePrivate", "unused")
+    interface Loader<E: Complex<*>> {
+
+        /**
+         * Loads a object from configured YAML.
+         *
+         * @param cfg The YAML to read.
+         *
+         * @return Returns the loaded object.
+         */
+        fun load(cfg: ConfigurationSection): E
+    }
 }

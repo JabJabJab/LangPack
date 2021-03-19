@@ -159,16 +159,18 @@ open class ActionText : Complex<TextComponent> {
     }
 
     override fun get(): TextComponent {
-
         val component = TextComponent(text)
-
-        if (hoverText != null) {
-            component.hoverEvent = hoverText!!.get()
-        }
-        if (commandText != null) {
-            component.clickEvent = commandText!!.get()
-        }
-
+        if (hoverText != null) component.hoverEvent = hoverText!!.get()
+        if (commandText != null) component.clickEvent = commandText!!.get()
         return component
+    }
+
+    /**
+     * The **ActionText.Loader** class loads [ActionText] from YAML with the assigned type *"action"*.
+     *
+     * @author Jab
+     */
+    class Loader : Complex.Loader<ActionText> {
+        override fun load(cfg: ConfigurationSection): ActionText = ActionText(cfg)
     }
 }

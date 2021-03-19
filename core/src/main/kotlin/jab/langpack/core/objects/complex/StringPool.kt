@@ -189,4 +189,13 @@ open class StringPool : Complex<String> {
             }
         }
     }
+
+    /**
+     * The **StringPool.Loader** class loads [StringPool] from YAML with the assigned type *"pool"*.
+     *
+     * @author Jab
+     */
+    class Loader : Complex.Loader<StringPool> {
+        override fun load(cfg: ConfigurationSection): StringPool = StringPool(cfg)
+    }
 }

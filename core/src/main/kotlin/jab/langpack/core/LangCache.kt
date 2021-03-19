@@ -20,7 +20,7 @@ import java.util.*
  *
  * @property pack The lang-pack instance to call to and cache the results.
  */
-open class LangCache<P : LangPack>(val pack: P) {
+open class LangCache<Pack : LangPack>(val pack: Pack) {
 
     private val cache: EnumMap<Language, HashMap<String, String>> = EnumMap(Language::class.java)
     private val cacheList: EnumMap<Language, HashMap<String, List<String?>>> = EnumMap(Language::class.java)

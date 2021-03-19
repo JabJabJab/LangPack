@@ -5,6 +5,7 @@ package jab.langpack.core
 import jab.langpack.core.objects.LangArg
 import jab.langpack.core.objects.LangFile
 import jab.langpack.core.objects.LangGroup
+import jab.langpack.core.objects.complex.ActionText
 import jab.langpack.core.objects.complex.Complex
 import jab.langpack.core.objects.complex.StringPool
 import jab.langpack.core.objects.definition.ComplexDefinition
@@ -58,6 +59,15 @@ open class LangPack(
 ) {
 
     /**
+     * Simple constructor.
+     *
+     * Use this constructor to define a classloader while still using the default 'Lang' directory in the server folder.
+     *
+     * @param classLoader The classloader instance to fetch lang resources.
+     */
+    constructor(classLoader: ClassLoader) : this(classLoader, File("lang"))
+
+    /**
      * Set to true to print all debug information to the Java console.
      */
     var debug = false
@@ -82,7 +92,11 @@ open class LangPack(
      */
     private val files: EnumMap<Language, LangFile> = EnumMap(Language::class.java)
 
+    protected val loaders = HashMap<String, Complex.Loader<*>>()
+
     init {
+
+        setDefaultLoaders(loaders)
 
         require(dir.isDirectory) { """The path "$dir" is not a valid directory.""" }
         if (!dir.exists()) require(dir.mkdirs()) { """The directory "$dir" could not be created.""" }
@@ -98,6 +112,28 @@ open class LangPack(
     /**
      * Appends a pack.
      *
+     * @param name The name of the package to append.
+     */
+    fun append(name: String) {
+        append(name, save = false, force = false)
+    }
+
+    /**
+     * Appends a pack.
+     *
+     * > **WARNING:** Not passing the classloader for the plugin calling this method will not save any lang files stored in
+     * the plugin's JAR file.
+     *
+     * @param name The name of the package to append.
+     * @param save (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
+     */
+    fun append(name: String, save: Boolean) {
+        append(name, save, false)
+    }
+
+    /**
+     * Appends a pack.
+     *
      * > **WARNING:** Not passing the classloader for the plugin calling this method will not save any lang files stored in
      * the plugin's JAR file.
      *
@@ -105,7 +141,7 @@ open class LangPack(
      * @param save (Optional) Set to true to try to detect & save files from the plugin to the lang folder.
      * @param force (Optional) Set to true to save resources, even if they are already present.
      */
-    fun append(name: String, save: Boolean = false, force: Boolean = false) {
+    fun append(name: String, save: Boolean, force: Boolean) {
 
         if (debug) {
             println("[$name] :: append($name)")
@@ -309,6 +345,43 @@ open class LangPack(
     }
 
     /**
+     * @param type The type of complex object.
+     *
+     * @return Returns the loader assigned to the type. If one is not assigned, null is returned.
+     */
+    fun getLoader(type: String): Complex.Loader<*>? = loaders[type.toLowerCase()]
+
+    /**
+     * Sets a loader for the type.
+     *
+     * @param type The type of complex object.
+     * @param loader The loader to assign.
+     */
+    fun setLoader(type: String, loader: Complex.Loader<*>?) {
+        if (loader != null) {
+            loaders[type.toLowerCase()] = loader
+        } else {
+            loaders.remove(type.toLowerCase())
+        }
+    }
+
+    /**
+     * Removes a loader assigned to the type.
+     *
+     * @param type The type of complex object.
+     */
+    fun removeLoader(type: String) {
+        loaders.remove(type.toLowerCase())
+    }
+
+    /**
+     * @param type The type of complex object.
+     *
+     * @return Returns true if a loader is assigned to the type.
+     */
+    fun containsLoader(type: String): Boolean = loaders.containsKey(type.toLowerCase())
+
+    /**
      * @param lang The language to query.
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
@@ -341,6 +414,9 @@ open class LangPack(
     fun isActionText(lang: Language, query: String): Boolean = files[lang]?.isActionText(query) ?: false
 
     companion object {
+
+        private val actionTextLoader = ActionText.Loader()
+        private val stringPoolLoader = StringPool.Loader()
 
         /**
          * The global context for all lang-packs to reference for unresolved queries.
@@ -376,6 +452,11 @@ open class LangPack(
 
             global = LangPack()
             global.append("global", save = true, force = false)
+        }
+
+        fun setDefaultLoaders(map: HashMap<String, Complex.Loader<*>>) {
+            map["action"] = actionTextLoader
+            map["pool"] = stringPoolLoader
         }
     }
 }
