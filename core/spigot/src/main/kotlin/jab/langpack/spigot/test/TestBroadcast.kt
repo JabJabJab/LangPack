@@ -8,7 +8,7 @@ import org.bukkit.entity.Player
 class TestBroadcast(description: List<String>) : LangTest<SpigotLangPack, Player>("broadcast", description) {
 
     override fun run(pack: SpigotLangPack, player: Player): TestResult {
-        pack.broadcast("%test.broadcast.message%")
+        pack.broadcast("test.broadcast.message")
         return TestResult(true)
     }
 }
