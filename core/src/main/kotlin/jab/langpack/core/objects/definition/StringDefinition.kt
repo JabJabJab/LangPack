@@ -5,26 +5,28 @@ import jab.langpack.core.objects.LangGroup
 import jab.langpack.core.objects.formatter.FieldFormatter
 
 /**
- * The **StringDefinition** class. TODO: Document.
+ * **StringDefinition** wraps and handles definitions of strings stored in [LangGroup].
  *
  * @author Jab
  */
 class StringDefinition : LangDefinition<String> {
 
     /**
-     * TODO: Document.
+     * Full constructor.
      *
-     * @param pack
-     * @param parent
-     * @param value
+     * @param pack The pack that the definition belongs to.
+     * @param parent The parent that the definition belongs to.
+     * @param value The value of the definition.
      */
     constructor(pack: LangPack, parent: LangGroup?, value: String) : super(pack, parent, value)
 
     /**
-     * TODO: Document.
+     * Minimal constructor.
      *
-     * @param pack
-     * @param value
+     * The definition has no parent.
+     *
+     * @param pack The pack that the definition belongs to.
+     * @param value The value of the definition.
      */
     constructor(pack: LangPack, value: String) : super(pack, null, value)
 
