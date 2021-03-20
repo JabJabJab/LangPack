@@ -16,22 +16,18 @@ import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
 /**
- * TODO: Update documentation to reflect Definition API update.
+ * **LangGroup** is a hierarchical solution for definitions stored as fields. Groups are mutable and assignable to other
+ * groups.
  *
- * The **LangGroup** class is a nestable container for objects stored as fields. Groups have the ability to be modified
- * and appended.
- *
- * Fields are noted as lower-case strings. Any fields passed with upper-case characters are forced as lowered when
- * stored. Fields can reference nested objects using periods as a delimiter.
+ * Fields are formatted as lower-case strings when registered and queried. Fields can reference nested objects using
+ * periods as a delimiter.
  * ###
- * **Examples**:
- * - **a_field**
- * - **a_section.a_field**
+ * **Examples**: **``example_field``**, **``example_group.example_field``**
  *
  * @author Jab
  *
  * @property pack The lang-pack instance.
- * @property language TODO: Document.
+ * @property language The language that the group belongs to.
  * @property name The name of the group.
  * @property parent (Optional) The parent group.
  */
@@ -43,7 +39,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
     val meta = Metadata()
 
     /**
-     * TODO: Document.
+     * All sub-groups are registered to this map.
      */
     val children = HashMap<String, LangGroup>()
 
@@ -85,18 +81,12 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
                 for (next in metadata.imports) {
 
                     var import = next
-                    if (!import.endsWith(".yml", true)) {
-                        import += ".yml"
-                    }
+                    if (!import.endsWith(".yml", true)) import += ".yml"
 
                     // Try local file paths first.
                     var importFile = File(localDir, import)
                     if (importFile.exists()) {
-
-                        if (pack.debug) {
-                            println("[$name] :: Loading import: ${importFile.path}")
-                        }
-
+                        if (pack.debug) println("[$name] :: Loading import: ${importFile.path}")
                         append(YamlConfiguration.loadConfiguration(importFile))
                         continue
                     }
@@ -104,17 +94,11 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
                     // Try absolute path second.
                     importFile = File(import)
                     if (!importFile.exists()) {
-
-                        if (pack.debug) {
-                            System.err.println("Cannot import language file: $import (Not found)")
-                        }
-
+                        if (pack.debug) System.err.println("Cannot import language file: $import (Not found)")
                         continue
                     }
 
-                    if (pack.debug) {
-                        println("[$name] :: Loading import: ${importFile.path}")
-                    }
+                    if (pack.debug) println("[$name] :: Loading import: ${importFile.path}")
 
                     append(YamlConfiguration.loadConfiguration(importFile))
                 }
@@ -148,15 +132,6 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
     }
 
     /**
-     * TODO: Document.
-     *
-     * @param group
-     */
-    fun append(group: LangGroup) {
-        children[group.name] = group
-    }
-
-    /**
      * Processes a YAML section as a lang group.
      *
      * @param cfg The YAML section to read.
@@ -164,7 +139,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
     private fun readGroup(cfg: ConfigurationSection) {
         val langSection = LangGroup(pack, language, cfg.name.toLowerCase(), this)
         langSection.append(cfg, Metadata())
-        append(langSection)
+        setChild(langSection)
     }
 
     /**
@@ -230,7 +205,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
     }
 
     /**
-     * TODO: Document.
+     * Walks all children groups and fields. Used for post-loading.
      */
     fun walk() {
         for ((_, child) in children) child.walk()
@@ -238,7 +213,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
     }
 
     /**
-     * TODO: Document.
+     * Un-Walks all children groups and fields. This resets modified definitions to their original loaded state.
      */
     fun unWalk() {
         for ((_, child) in children) child.unWalk()
@@ -279,10 +254,28 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      *
      * @throws RuntimeException Thrown if the query is unresolved or the resolved object is not a lang group.
      */
-    fun getGroup(query: String): LangGroup {
+    fun getChild(query: String): LangGroup {
         val value = resolve(query)
         require(value != null && value is LangGroup) { "The field $query is not a LangSection." }
         return value
+    }
+
+    /**
+     * Sets a child group.
+     *
+     * @param group The child to set.
+     */
+    fun setChild(group: LangGroup) {
+        children[group.name] = group
+    }
+
+    /**
+     * Removes a child group from the group.
+     *
+     * @param id The id of the child.
+     */
+    fun removeChild(id: String) {
+        children.remove(id.toLowerCase())
     }
 
     /**
@@ -316,6 +309,17 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
     }
 
     /**
+     * @return Returns the full path to the group, appending their parent's path. (If exists)
+     */
+    fun getPath(): String {
+        return if (parent != null && parent !is LangFile) {
+            "${parent!!.getPath()}.$name"
+        } else {
+            name
+        }
+    }
+
+    /**
      * Assigns a value with a ID.
      *
      * @param key The ID to assign the value.
@@ -323,9 +327,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      */
     fun set(key: String, value: LangDefinition<*>?) {
 
-        if (pack.debug) {
-            println("[$name] :: set($key, $value)")
-        }
+        if (pack.debug) println("[$name] :: set($key, $value)")
 
         if (key.contains(".")) {
 
@@ -357,9 +359,9 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
     }
 
     /**
-     * TODO: Document.
+     * Removes a field from the group.
      *
-     * @param id
+     * @param id The id of the field.
      */
     fun remove(id: String) {
         fields.remove(id.toLowerCase())
@@ -394,28 +396,17 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
     fun isActionText(query: String): Boolean = contains(query) && fields[query.toLowerCase()] is ActionText
 
     /**
-     * TODO: Document.
+     * **Metadata** handles all metadata defined for [LangGroup].
      *
-     * @return
-     */
-    fun getPath(): String {
-        return if (parent != null && parent !is LangFile) {
-            "${parent!!.getPath()}.$name"
-        } else {
-            name
-        }
-    }
-
-    /**
-     * The ***Metadata*** class handles all metadata defined for lang groups.
-     *
-     * Metadata is formed by creating a YAML section inside of the lang group.
+     * Metadata is defined as a YAML section inside of the group.
      *
      * Example:
      * ```yml
      * group:
      *   __metadata__:
      *     import: ..
+     *     # OR
+     *     imports: [..]
      * ```
      *
      * Metadata supports importing from other lang-files. Formats are as follows:
