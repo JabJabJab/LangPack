@@ -14,9 +14,7 @@ import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
- * The **StringPool** class allows for storage of multiple strings to be polled based on a set [Mode].
+ * **StringPool** allows for storage of multiple strings to be polled based on a set [Mode].
  *
  * @author Jab
  */
@@ -36,17 +34,41 @@ open class StringPool : Complex<String> {
     private var index = 0
 
     /**
+     * Empty constructor.
+     *
+     * Uses default mode of [StringPool.Mode.RANDOM].
+     * Uses default random instance from LangPack.
+     */
+    constructor() : this(Mode.RANDOM, LangPack.DEFAULT_RANDOM)
+
+    /**
+     * Lite constructor.
+     *
+     * Uses default random instance from LangPack.
+     *
+     * @param mode The mode of the StringPool. (DEFAULT: [Mode.RANDOM])
+     */
+    constructor(mode: Mode) : this(mode, LangPack.DEFAULT_RANDOM)
+
+    /**
      * Basic constructor.
      *
-     * @param mode (Optional) The mode of the StringPool. (DEFAULT: [Mode.RANDOM])
-     * @param random (Optional) The random instance to use.
+     * @param mode The mode of the StringPool. (DEFAULT: [Mode.RANDOM])
+     * @param random The random instance to use.
      */
-    constructor(mode: Mode = Mode.RANDOM, random: Random = LangPack.DEFAULT_RANDOM) {
+    constructor(mode: Mode, random: Random) {
         this.mode = mode
         this.random = random
     }
 
-    constructor(mode: Mode = Mode.RANDOM, random: Random = LangPack.DEFAULT_RANDOM, strings: ArrayList<String>) {
+    /**
+     * Full constructor.
+     *
+     * @param mode (Optional) The mode of the StringPool. (DEFAULT: [Mode.RANDOM])
+     * @param random (Optional) The random instance to use.
+     * @param strings The pool of strings to use.
+     */
+    constructor(mode: Mode, random: Random, strings: ArrayList<String>) {
         this.mode = mode
         this.random = random
         this.strings = strings
@@ -54,6 +76,8 @@ open class StringPool : Complex<String> {
 
     /**
      * Import constructor.
+     *
+     * Uses default random instance from LangPack.
      *
      * @param cfg The ConfigurationSection to load.
      */
