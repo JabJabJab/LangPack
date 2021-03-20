@@ -246,6 +246,14 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
     }
 
     /**
+     * Clears all fields and sub-groups in the group.
+     */
+    fun clear() {
+        children.clear()
+        fields.clear()
+    }
+
+    /**
      * Attempts to resolve a string with a query.
      *
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
