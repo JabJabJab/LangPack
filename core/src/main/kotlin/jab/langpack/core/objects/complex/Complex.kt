@@ -1,8 +1,8 @@
 package jab.langpack.core.objects.complex
 
-import jab.langpack.core.objects.LangArg
 import jab.langpack.core.LangPack
 import jab.langpack.core.Language
+import jab.langpack.core.objects.LangArg
 import jab.langpack.core.objects.LangGroup
 import jab.langpack.core.objects.definition.LangDefinition
 import jab.langpack.core.objects.formatter.FieldFormatter
@@ -10,18 +10,19 @@ import jab.langpack.core.processor.LangProcessor
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
- * The **Complex** interface allows resolving for complex results for lang-pack.
+ * The **Complex** interface serves as a wrapper for non-primitive objects utilized throughout LangPack.
+ * Complex objects construct and resolve as Defined by type **E**.
  *
  * @author Jab
+ *
+ * @param E The object type to resolve when queried.
  */
 interface Complex<E> {
 
     /**
-     * TODO: Document.
+     * Walks the complex object. This is a post-load operation where operations such as resolve-fields are processed.
      *
-     * @param definition
+     * @param definition The instance of the definition walked.
      */
     fun walk(definition: LangDefinition<*>): Complex<E>
 
@@ -30,6 +31,8 @@ interface Complex<E> {
      *
      * @param pack The lang-pack instance.
      * @param lang The language to query.
+     * @param context (Optional) The context group to look up.
+     * If not passed, the process will interpret look-ups on the package level.
      * @param args (Optional) Arguments to pass to the processor.
      *
      * @return Returns the processed result.
@@ -37,11 +40,9 @@ interface Complex<E> {
     fun process(pack: LangPack, lang: Language, context: LangGroup?, vararg args: LangArg): E
 
     /**
-     * TODO: Document.
+     * @param formatter The formatter to process and identify fields defined throughout the complex object.
      *
-     * @param formatter
-     *
-     * @return
+     * @return Returns true if the complex object needs to process post-load.
      */
     fun needsWalk(formatter: FieldFormatter): Boolean
 
@@ -53,18 +54,16 @@ interface Complex<E> {
     fun get(): E
 
     /**
-     * TODO: Update documentation to reflect Definition API update.
-     *
-     * The **ComplexLoader** interface allows third-party installments of complex objects that require code extensions in
-     * specific environments such as ***Bukkit***, ***Spigot***, and ***BungeeCord***.
+     * The **Loader** interface allows third-party installments of complex objects that require code extensions in
+     * specific environments.
      *
      * @author Jab
      */
     @Suppress("MemberVisibilityCanBePrivate", "unused")
-    interface Loader<E: Complex<*>> {
+    interface Loader<E : Complex<*>> {
 
         /**
-         * Loads a object from configured YAML.
+         * Load from a configured YAML section as a instance.
          *
          * @param cfg The YAML to read.
          *
