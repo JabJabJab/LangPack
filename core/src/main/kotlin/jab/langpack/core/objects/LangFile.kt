@@ -4,13 +4,10 @@ import jab.langpack.core.LangPack
 import jab.langpack.core.Language
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
-import java.io.FileNotFoundException
 
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
- * The **LangFile** class acts as a lang section that identifies with a language. The lang-files are used to
- * resolve dialog based on language.
+ * **LangFile** is a [LangGroup] that represents an entire file. A locale is assigned to resolve definitions based on
+ * the [Language] specified.
  *
  * @author Jab
  */
@@ -38,11 +35,7 @@ class LangFile : LangGroup {
      * @param language The language of the file.
      */
     constructor(pack: LangPack, file: File, language: Language) : super(pack, language, file.nameWithoutExtension) {
-
-        if (!file.exists()) {
-            throw FileNotFoundException(file.path)
-        }
-
+        require(file.exists()) { "File not found: ${file.path}" }
         this.file = file
     }
 
@@ -54,8 +47,10 @@ class LangFile : LangGroup {
      * @return Returns the instance of the file for single-line executions.
      */
     fun load(): LangFile {
+
         // Clear the current entries and reload from file.
-        fields.clear()
+        clear()
+
         if (file != null) append(YamlConfiguration.loadConfiguration(file!!))
         return this
     }
