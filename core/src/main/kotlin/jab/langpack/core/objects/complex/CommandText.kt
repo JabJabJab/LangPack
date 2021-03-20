@@ -11,7 +11,6 @@ import jab.langpack.core.objects.formatter.FieldFormatter
 import net.md_5.bungee.api.chat.ClickEvent
 
 /**
- *
  * **CommandText** packages and processes text for [ClickEvent] for [ActionText].
  *
  * @author Jab

@@ -10,12 +10,12 @@ import jab.langpack.core.processor.LangProcessor
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * The **Complex** interface serves as a wrapper for non-primitive objects utilized throughout LangPack.
+ * **Complex** serves as a wrapper for non-primitive objects utilized in [LangPack].
  * Complex objects construct and resolve as Defined by type **E**.
  *
  * @author Jab
  *
- * @param E The object type to resolve when queried.
+ * @param E The type to resolve when queried.
  */
 interface Complex<E> {
 
@@ -54,7 +54,7 @@ interface Complex<E> {
     fun get(): E
 
     /**
-     * The **Loader** interface allows third-party installments of complex objects that require code extensions in
+     * **Loader** allows third-party installments of complex objects that require code extensions in
      * specific environments.
      *
      * @author Jab

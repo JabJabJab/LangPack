@@ -16,7 +16,7 @@ import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * **ActionText** class packages defined [HoverEvent] and [ClickEvent] as [HoverText] and [CommandText] wrappers.
+ * **ActionText** packages defined [HoverEvent] and [ClickEvent] as [HoverText] and [CommandText] wrappers.
  * The object is complex and resolvable for [LangProcessor].
  *
  * @author Jab
@@ -162,7 +162,7 @@ open class ActionText : Complex<TextComponent> {
     }
 
     /**
-     * The **ActionText.Loader** class loads [ActionText] from YAML with the assigned type *"action"*.
+     * **ActionText.Loader** loads [ActionText] from YAML with the assigned type *action*.
      *
      * @author Jab
      */

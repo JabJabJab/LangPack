@@ -186,7 +186,7 @@ open class StringPool : Complex<String> {
     fun isEmpty(): Boolean = strings.isNullOrEmpty()
 
     /**
-     * The ***Mode** enum identifies the method of rolling for string pools.
+     * **Mode** identifies the method of rolling for [StringPool].
      *
      * @author Jab
      */
@@ -215,7 +215,7 @@ open class StringPool : Complex<String> {
     }
 
     /**
-     * The **StringPool.Loader** class loads [StringPool] from YAML with the assigned type *"pool"*.
+     * **StringPool.Loader** loads [StringPool] from YAML with the assigned type *pool*.
      *
      * @author Jab
      */

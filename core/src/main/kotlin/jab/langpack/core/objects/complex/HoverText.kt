@@ -17,7 +17,6 @@ import net.md_5.bungee.api.chat.hover.content.Text
  * Dynamic text fields are supported.
  *
  * @author Jab
- *
  */
 class HoverText : Complex<HoverEvent> {
 
