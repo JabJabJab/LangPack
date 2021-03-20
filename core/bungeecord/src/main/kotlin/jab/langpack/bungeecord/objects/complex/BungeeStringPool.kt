@@ -13,20 +13,53 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
+/**
+ * **BungeeStringPool** wraps the StringPool class to provide additional support for the BungeeCord API.
+ *
+ * @author Jab
+ */
 class BungeeStringPool : StringPool {
 
     /**
-     * @see StringPool
+     * Empty constructor.
+     *
+     * Uses default mode of [StringPool.Mode.RANDOM].
+     * Uses default random instance from LangPack.
+     */
+    constructor() : super()
+
+    /**
+     * Lite constructor.
+     *
+     * Uses default random instance from LangPack.
+     *
+     * @param mode The mode of the StringPool. (DEFAULT: [StringPool.Mode.RANDOM])
+     */
+    constructor(mode: Mode) : super(mode)
+
+    /**
+     * Basic constructor.
+     *
+     * @param mode The mode of the StringPool. (DEFAULT: [StringPool.Mode.RANDOM])
+     * @param random The random instance to use.
      */
     constructor(mode: Mode, random: Random) : super(mode, random)
 
     /**
-     * @see StringPool
+     * Full constructor.
+     *
+     * @param mode (Optional) The mode of the StringPool. (DEFAULT: [StringPool.Mode.RANDOM])
+     * @param random (Optional) The random instance to use.
+     * @param strings The pool of strings to use.
      */
     constructor(mode: Mode, random: Random, strings: ArrayList<String>) : super(mode, random, strings)
 
     /**
-     * @see StringPool
+     * Import constructor.
+     *
+     * Uses default random instance from LangPack.
+     *
+     * @param cfg The ConfigurationSection to load.
      */
     constructor(cfg: ConfigurationSection) : super(cfg)
 
@@ -97,6 +130,11 @@ class BungeeStringPool : StringPool {
         }
     }
 
+    /**
+     * The **BungeeStringPool.Loader** class overrides [StringPool] with [BungeeStringPool].
+     *
+     * @author Jab
+     */
     class Loader : Complex.Loader<BungeeStringPool> {
         override fun load(cfg: ConfigurationSection): BungeeStringPool = BungeeStringPool(cfg)
     }

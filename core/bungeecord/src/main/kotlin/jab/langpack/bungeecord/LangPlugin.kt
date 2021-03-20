@@ -48,18 +48,17 @@ internal class LangPlugin : Plugin(), Listener {
 
     @EventHandler
     fun on(event: PostLoginEvent) {
-        val server = ProxyServer.getInstance()
-        server.scheduler.schedule(this, {
+
+        // !!NOTE: The server executes this event prior to the client sending the locale information. Slightly delay
+        // any join event if using LangPack for the player. - Jab
+        ProxyServer.getInstance().scheduler.schedule(this, {
             pack?.broadcast("event.connect", LangArg("player", event.player.name))
-        }, 1L, TimeUnit.SECONDS)
+        }, 20L, TimeUnit.SECONDS)
     }
 
     @EventHandler
     fun on(event: PlayerDisconnectEvent) {
-        val server = ProxyServer.getInstance()
-        server.scheduler.schedule(this, {
-            pack?.broadcast("event.disconnect", LangArg("player", event.player.name))
-        }, 1L, TimeUnit.SECONDS)
+        pack?.broadcast("event.disconnect", LangArg("player", event.player.name))
     }
 
     /**
@@ -71,33 +70,36 @@ internal class LangPlugin : Plugin(), Listener {
     fun saveResource(resourcePath: String, replace: Boolean = false) {
         var resourcePath2 = resourcePath
         resourcePath2 = resourcePath2.replace('\\', '/')
-        val `in` = getResource(resourcePath2)
-            ?: throw IllegalArgumentException("The embedded resource '$resourcePath2' cannot be found in $file")
+        val inputStream = getResource(resourcePath2)
+        require(inputStream != null) { "The embedded resource '$resourcePath2' cannot be found in $file" }
         val outFile = File(dataFolder, resourcePath2)
         val lastIndex = resourcePath2.lastIndexOf('/')
         val outDir = File(dataFolder, resourcePath2.substring(0, if (lastIndex >= 0) lastIndex else 0))
-        if (!outDir.exists()) {
-            outDir.mkdirs()
-        }
+        if (!outDir.exists()) require(outDir.mkdirs()) { "Could not create directory: ${outDir.path}" }
         try {
             if (!outFile.exists() || replace) {
                 val out: OutputStream = FileOutputStream(outFile)
                 val buf = ByteArray(1024)
                 var len: Int
-                while (`in`.read(buf).also { len = it } > 0) {
+                while (inputStream.read(buf).also { len = it } > 0) {
                     out.write(buf, 0, len)
                 }
                 out.close()
-                `in`.close()
+                inputStream.close()
             } else {
-                logger.log(Level.WARNING,
-                    "Could not save " + outFile.name + " to " + outFile + " because " + outFile.name + " already exists.")
+                logger.log(
+                    Level.WARNING,
+                    "Could not save ${outFile.name} to $outFile because ${outFile.name} already exists."
+                )
             }
         } catch (ex: IOException) {
-            logger.log(Level.SEVERE, "Could not save " + outFile.name + " to " + outFile, ex)
+            logger.log(Level.SEVERE, "Could not save ${outFile.name} to $outFile", ex)
         }
     }
 
+    /**
+     * (Borrowed from Bukkit's JavaPlugin)
+     */
     private fun getResource(filename: String): InputStream? {
         return try {
             val url: URL = getClassLoader().getResource(filename) ?: return null
@@ -109,5 +111,8 @@ internal class LangPlugin : Plugin(), Listener {
         }
     }
 
+    /**
+     * (Borrowed from Bukkit's JavaPlugin)
+     */
     private fun getClassLoader(): ClassLoader = this.javaClass.classLoader
 }

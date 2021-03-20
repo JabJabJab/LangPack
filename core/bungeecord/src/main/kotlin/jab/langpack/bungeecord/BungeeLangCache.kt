@@ -8,9 +8,11 @@ import jab.langpack.core.objects.LangArg
 import net.md_5.bungee.api.connection.ProxiedPlayer
 
 /**
- * TODO: Document.
+ * **BungeeLangCache** wraps the LangCache class to provide additional support for the BungeeCord API.
  *
  * @author Jab
+ *
+ * @param pack The BungeeLangPack instance.
  */
 class BungeeLangCache(pack: BungeeLangPack) : LangCache<BungeeLangPack>(pack) {
 

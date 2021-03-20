@@ -14,11 +14,21 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 import java.io.File
 import java.util.*
 
+/**
+ * **BungeeLangPack** wraps the LangPack class to provide additional support for the BungeeCord API.
+ *
+ * @author Jab
+ *
+ * @param classLoader The classloader to load resources.
+ * @param dir The directory to handle lang files.
+ */
 class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, dir: File = File("lang")) :
     LangPack(classLoader, dir) {
 
     /**
-     * @see LangPack
+     * Basic constructor. Uses the 'lang' directory in the server folder.
+     *
+     * @param classLoader The classloader to load resources.
      */
     constructor(classLoader: ClassLoader) : this(classLoader, File("lang"))
 
@@ -29,14 +39,12 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
     /**
      * Broadcasts a message to all online players, checking their locales and sending the corresponding dialog.
      *
-     *
      * @param query The ID of the dialog to send.
      * @param args The variables to apply to the dialog sent.
      */
     fun broadcast(query: String, vararg args: LangArg) {
 
         val cache: EnumMap<Language, TextComponent> = EnumMap<Language, TextComponent>(Language::class.java)
-
         val server = ProxyServer.getInstance()
 
         for (player in server.players) {
@@ -57,12 +65,10 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
             }
 
             val component: TextComponent
+
             if (resolved != null) {
-
                 val value = resolved.value
-
                 component = when (value) {
-
                     is Complex<*> -> {
                         val result = value.get()
                         val processedComponent: TextComponent = if (result is TextComponent) {
@@ -140,7 +146,6 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      *   is returned.
      */
     fun getLanguage(player: ProxiedPlayer): Language {
-
         if (player.locale != null) {
             var locale = player.locale.language
             if (player.locale.country != null) {
@@ -154,7 +159,6 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
                 }
             }
         }
-
         return defaultLang
     }
 
@@ -164,7 +168,9 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
         private val stringPoolLoader = BungeeStringPool.Loader()
 
         /**
-         * Adds the default loaders for the spigot module.
+         * Adds the default loaders for the bungeecord module.
+         *
+         * @param map The map to store the loaders.
          */
         fun setBungeeLoaders(map: HashMap<String, Complex.Loader<*>>) {
             map["action"] = actionTextLoader

@@ -16,39 +16,57 @@ import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
 /**
- * TODO: Document.
+ * **BungeeActionText** wraps the ActionText class to provide additional support for the BungeeCord API.
  *
  * @author Jab
  */
 class BungeeActionText : ActionText {
 
     /**
-     * @see ActionText
+     * None constructor.
+     *
+     * @param text The text to display.
      */
     constructor(text: String) : super(text)
 
     /**
-     * @see ActionText
+     * Hover constructor.
+     *
+     * @param text The text to display.
+     * @param hoverText The hover text to display.
      */
     constructor(text: String, hoverText: HoverText) : super(text, hoverText)
 
     /**
-     * @see ActionText
+     * Command constructor.
+     *
+     * @param text The text to display.
+     * @param command The command to execute.
      */
     constructor(text: String, command: String) : super(text, command)
 
     /**
-     * @see ActionText
+     * Full primitives constructor
+     *
+     * @param text The text to display.
+     * @param command The command to execute.
+     * @param hover The hover text to display.
      */
     constructor(text: String, command: String, hover: List<String>) : super(text, command, hover)
 
     /**
-     * @see ActionText
+     * Full objects constructor
+     *
+     * @param text The text to display.
+     * @param commandText The command to execute.
+     * @param hoverText The hover text to display.
      */
     constructor(text: String, commandText: CommandText, hoverText: HoverText) : super(text, commandText, hoverText)
 
     /**
-     * @see ActionText
+     * Import constructor.
+     *
+     * @param cfg The YAML to read.
      */
     constructor(cfg: ConfigurationSection) : super(cfg)
 
@@ -58,12 +76,8 @@ class BungeeActionText : ActionText {
      * @param player The player to send.
      */
     fun message(player: ProxiedPlayer) {
-
         // Make sure that only online players are processed.
-        if (!player.isConnected) {
-            return
-        }
-
+        if (!player.isConnected) return
         player.sendMessage(get())
     }
 
@@ -75,13 +89,11 @@ class BungeeActionText : ActionText {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun send(player: ProxiedPlayer, pack: BungeeLangPack? = null, vararg args: LangArg) {
-
         val textComponent = if (pack != null) {
             process(pack, pack.getLanguage(player), null, *args)
         } else {
             get()
         }
-
         player.sendMessage(textComponent)
     }
 
@@ -124,7 +136,7 @@ class BungeeActionText : ActionText {
     }
 
     /**
-     * TODO: Document.
+     * The **BungeeActionText.Loader** class overrides [ActionText] with [BungeeActionText].
      *
      * @author Jab
      */
