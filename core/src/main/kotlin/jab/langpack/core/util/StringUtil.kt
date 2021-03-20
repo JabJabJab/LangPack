@@ -6,9 +6,7 @@ import net.md_5.bungee.api.chat.hover.content.Text
 import java.util.*
 
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
- * The **StringUtil** class contains static utility methods for management of objects and strings.
+ * **StringUtil** houses utilities for management of objects and strings.
  *
  * @author Jab
  */
@@ -54,9 +52,7 @@ object StringUtil {
      * @return Returns a List of Strings, partitioned by the [NEW_LINE] operator.
      */
     fun toAList(value: Any): List<String?> {
-
         val string = value.toString()
-
         return if (string.contains(NEW_LINE)) {
             string.split(NEW_LINE)
         } else {
@@ -72,12 +68,10 @@ object StringUtil {
      * @return Returns a String Array of the String Lines in the List provided.
      */
     fun toAStringArray(list: List<String>): Array<String> {
-
         var array: Array<String> = emptyArray()
         for (next in list) {
             array = array.plus(next)
         }
-
         return array
     }
 

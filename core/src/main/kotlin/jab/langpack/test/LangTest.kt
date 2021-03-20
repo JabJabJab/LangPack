@@ -5,15 +5,15 @@ package jab.langpack.test
 import jab.langpack.core.LangPack
 
 /**
- * The **LangTest** class serves as a in-game testing implementation for the lang-pack plugin in the Spigot environment.
+ * **LangTest** is a runtime testing utility for [LangPack].
  *
  * @author Jab
  *
  * @property name The name of the test.
- * @property description TODO: Document.
+ * @property description A brief description of what the test does.
  *
- * @param Pack TODO: Document.
- * @param Commander TODO: Document.
+ * @param Pack The LangPack wrapper type.
+ * @param Commander The object of the person orchestrating the test.
  */
 abstract class LangTest<Pack : LangPack, Commander>(val name: String, val description: List<String>) {
 
@@ -21,28 +21,21 @@ abstract class LangTest<Pack : LangPack, Commander>(val name: String, val descri
      * Executes the test procedure.
      *
      * @param pack The lang-pack instance to test.
-     * @param player The player running the test.
+     * @param commander The commander running the test.
      *
-     * @return Returns true if the test succeeds. Returns false if the test fails.
+     * @return Returns the results of the test.
      */
-    fun test(pack: Pack, player: Commander): TestResult {
-
-        try {
-
-            val time = System.currentTimeMillis()
-            val result = run(pack, player)
+    fun test(pack: Pack, commander: Commander): TestResult {
+        val time = System.currentTimeMillis()
+        return try {
+            val result = run(pack, commander)
             result.time = System.currentTimeMillis() - time
-            if (!result.success) {
-                return result
-            }
-
-            return result
+            result
         } catch (e: Exception) {
-
-            val result = TestResult(false, e.message)
             e.printStackTrace(System.err)
-
-            return result
+            val result = TestResult(false, e.message)
+            result.time = System.currentTimeMillis() - time
+            result
         }
     }
 

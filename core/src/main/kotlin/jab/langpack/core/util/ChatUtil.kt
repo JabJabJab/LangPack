@@ -1,5 +1,6 @@
 package jab.langpack.core.util
 
+import jab.langpack.core.LangPack
 import jab.langpack.core.objects.formatter.FieldFormatter
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.BaseComponent
@@ -9,7 +10,7 @@ import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
 
 /**
- * The **ChatUtil** class houses all utilities for [TextComponent] for the lang-pack plugin.
+ * **ChatUtil** houses all utilities for [TextComponent] for the [LangPack].
  *
  * @author Jab
  */

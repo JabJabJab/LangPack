@@ -1,7 +1,7 @@
 package jab.langpack.test
 
 /**
- * The **TestResult** struct stores the results for [LangTest]
+ * **TestResult** stores the results for [LangTest]
  *
  * @author Jab
  *

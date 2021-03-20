@@ -4,7 +4,7 @@ import java.io.*
 import java.net.URL
 
 /**
- * The **ResourceUtil** class stores static-modified methods from Bukkit for global resource management.
+ * **ResourceUtil** houses utilities from Bukkit for global resource management.
  *
  * @author Bukkit team (Modified by Jab)
  */
@@ -17,18 +17,14 @@ object ResourceUtil {
      * @param replace If set to true, write the resource to a file, even if one already exists.
      */
     fun saveResource(path: String, classLoader: ClassLoader?, replace: Boolean = false) {
-
         require(path.isNotEmpty()) { "ResourcePath cannot be empty." }
-
         var resourcePath2 = path
         resourcePath2 = resourcePath2.replace('\\', '/')
         val inputStream: InputStream = getResource(resourcePath2, classLoader) ?: return
-
         val outFile = File(resourcePath2)
         val lastIndex = resourcePath2.lastIndexOf('/')
         val outDir = File(resourcePath2.substring(0, if (lastIndex >= 0) lastIndex else 0))
         if (!outDir.exists()) outDir.mkdirs()
-
         try {
             if (!outFile.exists() || replace) {
                 val out: OutputStream = FileOutputStream(outFile)

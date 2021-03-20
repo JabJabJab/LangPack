@@ -19,9 +19,7 @@ import net.md_5.bungee.api.chat.hover.content.Content
 import net.md_5.bungee.api.chat.hover.content.Text
 
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
- * The ***DefaultProcessor*** class implements the default field syntax for lang-packs.
+ * **DefaultProcessor** implements the default field syntax for lang-packs.
  *
  *  @author Jab
  */
@@ -36,9 +34,7 @@ class DefaultProcessor(private val formatter: FieldFormatter) : LangProcessor {
             ChatUtil.slice(component, pack.formatter)
         } else {
             val comp = TextComponent(component.text)
-            if (component.extra != null) {
-                comp.extra = component.extra
-            }
+            if (component.extra != null) comp.extra = component.extra
             comp
         }
 
@@ -112,9 +108,7 @@ class DefaultProcessor(private val formatter: FieldFormatter) : LangProcessor {
 
             // Check lang-pack for the defined field.
             if (!found) {
-
                 val stringGot = pack.getString(field.name, lang, context, *args)
-
                 processed = if (stringGot != null) {
                     processed.replace(field.raw, stringGot, true)
                 } else {
@@ -180,11 +174,8 @@ class DefaultProcessor(private val formatter: FieldFormatter) : LangProcessor {
                 }
                 if (!found) {
                     field = pack.resolve(fieldStripped, lang, context)
-                    if (field == null) {
-                        field = pack.resolve(fieldStripped, pack.defaultLang, context)
-                    }
+                        ?: pack.resolve(fieldStripped, pack.defaultLang, context)
                 }
-
                 if (field != null) {
                     when (field.value) {
                         is Complex<*> -> {
@@ -224,8 +215,8 @@ class DefaultProcessor(private val formatter: FieldFormatter) : LangProcessor {
         with(composition) {
             var eraseText = false
             if (formatter.isField(text)) {
-                val fField = formatter.strip(text)
 
+                val fField = formatter.strip(text)
                 var field: Any? = null
                 for (arg in args) {
                     if (arg.key.equals(fField, true)) {

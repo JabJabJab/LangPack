@@ -3,8 +3,7 @@ package jab.langpack.core.util
 import net.md_5.bungee.api.ChatColor
 
 /**
- * The **ConsoleColor** class contains static utility methods for processing Minecraft color-codes to ANSI
- *   color-codes when printing to Java's consoles.
+ * **ConsoleColor** houses utilities for processing Minecraft's color-codes as ANSI color-codes.
  *
  * @author Jab
  */

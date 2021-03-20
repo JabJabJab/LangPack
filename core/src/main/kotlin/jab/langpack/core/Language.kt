@@ -6,6 +6,8 @@ package jab.langpack.core
  * The **Language** enum stores the constants for identification of languages supported by the lang-pack library.
  * ### Minecraft's supported languages:</b> https://minecraft.gamepedia.com/Language
  *
+ * TODO: Convert to map of objects for version 1.1.
+ *
  * @author Jab
  *
  * @property abbreviation The abbreviation of the Language.
