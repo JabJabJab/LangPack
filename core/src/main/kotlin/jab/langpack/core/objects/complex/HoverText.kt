@@ -13,10 +13,8 @@ import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.hover.content.Text
 
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
- * The **HoverText** class handles hover text that is displayed for ActionText instances. The
- *   HoverText supports dynamic text fields for processors.
+ * **HoverText** handles dynamic text, processing into [HoverEvent].
+ * Dynamic text fields are supported.
  *
  * @author Jab
  *
@@ -51,6 +49,8 @@ class HoverText : Complex<HoverEvent> {
     }
 
     /**
+     * Vararg constructor.
+     *
      * @param lines The lines of text to display.
      */
     constructor(vararg lines: Text) {
@@ -82,5 +82,4 @@ class HoverText : Complex<HoverEvent> {
     override fun needsWalk(formatter: FieldFormatter): Boolean = formatter.needsWalk(lines)
 
     override fun get(): HoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, lines)
-
 }
