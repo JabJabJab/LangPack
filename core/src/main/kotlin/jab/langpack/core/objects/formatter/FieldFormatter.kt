@@ -4,71 +4,66 @@ import jab.langpack.core.objects.FieldProperties
 import jab.langpack.core.util.StringUtil
 
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
- * The ***FieldFormatter*** interface implements methods for the following:
- *  <br/>
- * - **Field detection**
- * - **Field parsing**
- * - **Field formatting**
+ * **FieldFormatter** implements the following: field detection, field parsing, and field
+ * formatting. This is used to sanitize the core code from hard-coded interpretation and processing of fields.
  *
  * @author Jab
  */
 interface FieldFormatter {
 
     /**
-     * Parses a string into fields.
+     * Parses a string into fields as metadata.
      *
-     * @param string The unprocessed string to parse.
+     * @param string The string to parse.
      *
-     * @return Returns the fields in the unprocessed string.
+     * @return Returns a list of the fields as metadata.
      */
     fun getFields(string: String): List<FieldProperties>
 
     /**
-     * TODO: Document.
+     * Parses a string into a list of raw fields.
      *
-     * @param string
+     * @param string The string to parse.
      *
-     * @return
+     * @return Returns a list of the fields as strings.
      */
     fun getRawFields(string: String): List<String>
 
     /**
-     * TODO: Document.
+     * Parses a field as metadata.
      *
-     * @param field
+     * @param field The field to process.
      *
-     * @return
+     * @return Returns the parsed field as metadata.
      */
     fun getProperties(field: String): FieldProperties
 
     /**
-     * TODO: Document.
+     * Parses a string to check for count of fields.
      *
-     * @param string
+     * @param string The string to parse.
      *
-     * @return
+     * @return Returns thr amount of fields in the string.
      */
     fun getFieldCount(string: String): Int = getRawFields(string).size
 
     /**
-     * TODO: Document.
+     * Parses a field to get the placeholder.
      *
-     * @param string
+     * @param field The field to parse.
      *
-     * @return
+     * @return Returns the placeholder for the field.
      */
-    fun getPlaceholder(string: String): String
+    fun getPlaceholder(field: String): String
 
     /**
-     * TODO: Document.
+     * Strips the field to return the id.
      *
-     * @param string
+     * @param field The field to process.
      *
-     * @return
+     * @return Returns the processed field.
      */
-    fun strip(string: String): String
+    fun strip(field: String): String
 
     /**
      * @param field the Field to process.
@@ -85,29 +80,23 @@ interface FieldFormatter {
     fun isField(string: String?): Boolean
 
     /**
-     * TODO: Document.
+     * @param field The field to test.
      *
-     * @param string
-     *
-     * @return
+     * @return Returns true if the field needs to resolve post-load.
      */
-    fun isResolve(string: String): Boolean
+    fun isResolve(field: String): Boolean
 
     /**
-     * TODO: Document.
+     * @param field The field to test.
      *
-     * @param string
-     *
-     * @return
+     * @return Returns true if the field forces queries of it to only be at the package scope.
      */
-    fun isPackageScope(string: String): Boolean
+    fun isPackageScope(field: String): Boolean
 
     /**
-     * TODO: Document.
+     * @param list The list to test.
      *
-     * @param list
-     *
-     * @return
+     * @return Returns true if any string in the list contains a field that needs to walk.
      */
     fun needsWalk(list: List<*>): Boolean {
         for (string in list) {
@@ -117,11 +106,9 @@ interface FieldFormatter {
     }
 
     /**
-     * TODO: Document.
+     * @param value The value to test.
      *
-     * @param value
-     *
-     * @return
+     * @return Returns true if the
      */
     fun needsWalk(value: Any): Boolean {
         val valueActual = StringUtil.toAString(value)
