@@ -1,11 +1,11 @@
 package jab.langpack.core.objects.formatter
 
+import jab.langpack.core.LangPack
 import jab.langpack.core.objects.FieldProperties
 
+
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
- * The **PercentFormatter** class. TODO: Document.
+ * **PercentFormatter** Contains the the hard-code for the percent-syntax used in [LangPack].
  *
  * @author Jab
  */
@@ -42,9 +42,7 @@ class PercentFormatter : FieldFormatter {
             val c = next.toChar()
             if (c == '%') {
                 if (insideField) {
-                    if (nextField.isNotEmpty()) {
-                        fields.add(nextField.toString())
-                    }
+                    if (nextField.isNotEmpty()) fields.add(nextField.toString())
                     insideField = false
                 } else {
                     insideField = true
@@ -73,9 +71,7 @@ class PercentFormatter : FieldFormatter {
             val c = next.toChar()
             if (c == '%') {
                 if (insideField) {
-                    if (nextField.isNotEmpty()) {
-                        count++
-                    }
+                    if (nextField.isNotEmpty()) count++
                     insideField = false
                 } else {
                     insideField = true
@@ -88,29 +84,27 @@ class PercentFormatter : FieldFormatter {
         return count
     }
 
-    override fun getPlaceholder(string: String): String {
-        if (string.isEmpty()) return ""
-        return if (string.contains("=")) {
-            string.substring(string.indexOf('=') + 1).replace("%", "")
+    override fun getPlaceholder(field: String): String {
+        if (field.isEmpty()) return ""
+        return if (field.contains("=")) {
+            field.substring(field.indexOf('=') + 1).replace("%", "")
         } else {
-            string.replace("!", "").replace("~", "")
+            field.replace("!", "").replace("~", "")
         }
     }
 
-    override fun strip(string: String): String {
+    override fun strip(field: String): String {
 
         // Invalid placeholder. Don't cause a runtime exception for substring.
-        if (string.startsWith("=")) return ""
+        if (field.startsWith("=")) return ""
 
-        var stripped = string.replace("%", "")
+        var stripped = field.replace("%", "")
             .replace("!", "")
             .replace("~", "")
 
         // Remove placeholder
-        val index = string.indexOf("=")
-        if (index > -1) {
-            stripped = stripped.substring(0, stripped.indexOf("="))
-        }
+        val index = field.indexOf("=")
+        if (index > -1) stripped = stripped.substring(0, stripped.indexOf("="))
 
         return stripped.toLowerCase()
     }
@@ -126,7 +120,7 @@ class PercentFormatter : FieldFormatter {
         return false
     }
 
-    override fun isResolve(string: String): Boolean = string.indexOf('!') > -1
+    override fun isResolve(field: String): Boolean = field.indexOf('!') > -1
 
-    override fun isPackageScope(string: String): Boolean = string.indexOf('~') > -1
+    override fun isPackageScope(field: String): Boolean = field.indexOf('~') > -1
 }
