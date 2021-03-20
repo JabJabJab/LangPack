@@ -6,26 +6,28 @@ import jab.langpack.core.objects.complex.Complex
 import jab.langpack.core.objects.formatter.FieldFormatter
 
 /**
- * The **ComplexDefinition** class. TODO: Document.
+ * **ComplexDefinition** wraps and handles definitions of complex objects stored in [LangGroup].
  *
  * @author Jab
  */
 class ComplexDefinition : LangDefinition<Complex<*>> {
 
     /**
-     * TODO: Document.
+     * Full constructor.
      *
-     * @param pack
-     * @param parent
-     * @param value
+     * @param pack The pack that the definition belongs to.
+     * @param parent The parent that the definition belongs to.
+     * @param value The value of the definition.
      */
     constructor(pack: LangPack, parent: LangGroup?, value: Complex<*>) : super(pack, parent, value)
 
     /**
-     * TODO: Document.
+     * Minimal constructor.
      *
-     * @param pack
-     * @param value
+     * The definition has no parent.
+     *
+     * @param pack The pack that the definition belongs to.
+     * @param value The value of the definition.
      */
     constructor(pack: LangPack, value: Complex<*>) : super(pack, null, value)
 
