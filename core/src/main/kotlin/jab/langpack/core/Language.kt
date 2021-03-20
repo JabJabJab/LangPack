@@ -3,8 +3,6 @@
 package jab.langpack.core
 
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
  * The **Language** enum stores the constants for identification of languages supported by the lang-pack library.
  * ### Minecraft's supported languages:</b> https://minecraft.gamepedia.com/Language
  *
@@ -268,7 +266,6 @@ enum class Language(val abbreviation: String, private val fallBack: String? = nu
     VIETNAMESE("vi_vn"),
     YIDDISH("yi_de"),
     YORUBA("yo_ng");
-
 
     override fun toString(): String = "Language(abbreviation='$abbreviation', fallBack=$fallBack)"
 
