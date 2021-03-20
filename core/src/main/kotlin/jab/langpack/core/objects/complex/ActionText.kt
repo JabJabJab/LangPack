@@ -16,11 +16,7 @@ import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.configuration.ConfigurationSection
 
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
- * The **ActionText** class packages defined [HoverEvent] and [ClickEvent] as [HoverText] and [CommandText] wrappers for
- * dynamic [TextComponent] usage for lang-packs.
- *
+ * **ActionText** class packages defined [HoverEvent] and [ClickEvent] as [HoverText] and [CommandText] wrappers.
  * The object is complex and resolvable for [LangProcessor].
  *
  * @author Jab
