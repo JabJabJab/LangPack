@@ -1,9 +1,7 @@
 package jab.langpack.core.objects
 
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
- * The **LangArg** struct is for a stored key->value pair to override & replace fields.
+ * **LangArg** is a struct for a storage of key->value pairs to override & replace fields.
  *
  * @author Jab
  *
@@ -11,5 +9,5 @@ package jab.langpack.core.objects
  * @property value The value to store.
  */
 data class LangArg(val key: String, val value: Any) {
-    override fun toString(): String = "{key='$key', value='$value'}"
+    override fun toString(): String = "LangArg(key='$key', value='$value')"
 }
