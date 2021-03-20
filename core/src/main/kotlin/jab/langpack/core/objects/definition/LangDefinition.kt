@@ -8,29 +8,40 @@ import jab.langpack.core.objects.formatter.FieldFormatter
 import jab.langpack.core.util.StringUtil
 
 /**
- * The **Definition** class. TODO: Document.
+ * **ComplexDefinition** wraps and handles definitions of objects stored in [LangGroup].
  *
- * @property pack
- * @property parent
- * @property value
+ * @property pack The pack the definition belongs to.
+ * @property parent The parent group the definition belongs to.
+ * @property value The value of the definition.
+ *
+ * @param E The value's type.
  */
 abstract class LangDefinition<E>(val pack: LangPack, val parent: LangGroup?, val raw: E) {
 
+    /**
+     * The value of the definition.
+     */
     var value: E = raw
+
+    /**
+     * If true, the definition is already walked.
+     */
     var walked: Boolean = false
 
     /**
-     * TODO: Document.
+     * Walks the definition. Checks [needsWalk] to make sure that non-walkable definitions aren't processed.
      */
     fun walk() {
-        if (!walked && needsWalk(pack.formatter)) {
-            value = onWalk()
+        if (!walked) {
+            if (needsWalk(pack.formatter)) {
+                value = onWalk()
+            }
             walked = true
         }
     }
 
     /**
-     * TODO: Document.
+     * Resets the definition's walk transformation. Sets the value [raw] to [value].
      */
     fun unWalk() {
         walked = false
@@ -40,46 +51,41 @@ abstract class LangDefinition<E>(val pack: LangPack, val parent: LangGroup?, val
     /**
      * Walks the value for the definition. This allows for post-load transformations of the value.
      *
-     * @return TODO: Document.
+     * @return Returns the transformed value.
      */
     abstract fun onWalk(): E
 
     /**
-     * TODO: Document.
-     *
-     * @return
+     * @return Returns true if the definition determines that the raw value needs to walk.
      */
     abstract fun needsWalk(formatter: FieldFormatter): Boolean
 
     /**
-     * TODO: Document.
+     * Walks a list of strings.
      *
-     * @param list
+     * @param list The list to walk.
      *
-     * @return
+     * @return Returns a list of transformed strings.
      */
-    fun walk(list: List<String>): ArrayList<String> {
+    fun walk(list: List<String>): List<String> {
         val walkedList = ArrayList<String>()
         for (string in list) walkedList.add(walk(string))
         return walkedList
     }
 
     /**
-     * TODO: Document.
+     * Walks a string.
      *
-     * @param string
+     * @param string The string to walk.
      *
-     * @return
+     * @return Returns the transformed string.
      */
     fun walk(string: String): String {
-        if (pack.debug) {
-            println("Walking ($string)..")
-        }
+        if (pack.debug) println("Walking ($string)..")
 
         var value = string
         val fields = pack.formatter.getFields(value)
         val language = parent?.language ?: pack.defaultLang
-
         val walkedDefinitions = ArrayList<String>()
 
         for (field in fields) {
@@ -115,17 +121,12 @@ abstract class LangDefinition<E>(val pack: LangPack, val parent: LangGroup?, val
                     field.placeholder
                 }
 
-                if (pack.debug) {
-                    println("""Replacing resolve field "$field" with: "$result".""")
-                }
+                if (pack.debug) println("""Replacing resolve field "$field" with: "$result".""")
                 value = value.replace(field.raw, result)
             }
         }
 
-        if (pack.debug) {
-            println("value: $value")
-        }
-
+        if (pack.debug) println("value: $value")
         return value
     }
 }
