@@ -27,9 +27,11 @@ class HoverText : Complex<HoverEvent> {
     var lines: List<Text>
 
     /**
+     * Collection constructor.
+     *
      * @param lines The lines of text to display.
      */
-    constructor(lines: List<*>) {
+    constructor(lines: Collection<*>) {
 
         val packagedLines = ArrayList<Text>()
 
