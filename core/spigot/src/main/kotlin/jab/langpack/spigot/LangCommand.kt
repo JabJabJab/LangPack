@@ -11,7 +11,7 @@ import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
 /**
- * The **LangCommand** class handles all command executions under the "__/lang__" command.
+ * **LangCommand** handles all command executions under the *"lang"* command.
  *
  * @author Jab
  *
@@ -20,10 +20,16 @@ import org.bukkit.entity.Player
 internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabCompleter {
 
     private val tests = HashMap<String, LangTest<SpigotLangPack, Player>>()
+    private val emptyList = ArrayList<String>()
+    private val subCommands = ArrayList<String>()
     private val cache = SpigotLangCache(plugin.pack!!)
     private val pack = plugin.pack!!
 
     init {
+
+        subCommands.add("test")
+        subCommands.add("tests")
+
         val command = plugin.getCommand("lang")
         if (command == null) {
             System.err.println("The command 'lang' is not registered.")
@@ -43,25 +49,20 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         if (sender !is Player) return true
 
         val player: Player = sender
-
         var found = false
 
         // Scan for sub-commands.
         if (args.isNotEmpty()) {
-
             when (args[0].toLowerCase()) {
-
                 "test" -> {
                     onTestCommand(player, args)
                     found = true
                 }
-
                 "tests" -> {
                     onTestsCommand(player)
                     found = true
                 }
             }
-
             // Let the player know the command is invalid before sending the help dialog.
             if (!found) pack.message(player, "command.not_found", LangArg("command", args[0]))
         }
@@ -79,19 +80,17 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         args: Array<out String>,
     ): MutableList<String> {
 
-        if (args.isEmpty() || sender !is Player) return SUB_COMMANDS
+        if (args.isEmpty() || sender !is Player) return subCommands
 
         val lang = cache.getLanguage(sender)
-
         when (args.size) {
-
             1 -> {
                 val arg0 = args[0].toLowerCase()
                 return if (arg0.isEmpty()) {
-                    SUB_COMMANDS
+                    subCommands
                 } else {
                     val list = ArrayList<String>()
-                    for (subCommand in SUB_COMMANDS) {
+                    for (subCommand in subCommands) {
                         if (subCommand.contains(arg0, true)) {
                             list.add(subCommand)
                         }
@@ -99,7 +98,6 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
                     list
                 }
             }
-
             2 -> {
                 if (args[1].isEmpty()) {
                     return ArrayList(tests.keys)
@@ -120,8 +118,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
                 }
             }
         }
-
-        return EMPTY_LIST
+        return emptyList
     }
 
     private fun onTestCommand(player: Player, args: Array<out String>) {
@@ -171,9 +168,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
                 val argReason = LangArg("reason", result.reason!!)
                 pack.message(player, "test.failure", argTest, argReason)
             }
-
             pack.message(player, "test.end")
-
             return
         } else {
             pack.message(player, "test.description",
@@ -206,15 +201,5 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
 
     private fun addTest(test: LangTest<SpigotLangPack, Player>) {
         tests[test.name] = test
-    }
-
-    companion object {
-
-        private val EMPTY_LIST = ArrayList<String>()
-        private val SUB_COMMANDS = ArrayList<String>()
-
-        init {
-            SUB_COMMANDS.add("test")
-        }
     }
 }

@@ -22,8 +22,6 @@ import java.io.File
 import java.util.*
 
 /**
- * TODO: Update documentation to reflect Definition API update.
- *
  * **LangPack** is a utility that stores entries for dialog, separated by language. Files are loaded into the
  * lang-pack as a [LangFile], and queried based on language context when querying dialog.
  *

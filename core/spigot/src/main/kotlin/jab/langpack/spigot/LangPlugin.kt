@@ -1,12 +1,12 @@
 package jab.langpack.spigot
 
+import jab.langpack.core.LangPack
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
 /**
- * The **LangPlugin** class is the Spigot-implementation for lang-pack. All initialization for the lang-pack library
- * occurs here.
+ * **LangPlugin** is the Spigot plugin container for [LangPack].
  *
  * @author Jab
  */

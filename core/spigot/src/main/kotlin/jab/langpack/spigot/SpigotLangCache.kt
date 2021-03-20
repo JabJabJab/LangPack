@@ -8,11 +8,11 @@ import jab.langpack.core.objects.LangArg
 import org.bukkit.entity.Player
 
 /**
- * TODO: Document.
+ * **SpigotLangCache** wraps the LangCache class to provide additional support for the Spigot API.
  *
  * @author Jab
  *
- * @param pack
+ * @param pack The SpigotLangPack instance.
  */
 class SpigotLangCache(pack: SpigotLangPack) : LangCache<SpigotLangPack>(pack) {
 

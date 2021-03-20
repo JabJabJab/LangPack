@@ -115,28 +115,23 @@ class BungeeActionText : ActionText {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(pack: BungeeLangPack, vararg args: LangArg) {
-
         val cache = EnumMap<Language, TextComponent>(Language::class.java)
-
         val server = ProxyServer.getInstance()
         for (player in server.players) {
-
             val textComponent: TextComponent
             val lang = pack.getLanguage(player)
-
             if (cache[lang] != null) {
                 textComponent = cache[lang]!!
             } else {
                 textComponent = process(pack, pack.getLanguage(player), null, *args)
                 cache[lang] = textComponent
             }
-
             player.sendMessage(textComponent)
         }
     }
 
     /**
-     * The **BungeeActionText.Loader** class overrides [ActionText] with [BungeeActionText].
+     * **BungeeActionText.Loader** overrides [ActionText] with [BungeeActionText].
      *
      * @author Jab
      */

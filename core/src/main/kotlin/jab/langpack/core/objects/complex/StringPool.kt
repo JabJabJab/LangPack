@@ -68,10 +68,10 @@ open class StringPool : Complex<String> {
      * @param random (Optional) The random instance to use.
      * @param strings The pool of strings to use.
      */
-    constructor(mode: Mode, random: Random, strings: ArrayList<String>) {
+    constructor(mode: Mode, random: Random, strings: Collection<String>) {
         this.mode = mode
         this.random = random
-        this.strings = strings
+        this.strings = ArrayList(strings)
     }
 
     /**

@@ -52,7 +52,7 @@ class BungeeStringPool : StringPool {
      * @param random (Optional) The random instance to use.
      * @param strings The pool of strings to use.
      */
-    constructor(mode: Mode, random: Random, strings: ArrayList<String>) : super(mode, random, strings)
+    constructor(mode: Mode, random: Random, strings: Collection<String>) : super(mode, random, strings)
 
     /**
      * Import constructor.
@@ -110,22 +110,17 @@ class BungeeStringPool : StringPool {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(pack: BungeeLangPack, vararg args: LangArg) {
-
         val cache = EnumMap<Language, String>(Language::class.java)
-
         val server = ProxyServer.getInstance()
         for (player in server.players) {
-
             val message: String
             val lang = pack.getLanguage(player)
-
             if (cache[lang] != null) {
                 message = cache[lang]!!
             } else {
                 message = process(pack, lang, null, *args)
                 cache[lang] = message
             }
-
             player.sendMessage(TextComponent(message))
         }
     }

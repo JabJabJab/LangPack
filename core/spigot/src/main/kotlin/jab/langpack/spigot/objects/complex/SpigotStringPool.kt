@@ -14,24 +14,52 @@ import org.bukkit.entity.Player
 import java.util.*
 
 /**
- * TODO: Document.
+ * **SpigotStringPool** wraps the StringPool class to provide additional support for the Spigot API.
  *
  * @author Jab
  */
 class SpigotStringPool : StringPool {
 
     /**
-     * @see StringPool
+     * Empty constructor.
+     *
+     * Uses default mode of [StringPool.Mode.RANDOM].
+     * Uses default random instance from LangPack.
+     */
+    constructor() : super()
+
+    /**
+     * Lite constructor.
+     *
+     * Uses default random instance from LangPack.
+     *
+     * @param mode The mode of the StringPool. (DEFAULT: [StringPool.Mode.RANDOM])
+     */
+    constructor(mode: Mode) : super(mode)
+
+    /**
+     * Basic constructor.
+     *
+     * @param mode The mode of the StringPool. (DEFAULT: [StringPool.Mode.RANDOM])
+     * @param random The random instance to use.
      */
     constructor(mode: Mode, random: Random) : super(mode, random)
 
     /**
-     * @see StringPool
+     * Full constructor.
+     *
+     * @param mode (Optional) The mode of the StringPool. (DEFAULT: [StringPool.Mode.RANDOM])
+     * @param random (Optional) The random instance to use.
+     * @param strings The pool of strings to use.
      */
-    constructor(mode: Mode, random: Random, strings: ArrayList<String>) : super(mode, random, strings)
+    constructor(mode: Mode, random: Random, strings: Collection<String>) : super(mode, random, strings)
 
     /**
-     * @see StringPool
+     * Import constructor.
+     *
+     * Uses default random instance from LangPack.
+     *
+     * @param cfg The ConfigurationSection to load.
      */
     constructor(cfg: ConfigurationSection) : super(cfg)
 
@@ -90,21 +118,16 @@ class SpigotStringPool : StringPool {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(pack: SpigotLangPack, vararg args: LangArg) {
-
         val cache = EnumMap<Language, String>(Language::class.java)
-
         for (player in Bukkit.getOnlinePlayers()) {
-
             val message: String
             val lang = pack.getLanguage(player)
-
             if (cache[lang] != null) {
                 message = cache[lang]!!
             } else {
                 message = process(pack, pack.getLanguage(player), null, *args)
                 cache[lang] = message
             }
-
             player.sendMessage(message)
         }
     }
@@ -116,27 +139,22 @@ class SpigotStringPool : StringPool {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(world: World, pack: SpigotLangPack, vararg args: LangArg) {
-
         val cache = EnumMap<Language, String>(Language::class.java)
-
         for (player in world.players) {
-
             val message: String
             val lang = pack.getLanguage(player)
-
             if (cache[lang] != null) {
                 message = cache[lang]!!
             } else {
                 message = process(pack, lang, null, *args)
                 cache[lang] = message
             }
-
             player.sendMessage(message)
         }
     }
 
     /**
-     * TODO: Document.
+     * The **SpigotStringPool.Loader** overrides [StringPool] with [SpigotStringPool].
      *
      * @author Jab
      */

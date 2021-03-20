@@ -16,18 +16,20 @@ import java.io.File
 import java.util.*
 
 /**
- * TODO: Document.
+ * **SpigotLangPack** wraps the LangPack class to provide additional support for the Spigot API.
  *
  * @author Jab
  *
- * @param classLoader
- * @param dir
+ * @param classLoader The classloader to load resources.
+ * @param dir The directory to handle lang files.
  */
 class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, dir: File = File("lang")) :
     LangPack(classLoader, dir) {
 
     /**
-     * @see LangPack
+     * Basic constructor. Uses the 'lang' directory in the server folder.
+     *
+     * @param classLoader The classloader to load resources.
      */
     constructor(classLoader: ClassLoader) : this(classLoader, File("lang"))
 

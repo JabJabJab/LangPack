@@ -1,5 +1,6 @@
 package jab.langpack.bungeecord
 
+import jab.langpack.core.LangPack
 import jab.langpack.core.objects.LangArg
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.event.PlayerDisconnectEvent
@@ -14,8 +15,7 @@ import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
 /**
- * The **LangPlugin** class is the Bungeecord-implementation for lang-pack. All initialization for the lang-pack library
- * occurs here.
+ * **LangPlugin** is the Bungeecord plugin container for [LangPack].
  *
  * @author Jab
  */
@@ -33,22 +33,18 @@ internal class LangPlugin : Plugin(), Listener {
     private var broadcastEvents = false
 
     override fun onEnable() {
-
         saveResource("config.yml")
         val cfg = YamlConfiguration.loadConfiguration(File(dataFolder, "config.yml"))
         if (cfg.isBoolean("broadcast_connection_events")) {
             broadcastEvents = cfg.getBoolean("broadcast_connection_events")
         }
-
         pack = BungeeLangPack(this::class.java.classLoader)
         pack!!.append("lang", save = true, force = true)
-
         ProxyServer.getInstance().pluginManager.registerListener(this, this)
     }
 
     @EventHandler
     fun on(event: PostLoginEvent) {
-
         // !!NOTE: The server executes this event prior to the client sending the locale information. Slightly delay
         // any join event if using LangPack for the player. - Jab
         ProxyServer.getInstance().scheduler.schedule(this, {

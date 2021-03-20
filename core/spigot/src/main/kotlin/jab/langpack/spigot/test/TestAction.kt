@@ -7,12 +7,11 @@ import jab.langpack.test.TestResult
 import org.bukkit.entity.Player
 
 /**
- * The **TestAction** class Tests the basic operations for [ActionText].
+ * **TestAction** tests a basic [ActionText].
  *
  * @author Jab
  */
 class TestAction(description: List<String>) : LangTest<SpigotLangPack, Player>("action", description) {
-
     override fun run(pack: SpigotLangPack, player: Player): TestResult {
         pack.message(player, "test.action.message")
         return TestResult(true)

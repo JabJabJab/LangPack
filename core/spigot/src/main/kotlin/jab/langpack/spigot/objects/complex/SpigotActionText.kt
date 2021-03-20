@@ -17,39 +17,57 @@ import org.bukkit.entity.Player
 import java.util.*
 
 /**
- * TODO: Document.
+ * **SpigotActionText** wraps the ActionText class to provide additional support for the Spigot API.
  *
  * @author Jab
  */
 class SpigotActionText : ActionText {
 
     /**
-     * @see ActionText
+     * None constructor.
+     *
+     * @param text The text to display.
      */
     constructor(text: String) : super(text)
 
     /**
-     * @see ActionText
+     * Hover constructor.
+     *
+     * @param text The text to display.
+     * @param hoverText The hover text to display.
      */
     constructor(text: String, hoverText: HoverText) : super(text, hoverText)
 
     /**
-     * @see ActionText
+     * Command constructor.
+     *
+     * @param text The text to display.
+     * @param command The command to execute.
      */
     constructor(text: String, command: String) : super(text, command)
 
     /**
-     * @see ActionText
+     * Full primitives constructor
+     *
+     * @param text The text to display.
+     * @param command The command to execute.
+     * @param hover The hover text to display.
      */
     constructor(text: String, command: String, hover: List<String>) : super(text, command, hover)
 
     /**
-     * @see ActionText
+     * Full objects constructor
+     *
+     * @param text The text to display.
+     * @param commandText The command to execute.
+     * @param hoverText The hover text to display.
      */
     constructor(text: String, commandText: CommandText, hoverText: HoverText) : super(text, commandText, hoverText)
 
     /**
-     * @see ActionText
+     * Import constructor.
+     *
+     * @param cfg The YAML to read.
      */
     constructor(cfg: ConfigurationSection) : super(cfg)
 
@@ -108,21 +126,16 @@ class SpigotActionText : ActionText {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(pack: SpigotLangPack, vararg args: LangArg) {
-
         val cache = EnumMap<Language, TextComponent>(Language::class.java)
-
         for (player in Bukkit.getOnlinePlayers()) {
-
             val textComponent: TextComponent
             val lang = pack.getLanguage(player)
-
             if (cache[lang] != null) {
                 textComponent = cache[lang]!!
             } else {
                 textComponent = process(pack, pack.getLanguage(player), null, *args)
                 cache[lang] = textComponent
             }
-
             player.spigot().sendMessage(textComponent)
         }
     }
@@ -134,27 +147,22 @@ class SpigotActionText : ActionText {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(world: World, pack: SpigotLangPack, vararg args: LangArg) {
-
         val cache = EnumMap<Language, TextComponent>(Language::class.java)
-
         for (player in world.players) {
-
             val textComponent: TextComponent
             val lang = pack.getLanguage(player)
-
             if (cache[lang] != null) {
                 textComponent = cache[lang]!!
             } else {
                 textComponent = process(pack, lang, null, *args)
                 cache[lang] = textComponent
             }
-
             player.spigot().sendMessage(textComponent)
         }
     }
 
     /**
-     * TODO: Document.
+     * **SpigotActionText.Loader** overrides [ActionText] with [SpigotActionText].
      *
      * @author Jab
      */
