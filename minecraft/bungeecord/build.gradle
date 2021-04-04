@@ -26,7 +26,7 @@ dependencies {
     compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
 
     shade files('../../libs/Sledgehammer-Framework-Config-1.0.0.jar')
-    shade project(":textcomponent")
+    shade project(":minecraft:textcomponent")
 }
 
 test {

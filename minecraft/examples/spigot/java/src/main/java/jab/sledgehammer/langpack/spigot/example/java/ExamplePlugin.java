@@ -1,7 +1,6 @@
 package jab.sledgehammer.langpack.spigot.example.java;
 
-import jab.langpack.core.objects.LangArg;
-import jab.sledgehammer.langpack.spigot.SpigotLangPack;
+import jab.sledgehammer.langpack.core.objects.LangArg;
 import jab.sledgehammer.langpack.spigot.SpigotLangPack;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;

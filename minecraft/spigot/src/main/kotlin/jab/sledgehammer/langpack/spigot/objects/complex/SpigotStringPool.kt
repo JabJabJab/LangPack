@@ -2,10 +2,10 @@
 
 package jab.sledgehammer.langpack.spigot.objects.complex
 
-import jab.langpack.core.Language
-import jab.langpack.core.objects.LangArg
-import jab.langpack.core.objects.complex.Complex
-import jab.langpack.core.objects.complex.StringPool
+import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.objects.complex.Complex
+import jab.sledgehammer.langpack.core.objects.complex.StringPool
 import jab.sledgehammer.langpack.spigot.SpigotLangPack
 import jab.sledgehammer.config.ConfigSection
 import org.bukkit.Bukkit

@@ -2,7 +2,7 @@
 
 package jab.sledgehammer.langpack.spigot.example.kotlin
 
-import jab.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.spigot.SpigotLangPack
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

@@ -2,10 +2,10 @@
 
 package jab.sledgehammer.langpack.spigot
 
-import jab.langpack.core.LangPack
-import jab.langpack.core.Language
-import jab.langpack.core.objects.LangArg
-import jab.langpack.core.objects.complex.Complex
+import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.spigot.objects.complex.SpigotActionText
 import jab.sledgehammer.langpack.spigot.objects.complex.SpigotStringPool
 import jab.sledgehammer.langpack.textcomponent.TextComponentLangPack

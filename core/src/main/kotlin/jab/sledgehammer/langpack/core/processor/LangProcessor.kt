@@ -1,9 +1,9 @@
 package jab.sledgehammer.langpack.core.processor
 
-import jab.langpack.core.LangPack
-import jab.langpack.core.Language
-import jab.langpack.core.objects.LangArg
-import jab.langpack.core.objects.LangGroup
+import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.objects.LangGroup
 
 /**
  * **LangProcessor** implements syntax formats for use in [LangPack].

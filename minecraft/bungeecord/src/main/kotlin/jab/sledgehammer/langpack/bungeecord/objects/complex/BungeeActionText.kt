@@ -3,9 +3,9 @@
 package jab.sledgehammer.langpack.bungeecord.objects.complex
 
 import jab.sledgehammer.langpack.bungeecord.BungeeLangPack
-import jab.langpack.core.Language
-import jab.langpack.core.objects.LangArg
-import jab.langpack.core.objects.complex.Complex
+import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.textcomponent.objects.complex.ActionText
 import jab.sledgehammer.langpack.textcomponent.objects.complex.CommandText
 import jab.sledgehammer.langpack.textcomponent.objects.complex.HoverText

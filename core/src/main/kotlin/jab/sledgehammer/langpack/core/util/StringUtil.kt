@@ -1,6 +1,6 @@
 package jab.sledgehammer.langpack.core.util
 
-import jab.langpack.core.LangPack.Companion.NEW_LINE
+import jab.sledgehammer.langpack.core.LangPack.Companion.NEW_LINE
 import java.util.*
 
 /**

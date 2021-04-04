@@ -2,13 +2,13 @@
 
 package jab.sledgehammer.langpack.core.objects.definition
 
-import jab.langpack.core.LangPack
-import jab.langpack.core.objects.LangGroup
-import jab.langpack.core.objects.formatter.FieldFormatter
-import jab.langpack.core.util.StringUtil
+import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.objects.LangGroup
+import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
+import jab.sledgehammer.langpack.core.util.StringUtil
 
 /**
- * **ComplexDefinition** wraps and handles definitions of objects stored in [LangGroup].
+ * **LangDefinition** wraps and handles definitions of objects stored in [LangGroup].
  *
  * @property pack The pack the definition belongs to.
  * @property parent The parent group the definition belongs to.

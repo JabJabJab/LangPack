@@ -1,9 +1,9 @@
 package jab.sledgehammer.langpack.spigot
 
-import jab.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.spigot.test.TestAction
 import jab.sledgehammer.langpack.spigot.test.TestBroadcast
-import jab.langpack.test.LangTest
+import jab.sledgehammer.langpack.core.test.LangTest
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender

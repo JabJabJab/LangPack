@@ -1,8 +1,8 @@
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package jab.langpack.test
+package jab.sledgehammer.langpack.core.test
 
-import jab.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.LangPack
 
 /**
  * **LangTest** is a runtime testing utility for [LangPack].

@@ -1,7 +1,7 @@
 package jab.sledgehammer.langpack.core.objects
 
-import jab.langpack.core.LangPack
-import jab.langpack.core.Language
+import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.config.ConfigFile
 import java.io.File
 

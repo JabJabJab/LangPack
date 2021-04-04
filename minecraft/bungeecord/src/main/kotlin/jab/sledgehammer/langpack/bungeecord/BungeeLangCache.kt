@@ -2,9 +2,8 @@
 
 package jab.sledgehammer.langpack.bungeecord
 
-import jab.sledgehammer.langpack.core.LangCache
-import jab.langpack.core.Language
-import jab.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.objects.LangArg
 import net.md_5.bungee.api.connection.ProxiedPlayer
 
 /**

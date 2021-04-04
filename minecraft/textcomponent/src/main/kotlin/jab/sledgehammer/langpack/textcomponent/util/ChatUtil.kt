@@ -1,8 +1,8 @@
 package jab.sledgehammer.langpack.textcomponent.util
 
-import jab.langpack.core.LangPack
-import jab.langpack.core.objects.formatter.FieldFormatter
-import jab.langpack.core.util.StringUtil
+import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
+import jab.sledgehammer.langpack.core.util.StringUtil
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.ClickEvent

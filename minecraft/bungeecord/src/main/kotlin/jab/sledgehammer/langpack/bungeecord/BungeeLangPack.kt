@@ -4,10 +4,10 @@ package jab.sledgehammer.langpack.bungeecord
 
 import jab.sledgehammer.langpack.bungeecord.objects.complex.BungeeActionText
 import jab.sledgehammer.langpack.bungeecord.objects.complex.BungeeStringPool
-import jab.langpack.core.LangPack
-import jab.langpack.core.Language
-import jab.langpack.core.objects.LangArg
-import jab.langpack.core.objects.complex.Complex
+import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.textcomponent.TextComponentLangPack
 import jab.sledgehammer.langpack.textcomponent.processor.TextComponentProcessor
 import net.md_5.bungee.api.ProxyServer

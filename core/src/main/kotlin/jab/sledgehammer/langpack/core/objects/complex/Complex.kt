@@ -1,16 +1,16 @@
 package jab.sledgehammer.langpack.core.objects.complex
 
-import jab.langpack.core.LangPack
-import jab.langpack.core.Language
-import jab.langpack.core.objects.LangArg
-import jab.langpack.core.objects.LangGroup
-import jab.langpack.core.objects.definition.LangDefinition
-import jab.langpack.core.objects.formatter.FieldFormatter
+import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.objects.LangGroup
+import jab.sledgehammer.langpack.core.objects.definition.LangDefinition
+import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
 import jab.sledgehammer.config.ConfigSection
 
 /**
- * **Complex** serves as a wrapper for non-primitive objects utilized in [LangPack].
- * Complex objects construct and resolve as Defined by type **E**.
+ * **Complex** serves as a wrapper for non-primitive objects utilized in [LangPack]. Complex objects construct and
+ * resolve as Defined by type **E**.
  *
  * @author Jab
  *

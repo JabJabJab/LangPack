@@ -1,7 +1,7 @@
 package jab.sledgehammer.langpack.core.objects.formatter
 
-import jab.langpack.core.objects.FieldProperties
-import jab.langpack.core.util.StringUtil
+import jab.sledgehammer.langpack.core.objects.FieldProperties
+import jab.sledgehammer.langpack.core.util.StringUtil
 
 /**
  * **FieldFormatter** implements the following: field detection, field parsing, and field

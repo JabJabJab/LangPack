@@ -2,7 +2,7 @@
 
 package jab.sledgehammer.langpack.core
 
-import jab.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.objects.LangArg
 import java.util.*
 
 /**
@@ -18,11 +18,11 @@ import java.util.*
  * @param Pack The type of LangPack implementation.
  * @property pack The lang-pack instance to call to and cache the results.
  */
-open class LangCache<Pack : jab.sledgehammer.langpack.core.LangPack>(val pack: Pack) {
+open class LangCache<Pack : LangPack>(val pack: Pack) {
 
-    private val cache: EnumMap<jab.sledgehammer.langpack.core.Language, HashMap<String, String>> = EnumMap(jab.sledgehammer.langpack.core.Language::class.java)
-    private val cacheList: EnumMap<jab.sledgehammer.langpack.core.Language, HashMap<String, List<String?>>> = EnumMap(
-        jab.sledgehammer.langpack.core.Language::class.java)
+    private val cache: EnumMap<Language, HashMap<String, String>> = EnumMap(Language::class.java)
+    private val cacheList: EnumMap<Language, HashMap<String, List<String?>>> = EnumMap(
+        Language::class.java)
 
     override fun toString(): String = "LangCache(pack=$pack, cache=$cache, cacheList=$cacheList)"
 
@@ -33,7 +33,7 @@ open class LangCache<Pack : jab.sledgehammer.langpack.core.LangPack>(val pack: P
      * @param lang The language to clear.
      * @param fields The fields to clear.
      */
-    fun clear(lang: jab.sledgehammer.langpack.core.Language, vararg fields: String) {
+    fun clear(lang: Language, vararg fields: String) {
 
         // If no args are provided, remove the language.
         if (fields.isEmpty()) {
@@ -59,7 +59,7 @@ open class LangCache<Pack : jab.sledgehammer.langpack.core.LangPack>(val pack: P
     /**
      * @see LangPack.getString
      */
-    fun getString(query: String, lang: jab.sledgehammer.langpack.core.Language = pack.defaultLang, vararg args: LangArg): String {
+    fun getString(query: String, lang: Language = pack.defaultLang, vararg args: LangArg): String {
 
         val fieldLower = query.toLowerCase()
 
@@ -82,7 +82,7 @@ open class LangCache<Pack : jab.sledgehammer.langpack.core.LangPack>(val pack: P
     /**
      * @see LangPack.getList
      */
-    fun getList(query: String, lang: jab.sledgehammer.langpack.core.Language = pack.defaultLang, vararg args: LangArg): List<String?>? {
+    fun getList(query: String, lang: Language = pack.defaultLang, vararg args: LangArg): List<String?>? {
 
         val fieldLower = query.toLowerCase()
 

@@ -1,7 +1,7 @@
 package jab.sledgehammer.langpack.bungeecord
 
-import jab.langpack.core.LangPack
-import jab.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.config.ConfigFile
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.event.PlayerDisconnectEvent

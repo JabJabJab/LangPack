@@ -26,7 +26,7 @@ dependencies {
 
     shade "org.jetbrains.kotlin:kotlin-stdlib"
     shade files('../../libs/Sledgehammer-Framework-Config-1.0.0.jar')
-    shade project(":textcomponent")
+    shade project(":minecraft:textcomponent")
 }
 
 test {

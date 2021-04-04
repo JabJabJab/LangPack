@@ -1,4 +1,4 @@
-package jab.langpack.test
+package jab.sledgehammer.langpack.core.test
 
 /**
  * **TestResult** stores the results for [LangTest]

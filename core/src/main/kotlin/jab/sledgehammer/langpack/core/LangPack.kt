@@ -2,19 +2,19 @@
 
 package jab.sledgehammer.langpack.core
 
-import jab.langpack.core.objects.LangArg
-import jab.langpack.core.objects.LangFile
-import jab.langpack.core.objects.LangGroup
-import jab.langpack.core.objects.complex.Complex
-import jab.langpack.core.objects.complex.StringPool
-import jab.langpack.core.objects.definition.ComplexDefinition
-import jab.langpack.core.objects.definition.LangDefinition
-import jab.langpack.core.objects.definition.StringDefinition
-import jab.langpack.core.objects.formatter.FieldFormatter
-import jab.langpack.core.processor.DefaultProcessor
-import jab.langpack.core.processor.LangProcessor
-import jab.langpack.core.util.ResourceUtil
-import jab.langpack.core.util.StringUtil
+import jab.sledgehammer.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.objects.LangFile
+import jab.sledgehammer.langpack.core.objects.LangGroup
+import jab.sledgehammer.langpack.core.objects.complex.Complex
+import jab.sledgehammer.langpack.core.objects.complex.StringPool
+import jab.sledgehammer.langpack.core.objects.definition.ComplexDefinition
+import jab.sledgehammer.langpack.core.objects.definition.LangDefinition
+import jab.sledgehammer.langpack.core.objects.definition.StringDefinition
+import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
+import jab.sledgehammer.langpack.core.processor.DefaultProcessor
+import jab.sledgehammer.langpack.core.processor.LangProcessor
+import jab.sledgehammer.langpack.core.util.ResourceUtil
+import jab.sledgehammer.langpack.core.util.StringUtil
 import java.io.File
 import java.util.*
 

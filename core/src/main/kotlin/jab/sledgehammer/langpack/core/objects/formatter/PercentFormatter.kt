@@ -1,7 +1,7 @@
 package jab.sledgehammer.langpack.core.objects.formatter
 
-import jab.langpack.core.LangPack
-import jab.langpack.core.objects.FieldProperties
+import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.objects.FieldProperties
 
 /**
  * **PercentFormatter** Contains the the hard-code for the percent-syntax used in [LangPack].
