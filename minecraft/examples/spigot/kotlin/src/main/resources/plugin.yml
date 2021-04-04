@@ -1,0 +1,6 @@
+name: LangPack_Example_Kotlin
+version: 1.0_0
+author: Jab
+api-version: 1.16
+main: ExamplePlugin
+depend: [ LangPack ]

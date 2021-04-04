@@ -15,14 +15,19 @@ repositories {
     mavenCentral()
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
     mavenLocal()
 }
 
 dependencies {
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    compileOnly 'net.md-5:bungeecord-api:1.16-R0.4'
-    shade files('../libs/Sledgehammer-Framework-Config-1.0.0.jar')
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    // CraftBukkit / NMS code registered locally via maven.
+    compileOnly 'net.minecraft:nms:1.16.5'
+    compileOnly 'me.clip:placeholderapi:2.10.9'
+    compileOnly project(":minecraft:spigot")
 }
 
 test {
@@ -30,7 +35,7 @@ test {
 }
 
 jar {
-    baseName "LangPack-Core"
+    baseName "LangPack-Example-Spigot-Kotlin"
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {
             exclude "META-INF", "META-INF/**", "**/about.html", "*/about.html", "about.html"
