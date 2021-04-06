@@ -70,7 +70,7 @@ open class LangCache<Pack : LangPack>(val pack: Pack) {
             }
         }
 
-        var value = pack.getString(query, lang, *args)
+        var value = pack.getString(query, lang, null, *args)
         if (value == null) value = query.toLowerCase()
 
         val cache = cache.computeIfAbsent(lang) { HashMap() }

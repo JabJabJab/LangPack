@@ -1,13 +1,11 @@
 rootProject.name = 'LangPack'
+
 include 'core'
-include 'basic'
 
 // Minecraft
-include ":minecraft:bukkit"
-
-// TextComponent API
 include ':minecraft:textcomponent'
+include ":minecraft:bukkit"
 include ":minecraft:spigot"
 include ":minecraft:bungeecord"
-include ':minecraft:examples:spigot:kotlin'
 include ':minecraft:examples:spigot:java'
+include ':minecraft:examples:spigot:kotlin'

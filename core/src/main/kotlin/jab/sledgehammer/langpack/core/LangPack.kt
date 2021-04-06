@@ -11,6 +11,7 @@ import jab.sledgehammer.langpack.core.objects.definition.ComplexDefinition
 import jab.sledgehammer.langpack.core.objects.definition.LangDefinition
 import jab.sledgehammer.langpack.core.objects.definition.StringDefinition
 import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
+import jab.sledgehammer.langpack.core.objects.formatter.PercentFormatter
 import jab.sledgehammer.langpack.core.processor.DefaultProcessor
 import jab.sledgehammer.langpack.core.processor.LangProcessor
 import jab.sledgehammer.langpack.core.util.ResourceUtil
@@ -43,20 +44,19 @@ import java.util.*
  * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory. Thrown if
  *      the name given is empty.
  */
-abstract class LangPack(
+open class LangPack(
     private val classLoader: ClassLoader = this::class.java.classLoader,
     val dir: File = File("lang"),
 ) {
-
     /**
-     * Handles formatting of fields.
+     * Handles processing of text.
      */
-    abstract var formatter: FieldFormatter
+    open var processor: LangProcessor = DefaultProcessor(PercentFormatter())
 
     /**
      * Handles processing of text.
      */
-    abstract var processor: LangProcessor
+    open var formatter: FieldFormatter = PercentFormatter()
 
     /**
      * Set to true to print all debug information to the Java console.
@@ -96,30 +96,6 @@ abstract class LangPack(
     /**
      * Appends a pack.
      *
-     * This method will not attempt to save files stored in the JAR environment.
-     *
-     * @param name The name of the package to append.
-     */
-    fun append(name: String) {
-        append(name, save = false, force = false)
-    }
-
-    /**
-     * Appends a pack.
-     *
-     * **WARNING:** Not passing the classloader for the plugin calling this method will not save any lang files stored in
-     * the plugin's JAR file.
-     *
-     * @param name The name of the package to append.
-     * @param save Set to true to try to detect & save files from the plugin to the lang folder.
-     */
-    fun append(name: String, save: Boolean) {
-        append(name, save, false)
-    }
-
-    /**
-     * Appends a pack.
-     *
      * > **WARNING:** Not passing the classloader for the plugin calling this method will not save any lang files stored in
      * the plugin's JAR file.
      *
@@ -127,7 +103,8 @@ abstract class LangPack(
      * @param save Set to true to try to detect & save files from the plugin to the lang folder.
      * @param force Set to true to save resources, even if they are already present.
      */
-    fun append(name: String, save: Boolean, force: Boolean) {
+    @JvmOverloads
+    fun append(name: String, save: Boolean = false, force: Boolean = false): LangPack {
 
         if (debug) println("[$name] :: append($name)")
 
@@ -146,10 +123,8 @@ abstract class LangPack(
 
         // Search for and load LangFiles for the package.
         for (lang in Language.values()) {
-
             val file = File(dir, "${name}_${lang.abbreviation}.yml")
             if (file.exists()) {
-
                 val langFile = files[lang]
                 if (langFile != null) {
                     langFile.append(file)
@@ -160,6 +135,114 @@ abstract class LangPack(
         }
 
         walk()
+
+        return this
+    }
+
+    /**
+     * Attempts to locate a stored value with a query.
+     *
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
+     * @param lang The language to query.
+     * @param context (Optional) Pass a group as the scope to query fields relatively.
+     * Otherwise, the scope is the package.
+     *
+     * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
+     */
+    @JvmOverloads
+    open fun resolve(query: String, lang: Language, context: LangGroup? = null): LangDefinition<*>? {
+
+        if (debug) println("[LangPack] :: resolve($query, ${lang.abbreviation}, $context)")
+
+        var raw: LangDefinition<*>? = null
+
+        // If a context is provided, try to look up the absolute path + the query first.
+        // Else, treat as Package scope.
+        if (context != null && context !is LangFile) {
+            var nextContext = context
+            while (nextContext != null && nextContext !is LangFile) {
+                raw = resolve("${context.getPath()}.$query", lang)
+                if (raw != null) return raw
+                nextContext = nextContext.parent
+            }
+        }
+
+        // Attempt to grab the most relevant LangFile.
+        var langFile = files[lang]
+        if (langFile == null) {
+            // Check language fallbacks if the file is not defined.
+            val fallBack = lang.getFallback()
+            if (fallBack != null) {
+                langFile = files[fallBack]
+            }
+        }
+
+        if (langFile != null) raw = langFile.resolve(query)
+
+        // Check global last.
+        if (raw == null && this != global) raw = global?.resolve(query, lang)
+        if (debug) println("[LangPack] :: resolve($query, $lang, $context) = $raw")
+        return raw
+    }
+
+    /**
+     * Attempts to resolve a string-list with a query.
+     *
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
+     * @param args (Optional) Arguments to pass to the processor.
+     *
+     * @return Returns the resolved string-list. If nothing is located at the destination of the query, null is returned.
+     */
+    fun getList(query: String, vararg args: LangArg): List<String>? = getList(query, defaultLang, *args)
+
+    /**
+     * Attempts to resolve a string-list with a query.
+     *
+     * @param query The string to process. The string can be a field or set of fields delimited by a period.
+     * @param lang The language to query.
+     * @param args (Optional) Arguments to pass to the processor.
+     *
+     * @return Returns the resolved string-list. If nothing is located at the destination of the query, null is returned.
+     */
+    open fun getList(query: String, lang: Language, vararg args: LangArg): List<String>? {
+
+        val resolved = resolve(query, lang, null) ?: return null
+        val rawList = StringUtil.toAList(resolved.value!!)
+        val processedList = ArrayList<String>()
+        for (raw in rawList) {
+            if (raw != null) {
+                processedList.add(processor.process(raw, this, lang, resolved.parent, *args))
+            } else {
+                processedList.add("")
+            }
+        }
+
+        return processedList
+    }
+
+    /**
+     * Resolves a query, returning the result as a String.
+     *
+     * @param query The query to process. The query can be a field or set of fields delimited by a period.
+     * @param lang The language to query.
+     * @param context (Optional) Pass a group as the scope to query fields relatively.
+     * Otherwise, the scope is the package.
+     * @param args (Optional) Arguments to pass to the processor.
+     *
+     * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
+     */
+    @JvmOverloads
+    open fun getString(query: String, lang: Language, context: LangGroup? = null, vararg args: LangArg): String? {
+
+        if (debug) println("[LangPack] :: getString(query=$query, ${lang.abbreviation}, $context)")
+
+        val raw = resolve(query, lang, context) ?: return null
+        val value = raw.value ?: return null
+        return if (value is Complex<*>) {
+            value.process(this, lang, raw.parent ?: context, *args).toString()
+        } else {
+            processor.process(value.toString(), this, lang, raw.parent ?: context, *args)
+        }
     }
 
     /**
@@ -268,62 +351,6 @@ abstract class LangPack(
      */
     fun isComplex(lang: Language, query: String): Boolean = files[lang]?.isComplex(query) ?: false
 
-    /**
-     * Attempts to locate a stored value with a query.
-     *
-     * @param query The string to process. The string can be a field or set of fields delimited by a period.
-     * @param lang The language to query.
-     * @param context (Optional) Pass a group as the scope to query fields relatively.
-     * Otherwise, the scope is the package.
-     *
-     * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
-     */
-    abstract fun resolve(query: String, lang: Language, context: LangGroup? = null): LangDefinition<*>?
-
-    /**
-     * Attempts to resolve a string-list with a query.
-     *
-     * @param query The string to process. The string can be a field or set of fields delimited by a period.
-     * @param lang The language to query.
-     * @param args (Optional) Arguments to pass to the processor.
-     *
-     * @return Returns the resolved string-list. If nothing is located at the destination of the query, null is returned.
-     */
-    abstract fun getList(query: String, lang: Language = defaultLang, vararg args: LangArg): List<String>?
-
-    /**
-     * Resolves a query, returning the result as a String.
-     *
-     * The query lookup is on the package scope.
-     *
-     * @param query The query to process. The query can be a field or set of fields delimited by a period.
-     * @param lang The language to query.
-     * @param args (Optional) Arguments to pass to the processor.
-     *
-     * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
-     */
-    fun getString(query: String, lang: Language = defaultLang, vararg args: LangArg): String? {
-        return getString(query, lang, null, *args)
-    }
-
-    /**
-     * Resolves a query, returning the result as a String.
-     *
-     * @param query The query to process. The query can be a field or set of fields delimited by a period.
-     * @param lang The language to query.
-     * @param context (Optional) Pass a group as the scope to query fields relatively.
-     * Otherwise, the scope is the package.
-     * @param args (Optional) Arguments to pass to the processor.
-     *
-     * @return Returns the resolved query. If nothing is located at the destination of the query, null is returned.
-     */
-    abstract fun getString(
-        query: String,
-        lang: Language = defaultLang,
-        context: LangGroup?,
-        vararg args: LangArg,
-    ): String?
-
     companion object {
 
         private val stringPoolLoader = StringPool.Loader()
@@ -347,6 +374,19 @@ abstract class LangPack(
          * The default [Random] instance to use throughout lang-pack.
          */
         var DEFAULT_RANDOM: Random = Random()
+
+        init {
+            // The global 'lang' directory.
+            if (!GLOBAL_DIRECTORY.exists()) GLOBAL_DIRECTORY.mkdirs()
+
+            // Store all global lang-files present in the jar.
+            for (lang in Language.values()) {
+                ResourceUtil.saveResource("lang${File.separator}global_${lang.abbreviation}.yml", null)
+            }
+
+            global = LangPack()
+            global!!.append("global", save = true, force = false)
+        }
 
         /**
          * Set the default loaders for all LangPack instances.
