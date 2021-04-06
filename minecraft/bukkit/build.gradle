@@ -24,7 +24,6 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
     shade project(":minecraft:textcomponent")
-    compileOnly files('../../libs/Sledgehammer-Framework-Config-1.0.0.jar')
 }
 
 test {

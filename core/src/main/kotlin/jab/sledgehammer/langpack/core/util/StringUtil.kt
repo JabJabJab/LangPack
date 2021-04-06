@@ -65,30 +65,4 @@ object StringUtil {
         }
         return array
     }
-
-    /**
-     * Colors a list of strings to the Minecraft color-code specifications using an alternative color-code.
-     *
-     * @param strings The strings to color.
-     * @param colorCode (Default: '&') The alternative color-code to process.
-     *
-     * @return Returns the colored string.
-     */
-    fun color(strings: List<String>, colorCode: Char = '&'): List<String> {
-        val coloredList = ArrayList<String>()
-        for (string in strings) {
-            coloredList.add(color(string, colorCode))
-        }
-        return coloredList
-    }
-
-    /**
-     * TODO: Implement.
-     *
-     * @param string The string to color.
-     * @param colorCode  The alternative color-code to process.
-     *
-     * @return Returns the colored string.
-     */
-    fun color(string: String, colorCode: Char = '&'): String = string
 }

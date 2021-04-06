@@ -24,8 +24,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
-
-    shade files('../../libs/Sledgehammer-Framework-Config-1.0.0.jar')
     shade project(":minecraft:textcomponent")
 }
 

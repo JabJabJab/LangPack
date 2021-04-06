@@ -37,9 +37,11 @@ internal class LangPlugin : JavaPlugin(), Listener {
         val langDir = File(dataFolder, "lang")
         if (!langDir.exists()) langDir.mkdirs()
         pack = SpigotLangPack(this::class.java.classLoader)
+//        pack!!.debug = true
         pack!!.append("lang", save = true, force = true)
         pack!!.append("lang_test", save = true, force = true)
-        // pack!!.debug = true
+
+        println(pack!!.print())
 
         LangCommand(this)
 

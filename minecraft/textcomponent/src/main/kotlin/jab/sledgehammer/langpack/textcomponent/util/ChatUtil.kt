@@ -2,7 +2,6 @@ package jab.sledgehammer.langpack.textcomponent.util
 
 import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
-import jab.sledgehammer.langpack.core.util.StringUtil
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.ClickEvent
@@ -34,7 +33,9 @@ object ChatUtil {
 
         // Make sure that we have fields to sort, otherwise return the color-formatted text.
         val fields = formatter.getFields(text)
-        if (fields.isEmpty()) return TextComponent(StringUtil.color(text))
+        if (fields.isEmpty()) {
+            return TextComponent(ChatColor.translateAlternateColorCodes('&', text))
+        }
 
         var next = text
         for (field in fields) {

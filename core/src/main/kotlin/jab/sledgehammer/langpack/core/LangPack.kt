@@ -139,6 +139,73 @@ open class LangPack(
         return this
     }
 
+    fun print(): String {
+
+        var text = ""
+        var prefix = ""
+
+        fun raw(string: String) {
+            text += string
+        }
+
+        fun line(string: String) {
+            text += "$prefix$string\n"
+        }
+
+        fun tab() {
+            prefix += "  "
+        }
+
+        fun untab() {
+            val index = prefix.lastIndex - 1
+            prefix = if (index < 1) "" else prefix.substring(0, index)
+        }
+
+        fun recurse(key: String?, value: Any?) {
+            if (value is Map<*, *>) {
+                if (key != null) line("$key: {")
+                else line("{")
+                tab()
+                for ((key2, value2) in value) if (value2 != null) recurse(key2.toString(), value2)
+                untab()
+                line("},")
+            } else if (value is List<*>) {
+                if (key != null) line("$key: [")
+                else line("[")
+                tab()
+                for ((index, item) in value.withIndex()) recurse("$index", item)
+                untab()
+                line("],")
+            } else {
+                if (key != null) line("$key: $value")
+                else line("$value,")
+            }
+        }
+
+        fun recurseGroup(group: LangGroup) {
+            if (group is LangFile) {
+                line("File(${group.language.abbreviation}) {")
+            } else {
+                line("Section(${group.name}) {")
+            }
+            tab()
+            for ((_, value) in group.children) recurseGroup(value)
+            for ((key, value) in group.fields) recurse(key, value)
+            untab()
+            line("},")
+        }
+
+        line("${this::class.java.simpleName} {")
+        tab()
+        for ((_, file) in files) {
+            recurseGroup(file)
+        }
+        untab()
+        line("}")
+
+        return text
+    }
+
     /**
      * Attempts to locate a stored value with a query.
      *

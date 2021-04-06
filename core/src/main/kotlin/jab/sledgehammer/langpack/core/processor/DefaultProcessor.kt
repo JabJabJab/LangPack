@@ -5,7 +5,6 @@ import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.LangGroup
 import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
-import jab.sledgehammer.langpack.core.util.StringUtil.color
 
 /**
  * **DefaultProcessor** implements the default field syntax for lang-packs.
@@ -85,4 +84,14 @@ open class DefaultProcessor(protected val formatter: FieldFormatter) : LangProce
 
         return color(processedString)
     }
+
+    /**
+     * TODO: Implement.
+     *
+     * @param string The string to color.
+     * @param colorCode  The alternative color-code to process.
+     *
+     * @return Returns the colored string.
+     */
+    override fun color(string: String, colorCode: Char): String = string
 }

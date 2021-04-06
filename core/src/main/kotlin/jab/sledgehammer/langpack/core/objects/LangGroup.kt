@@ -2,6 +2,8 @@
 
 package jab.sledgehammer.langpack.core.objects
 
+import jab.sledgehammer.config.ConfigFile
+import jab.sledgehammer.config.ConfigSection
 import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.complex.Complex
@@ -9,9 +11,8 @@ import jab.sledgehammer.langpack.core.objects.complex.StringPool
 import jab.sledgehammer.langpack.core.objects.definition.ComplexDefinition
 import jab.sledgehammer.langpack.core.objects.definition.LangDefinition
 import jab.sledgehammer.langpack.core.objects.definition.StringDefinition
+import jab.sledgehammer.langpack.core.util.PrettyPrintingMap
 import jab.sledgehammer.langpack.core.util.StringUtil
-import jab.sledgehammer.config.ConfigFile
-import jab.sledgehammer.config.ConfigSection
 import java.io.File
 
 /**
@@ -68,6 +69,11 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      * @return Returns the instance for single-line executions.
      */
     fun append(cfg: ConfigSection, metadata: Metadata = Metadata()): LangGroup {
+
+        if (pack.debug) {
+            println("LangGroup($name) -> append(${PrettyPrintingMap(cfg.toMap())})")
+        }
+
         if (cfg.isSection("__metadata__")) {
             metadata.read(cfg.getSection("__metadata__"))
             // Load imports prior to in-file fields, potentially overriding a import.
@@ -95,20 +101,23 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
             }
         }
 
-        for ((key, value) in cfg) {
+        for (key in cfg.getKeys()) {
+
+            println("next: $key")
+
             // Exclude the metadata group.
             if (key.equals("__metadata__", true)) {
                 continue
             }
-            if (value is ConfigSection) {
+            if (cfg.isSection(key)) {
                 val group = cfg.getSection(key)
-                if (group.contains("type")) {
+                if (group.isString("type")) {
                     readComplex(group)
                 } else {
                     readGroup(group)
                 }
             } else {
-                val raw = StringUtil.toAString(value)
+                val raw = StringUtil.toAString(cfg.get(key))
                 set(key, StringDefinition(pack, this, raw))
             }
         }

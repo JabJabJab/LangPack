@@ -1,9 +1,9 @@
 package jab.sledgehammer.langpack.spigot
 
 import jab.sledgehammer.langpack.core.objects.LangArg
+import jab.sledgehammer.langpack.core.test.LangTest
 import jab.sledgehammer.langpack.spigot.test.TestAction
 import jab.sledgehammer.langpack.spigot.test.TestBroadcast
-import jab.sledgehammer.langpack.core.test.LangTest
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -54,7 +54,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         // Scan for sub-commands.
         if (args.isNotEmpty()) {
             when (args[0].toLowerCase()) {
-                "jab/langpack/core/test" -> {
+                "test" -> {
                     onTestCommand(player, args)
                     found = true
                 }
@@ -141,7 +141,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         }
 
         val testName = args[1].toLowerCase()
-        val argTest = LangArg("jab/langpack/core/test", testName)
+        val argTest = LangArg("test", testName)
 
         // Make sure the test exists.
         val test = tests[testName]
@@ -172,7 +172,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
             return
         } else {
             pack.message(player, "test.description",
-                LangArg("jab/langpack/core/test", test.name),
+                LangArg("test", test.name),
                 LangArg("description", test.description)
             )
             return
@@ -192,7 +192,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         if (names.isNotEmpty()) {
             names.sortBy { it }
             for (test in names) {
-                pack.message(player, "tests.line", LangArg("jab/langpack/core/test", test))
+                pack.message(player, "tests.line", LangArg("test", test))
             }
         }
 
