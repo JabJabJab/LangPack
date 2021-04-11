@@ -69,11 +69,6 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      * @return Returns the instance for single-line executions.
      */
     fun append(cfg: ConfigSection, metadata: Metadata = Metadata()): LangGroup {
-
-        if (pack.debug) {
-            println("LangGroup($name) -> append(${PrettyPrintingMap(cfg.toMap())})")
-        }
-
         if (cfg.isSection("__metadata__")) {
             metadata.read(cfg.getSection("__metadata__"))
             // Load imports prior to in-file fields, potentially overriding a import.
@@ -102,13 +97,8 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
         }
 
         for (key in cfg.getKeys()) {
-
-            println("next: $key")
-
             // Exclude the metadata group.
-            if (key.equals("__metadata__", true)) {
-                continue
-            }
+            if (key.equals("__metadata__", true)) continue
             if (cfg.isSection(key)) {
                 val group = cfg.getSection(key)
                 if (group.isString("type")) {

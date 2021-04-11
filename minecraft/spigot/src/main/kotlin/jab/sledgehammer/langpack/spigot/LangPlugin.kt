@@ -28,23 +28,15 @@ internal class LangPlugin : JavaPlugin(), Listener {
 
         saveDefaultConfig()
 
-        testsEnabled = if (config.isBoolean("tests_enabled")) {
-            config.getBoolean("tests_enabled")
-        } else {
-            false
-        }
+        testsEnabled = if (config.isBoolean("tests_enabled")) config.getBoolean("tests_enabled") else false
 
         val langDir = File(dataFolder, "lang")
         if (!langDir.exists()) langDir.mkdirs()
         pack = SpigotLangPack(this::class.java.classLoader)
-//        pack!!.debug = true
-        pack!!.append("lang", save = true, force = true)
-        pack!!.append("lang_test", save = true, force = true)
-
-        println(pack!!.print())
+        pack!!.append("lang", save = true)
+        if (testsEnabled) pack!!.append("lang_test", save = true)
 
         LangCommand(this)
-
         server.pluginManager.registerEvents(this, this)
     }
 
