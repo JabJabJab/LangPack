@@ -1,0 +1,11 @@
+[{
+    "modid": "langpack_sponge_example_java",
+    "name": "LangPack_Sponge_Example_Java",
+    "version": "1.0.0",
+    "authorList": [
+        "Jab"
+    ],
+     "dependencies": [
+        "langpack"
+    ]
+}]

@@ -1,0 +1,81 @@
+test:
+
+  # test -> The name of the test.
+  # description -> The description of the test.
+  description:
+    - '&7---------------------&6%header.text%&7---------------------'
+    - '&7 Test: &6%test%'
+    - ''
+    - '&7 Description:'
+    - '&f    %description%'
+    - ''
+    - ' %test.click_to_run%'
+    - '&7---------------------------------------------------'
+
+  # test -> The name of the test.
+  start:
+    - ' '
+    - '&7-----------------------&d[TEST]&7-----------------------'
+    - '%header.debug%&7 Running the test "%test%"..'
+  end: '&7---------------------------------------------------'
+
+  # test -> The name of the test.
+  run: '%header.debug% &7Running the test "%test%"..'
+
+  # test -> The name of the test.
+  # time -> The time that the test took to run. (in ms)
+  success:
+    - '%header.debug% &aThe test &6%test%&a ran successfully.'
+    - '%header.debug% &7Took &6%time% &7ms.'
+
+  # test -> The name of the test.
+  # reason -> The reason the test failed.
+  failure: '%header.debug% %cThe test &6%test%&c failed. Reason: "%reason%"'
+
+  help: '%header.info% &6/lang test &7[ &f*&6%test_id%&7 ] [ &6run &7]'
+
+  # test -> The name of the test.
+  not_found: '%header.info% &cThe test &6%test%&c is not found or loaded.'
+
+  tooltip_not_found: '&ctest not found.'
+
+  disabled: '%header.info% &cTests are disabled.'
+
+  # test -> The name of the test.
+  click_to_run:
+    type: action
+    text: '&a[Run]'
+    hover: 'Click to run this test'
+    command: '/lang test %test% run'
+
+  action:
+    description: '
+    This is a simple test for ActionText runtime creation and messaging
+    of a command and hover setup'
+    message:
+      type: action
+      text: '%header.debug% &7This is an example hover ActionText.'
+      hover: 'This is an example of hover text.'
+
+  broadcast:
+    description:
+      - 'This is a test for:'
+      - '    &fLangPack.broadcast(&6query&f, &6args&f)'
+    message: '%header.debug% &7This is a test broadcast.'
+
+
+tests:
+
+  # test_count -> The amount of tests loaded.
+  start:
+    - ' '
+    - '&7---------------------&6%header.text%&7---------------------'
+    - '    Tests &7(%test_count%):'
+
+  # test -> The name of the test.
+  line:
+    type: action
+    text: '    &7- &6%test%'
+    command: '/lang test %test%'
+
+  end: '&7---------------------------------------------------'

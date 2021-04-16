@@ -1,0 +1,3 @@
+tests_enabled: false
+join_messages: false
+leave_messages: false

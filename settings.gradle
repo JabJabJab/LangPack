@@ -5,7 +5,14 @@ include 'core'
 // Minecraft
 include ':minecraft:textcomponent'
 include ":minecraft:bukkit"
-include ":minecraft:spigot"
 include ":minecraft:bungeecord"
+
+// Spigot
+include ":minecraft:spigot"
 include ':minecraft:examples:spigot:java'
 include ':minecraft:examples:spigot:kotlin'
+
+// Sponge
+include ":minecraft:sponge"
+include ":minecraft:examples:sponge:java"
+include ":minecraft:examples:sponge:kotlin"

@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+}
+
+group "jab.sledgehammer"
+version "1.0.0"
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.spongepowered.org/maven' }
+    mavenLocal()
+}
+
+dependencies {
+    compile 'org.spongepowered:spongeapi:7.2.0'
+    compile project(":minecraft:sponge")
+}
+
+jar {
+    baseName "LangPack-Example-Sponge-Java"
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
+            exclude "META-INF", "META-INF/**", "**/about.html", "*/about.html", "about.html"
+        }
+    }
+}

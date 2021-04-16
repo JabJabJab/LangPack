@@ -1,55 +1,54 @@
-package jab.sledgehammer.langpack.spigot
+package jab.sledgehammer.langpack.sponge
 
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.test.LangTest
-import jab.sledgehammer.langpack.spigot.test.TestAction
-import jab.sledgehammer.langpack.spigot.test.TestBroadcast
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
-import org.bukkit.command.TabCompleter
-import org.bukkit.entity.Player
+import jab.sledgehammer.langpack.sponge.test.TestAction
+import jab.sledgehammer.langpack.sponge.test.TestBroadcast
+import org.spongepowered.api.command.CommandCallable
+import org.spongepowered.api.command.CommandResult
+import org.spongepowered.api.command.CommandSource
+import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.text.Text
+import org.spongepowered.api.world.Location
+import org.spongepowered.api.world.World
+import java.util.*
 
 /**
- * **LangCommand** handles all command executions under the *"lang"* command.
+ * **LangCommand** handles all command executions under the *lang* command.
  *
  * @author Jab
  *
  * @property plugin The plugin instance.
  */
-internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, TabCompleter {
+internal class LangCommand(private val plugin: LangPlugin) : CommandCallable {
 
-    private val tests = HashMap<String, LangTest<SpigotLangPack, Player>>()
-    private val emptyList = ArrayList<String>()
+    private val tests = HashMap<String, LangTest<SpongeLangPack, Player>>()
     private val subCommands = ArrayList<String>()
-    private val cache = SpigotLangCache(plugin.pack!!)
-    private val pack = plugin.pack!!
+    private val pack = plugin.pack
+    private val desc: Optional<Text> = Optional.of(Text.of("Used to test the LangPack API"))
 
     init {
-
         subCommands.add("test")
         subCommands.add("tests")
-
-        val command = plugin.getCommand("lang")
-        if (command == null) {
-            System.err.println("The command 'lang' is not registered.")
-        } else {
-            command.setExecutor(this)
-            command.tabCompleter = this
-
-            if (plugin.testsEnabled) {
-                addTest(TestAction(pack.getList("test.action.description")!!))
-                addTest(TestBroadcast(pack.getList("test.broadcast.description")!!))
-            }
+        if (plugin.testsEnabled) {
+            addTest(TestAction(pack.getList("test.action.description")!!))
+            addTest(TestBroadcast(pack.getList("test.broadcast.description")!!))
         }
     }
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+    override fun process(source: CommandSource, argsString: String): CommandResult {
+        if (source !is Player) return CommandResult.success()
 
-        if (sender !is Player) return true
-
-        val player: Player = sender
+        val player: Player = source
         var found = false
+
+        // If no sub-command is used.
+        if (argsString.isEmpty()) {
+            pack.message(player, "command.help")
+            return CommandResult.success()
+        }
+
+        val args = argsString.split(" ", "\t")
 
         // Scan for sub-commands.
         if (args.isNotEmpty()) {
@@ -70,58 +69,10 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         // Display help message if no command is found.
         if (!found) pack.message(player, "command.help")
 
-        return true
+        return CommandResult.success()
     }
 
-    override fun onTabComplete(
-        sender: CommandSender,
-        command: Command,
-        alias: String,
-        args: Array<out String>,
-    ): MutableList<String> {
-
-        if (args.isEmpty() || sender !is Player) return subCommands
-
-        val lang = cache.getLanguage(sender)
-        when (args.size) {
-            1 -> {
-                val arg0 = args[0].toLowerCase()
-                return if (arg0.isEmpty()) {
-                    subCommands
-                } else {
-                    val list = ArrayList<String>()
-                    for (subCommand in subCommands) {
-                        if (subCommand.contains(arg0, true)) {
-                            list.add(subCommand)
-                        }
-                    }
-                    list
-                }
-            }
-            2 -> {
-                if (args[1].isEmpty()) {
-                    return ArrayList(tests.keys)
-                } else {
-                    val arg2 = args[1].toLowerCase()
-                    return if (arg2.isEmpty()) {
-                        ArrayList(tests.keys)
-                    } else {
-                        val list = ArrayList<String>()
-                        for (key in tests.keys) {
-                            if (key.contains(arg2, true)) {
-                                list.add(key)
-                            }
-                        }
-                        if (list.isEmpty()) list.add(cache.getString("test.tooltip_not_found", lang))
-                        list
-                    }
-                }
-            }
-        }
-        return emptyList
-    }
-
-    private fun onTestCommand(player: Player, args: Array<out String>) {
+    private fun onTestCommand(player: Player, args: List<String>) {
 
         if (!player.hasPermission("langpack.test")) {
             pack.message(player, "permission.deny")
@@ -188,7 +139,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
 
         pack.message(player, "tests.start", LangArg("test_count", tests.size))
 
-        val names = ArrayList<String>(tests.keys)
+        val names = ArrayList(tests.keys)
         if (names.isNotEmpty()) {
             names.sortBy { it }
             for (test in names) {
@@ -199,7 +150,20 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         pack.message(player, "tests.end")
     }
 
-    private fun addTest(test: LangTest<SpigotLangPack, Player>) {
+    private fun addTest(test: LangTest<SpongeLangPack, Player>) {
         tests[test.name] = test
     }
+
+    override fun getSuggestions(
+        source: CommandSource,
+        arguments: String,
+        targetPosition: Location<World>?,
+    ): MutableList<String> {
+        return Collections.emptyList()
+    }
+
+    override fun testPermission(source: CommandSource): Boolean = source.hasPermission("langpack.lang")
+    override fun getShortDescription(source: CommandSource): Optional<Text> = desc
+    override fun getHelp(source: CommandSource): Optional<Text> = Optional.of(Text.of(""))
+    override fun getUsage(source: CommandSource): Text = Text.of("")
 }

@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.21'
 }
 
+// This may not be required, but has solved issues in the past
 compileJava.options.encoding = 'UTF-8'
 
 group "jab.sledgehammer"
@@ -15,15 +16,17 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://repo.spongepowered.org/maven' }
     mavenLocal()
 }
 
 dependencies {
+    shade "org.jetbrains.kotlin:kotlin-stdlib"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    compileOnly 'net.md-5:bungeecord-api:1.16-R0.4'
+
+    shade project(":core")
+    compile 'org.spongepowered:spongeapi:7.2.0'
 }
 
 test {
@@ -31,7 +34,7 @@ test {
 }
 
 jar {
-    baseName "LangPack-Core"
+    baseName "LangPack-Sponge"
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {
             exclude "META-INF", "META-INF/**", "**/about.html", "*/about.html", "about.html"
