@@ -2,7 +2,7 @@ package jab.sledgehammer.langpack.bukkit.processor
 
 import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
 import jab.sledgehammer.langpack.core.processor.DefaultProcessor
-import net.md_5.bungee.api.ChatColor
+import org.bukkit.ChatColor
 
 class BukkitProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
 
@@ -14,7 +14,6 @@ class BukkitProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
      *
      * @return Returns the colored string.
      */
-    override fun color(string: String, colorCode: Char): String {
-        return ChatColor.translateAlternateColorCodes(colorCode, string)
-    }
+    override fun color(string: String, colorCode: Char): String =
+        ChatColor.translateAlternateColorCodes(colorCode, string)
 }

@@ -1,9 +1,18 @@
 header:
   text: '[LangPack]'
-  info: '&7%header.text%'
-  success: '&a%header.text%'
-  error: '&c%header.text%'
+  info: '&7%!text%'
+  success: '&a%!text%'
+  error: '&c%!text%'
+  debug: '&d%!text%'
 
-event:
-  connect: "%header.info% &6%player% &7connected to the network."
-  disconnect: "%header.info% &6%player% &7disconnected from the network."
+
+permission:
+  deny: "%header.info% &cYou do not have permission to use this command."
+
+
+command:
+
+  help: '%header.info% &6/lang &7[ &6test&7 | &6tests&7 ]'
+
+  # command -> The command given.
+  not_found: '%header.info% &cCommand not found: %command%'

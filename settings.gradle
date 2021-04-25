@@ -9,10 +9,10 @@ include ":minecraft:bungeecord"
 
 // Spigot
 include ":minecraft:spigot"
-include ':minecraft:examples:spigot:java'
-include ':minecraft:examples:spigot:kotlin'
+include ':examples:minecraft:spigot:java'
+include ':examples:minecraft:spigot:kotlin'
 
 // Sponge
 include ":minecraft:sponge"
-include ":minecraft:examples:sponge:java"
-include ":minecraft:examples:sponge:kotlin"
+include ":examples:minecraft:sponge:java"
+include ":examples:minecraft:sponge:kotlin"

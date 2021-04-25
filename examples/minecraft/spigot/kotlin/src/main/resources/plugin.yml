@@ -2,5 +2,5 @@ name: LangPack-Example-Kotlin
 version: 1.0.0
 author: Jab
 api-version: 1.16
-main: jab.sledgehammer.langpack.spigot.example.kotlin.ExamplePlugin
+main: ExamplePlugin
 depend: [ LangPack ]

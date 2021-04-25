@@ -10,8 +10,6 @@ import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.core.processor.LangProcessor
-import jab.sledgehammer.langpack.textcomponent.processor.TextComponentProcessor
-import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -19,7 +17,7 @@ import java.io.File
 import java.util.*
 
 /**
- * **SpigotLangPack** wraps the LangPack class to provide additional support for the Spigot API.
+ * **BukkitLangPack** wraps the LangPack class to provide additional support for the Bukkit API.
  *
  * @author Jab
  *
@@ -50,7 +48,7 @@ class BukkitLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      */
     fun broadcast(query: String, vararg args: LangArg) {
 
-        val cache: EnumMap<Language, TextComponent> = EnumMap<Language, TextComponent>(Language::class.java)
+        val cache = EnumMap<Language, String>(Language::class.java)
 
         for (player in Bukkit.getOnlinePlayers()) {
 
@@ -58,8 +56,9 @@ class BukkitLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
             val langPlayer = getLanguage(player)
             var lang = langPlayer
 
-            if (cache[lang] != null) {
-                player.spigot().sendMessage(cache[lang])
+            val cacheValue = cache[lang]
+            if (cacheValue != null) {
+                player.sendMessage(cacheValue)
                 continue
             }
 
@@ -69,35 +68,13 @@ class BukkitLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
                 resolved = resolve(query, lang)
             }
 
-            val component: TextComponent
-            if (resolved != null) {
+            val component = resolved?.value?.toString() ?: query
 
-                val value = resolved.value
-
-                component = when (value) {
-
-                    is Complex<*> -> {
-                        val result = value.get()
-                        val processedComponent: TextComponent = if (result is TextComponent) {
-                            result
-                        } else {
-                            TextComponent(result.toString())
-                        }
-                        processedComponent
-                    }
-                    else -> {
-                        TextComponent(value.toString())
-                    }
-                }
-            } else {
-                component = TextComponent(query)
-            }
-
-            val result = (processor as TextComponentProcessor).process(component, this, langPlayer, null, *args)
+            val result = processor.process(component, this, langPlayer, null, *args)
             cache[lang] = result
             cache[langPlayer] = result
 
-            player.spigot().sendMessage(result)
+            player.sendMessage(result)
         }
     }
 
@@ -120,29 +97,21 @@ class BukkitLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
             resolved = resolve(query, lang)
         }
 
-        val component: TextComponent
-        if (resolved != null) {
-            val value = resolved.value
-            component = when (value) {
+        val component: String = if (resolved != null) {
+            when (val value = resolved.value) {
                 is Complex<*> -> {
-                    val result = value.get()
-                    val processedComponent: TextComponent = if (result is TextComponent) {
-                        result
-                    } else {
-                        TextComponent(result.toString())
-                    }
-                    processedComponent
+                    value.get().toString()
                 }
                 else -> {
-                    TextComponent(value.toString())
+                    value.toString()
                 }
             }
         } else {
-            component = TextComponent(query)
+            query
         }
 
-        player.spigot().sendMessage(
-            (processor as TextComponentProcessor).process(component, this, langPlayer, null, *args)
+        player.sendMessage(
+            processor.process(component, this, langPlayer, null, *args)
         )
     }
 
