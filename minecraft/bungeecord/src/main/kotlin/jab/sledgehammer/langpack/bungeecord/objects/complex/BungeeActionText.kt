@@ -3,13 +3,13 @@
 package jab.sledgehammer.langpack.bungeecord.objects.complex
 
 import jab.sledgehammer.langpack.bungeecord.BungeeLangPack
-import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.textcomponent.objects.complex.ActionText
 import jab.sledgehammer.langpack.textcomponent.objects.complex.CommandText
 import jab.sledgehammer.langpack.textcomponent.objects.complex.HoverText
 import jab.sledgehammer.config.ConfigSection
+import jab.sledgehammer.langpack.core.Language
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
@@ -115,7 +115,7 @@ class BungeeActionText : ActionText {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(pack: BungeeLangPack, vararg args: LangArg) {
-        val cache = EnumMap<Language, TextComponent>(Language::class.java)
+        val cache = HashMap<Language, TextComponent>()
         val server = ProxyServer.getInstance()
         for (player in server.players) {
             val textComponent: TextComponent

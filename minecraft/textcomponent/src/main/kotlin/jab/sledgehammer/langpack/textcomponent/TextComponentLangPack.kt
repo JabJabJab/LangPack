@@ -4,6 +4,7 @@ package jab.sledgehammer.langpack.textcomponent
 
 import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.Languages
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.LangFile
 import jab.sledgehammer.langpack.core.objects.LangGroup
@@ -59,7 +60,7 @@ open class TextComponentLangPack(classLoader: ClassLoader = this::class.java.cla
         var langFile = files[lang]
         if (langFile == null) {
             // Check language fallbacks if the file is not defined.
-            val fallBack = lang.getFallback()
+            val fallBack = lang.fallback
             if (fallBack != null) {
                 langFile = files[fallBack]
             }
@@ -105,8 +106,8 @@ open class TextComponentLangPack(classLoader: ClassLoader = this::class.java.cla
             // The global 'lang' directory.
             if (!GLOBAL_DIRECTORY.exists()) GLOBAL_DIRECTORY.mkdirs()
             // Store all global lang-files present in the jar.
-            for (lang in Language.values()) {
-                ResourceUtil.saveResource("lang${File.separator}global_${lang.abbreviation}.yml", null)
+            for (lang in Languages.values()) {
+                ResourceUtil.saveResource("lang${File.separator}global_${lang.rawLocale}.yml", null)
             }
             global = TextComponentLangPack()
             global!!.append("global", save = true, force = false)

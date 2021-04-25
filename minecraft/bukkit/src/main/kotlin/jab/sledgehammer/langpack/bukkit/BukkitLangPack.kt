@@ -7,6 +7,7 @@ import jab.sledgehammer.langpack.bukkit.objects.complex.BukkitStringPool
 import jab.sledgehammer.langpack.bukkit.processor.BukkitProcessor
 import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.Languages
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.core.processor.LangProcessor
@@ -14,7 +15,6 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.io.File
-import java.util.*
 
 /**
  * **BukkitLangPack** wraps the LangPack class to provide additional support for the Bukkit API.
@@ -48,7 +48,7 @@ class BukkitLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      */
     fun broadcast(query: String, vararg args: LangArg) {
 
-        val cache = EnumMap<Language, String>(Language::class.java)
+        val cache = HashMap<Language, String>()
 
         for (player in Bukkit.getOnlinePlayers()) {
 
@@ -122,11 +122,13 @@ class BukkitLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      *   is returned.
      */
     fun getLanguage(player: Player): Language {
-        val locale = player.locale
-        for (lang in Language.values()) {
-            if (lang.abbreviation.equals(locale, true)) return lang
-        }
-        return defaultLang
+        return Languages.getClosest(player.locale, defaultLang)
+        // ENUM Version
+        //        val locale = player.locale
+        //        for (lang in Language.values()) {
+        //            if (lang.abbreviation.equals(locale, true)) return lang
+        //        }
+        //        return defaultLang
     }
 
     companion object {

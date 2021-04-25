@@ -6,6 +6,7 @@ import jab.sledgehammer.langpack.bungeecord.objects.complex.BungeeActionText
 import jab.sledgehammer.langpack.bungeecord.objects.complex.BungeeStringPool
 import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.Languages
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.textcomponent.TextComponentLangPack
@@ -14,7 +15,6 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import java.io.File
-import java.util.*
 
 /**
  * **BungeeLangPack** wraps the LangPack class to provide additional support for the BungeeCord API.
@@ -46,7 +46,7 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      */
     fun broadcast(query: String, vararg args: LangArg) {
 
-        val cache: EnumMap<Language, TextComponent> = EnumMap<Language, TextComponent>(Language::class.java)
+        val cache = HashMap<Language, TextComponent>()
         val server = ProxyServer.getInstance()
 
         for (player in server.players) {
@@ -148,20 +148,23 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      *   is returned.
      */
     fun getLanguage(player: ProxiedPlayer): Language {
-        if (player.locale != null) {
-            var locale = player.locale.language
-            if (player.locale.country != null) {
-                locale += "_${player.locale.country}"
-            }
-            locale = locale.toLowerCase()
+        return Languages.getClosest(player.locale, defaultLang)
 
-            for (lang in Language.values()) {
-                if (lang.abbreviation.equals(locale, true)) {
-                    return lang
-                }
-            }
-        }
-        return defaultLang
+        // OLD ENUM CODE
+        //        if (player.locale != null) {
+        //            var locale = player.locale.language
+        //            if (player.locale.country != null) {
+        //                locale += "_${player.locale.country}"
+        //            }
+        //            locale = locale.toLowerCase()
+        //
+        //            for (lang in LanguageOld.values()) {
+        //                if (lang.abbreviation.equals(locale, true)) {
+        //                    return lang
+        //                }
+        //            }
+        //        }
+        //        return defaultLang
     }
 
     companion object {

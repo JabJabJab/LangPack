@@ -118,7 +118,7 @@ class BukkitStringPool : StringPool {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(pack: BukkitLangPack, vararg args: LangArg) {
-        val cache = EnumMap<Language, String>(Language::class.java)
+        val cache = HashMap<Language, String>()
         for (player in Bukkit.getOnlinePlayers()) {
             val message: String
             val lang = pack.getLanguage(player)
@@ -139,7 +139,7 @@ class BukkitStringPool : StringPool {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(world: World, pack: BukkitLangPack, vararg args: LangArg) {
-        val cache = EnumMap<Language, String>(Language::class.java)
+        val cache = HashMap<Language, String>()
         for (player in world.players) {
             val message: String
             val lang = pack.getLanguage(player)

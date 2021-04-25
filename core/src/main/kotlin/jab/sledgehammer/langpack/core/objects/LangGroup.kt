@@ -11,7 +11,6 @@ import jab.sledgehammer.langpack.core.objects.complex.StringPool
 import jab.sledgehammer.langpack.core.objects.definition.ComplexDefinition
 import jab.sledgehammer.langpack.core.objects.definition.LangDefinition
 import jab.sledgehammer.langpack.core.objects.definition.StringDefinition
-import jab.sledgehammer.langpack.core.util.PrettyPrintingMap
 import jab.sledgehammer.langpack.core.util.StringUtil
 import java.io.File
 

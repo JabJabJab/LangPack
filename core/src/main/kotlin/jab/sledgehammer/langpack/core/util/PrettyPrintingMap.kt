@@ -1,5 +1,12 @@
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+
 package jab.sledgehammer.langpack.core.util
 
+/**
+ * TODO: Document.
+ *
+ * @author Jab
+ */
 class PrettyPrintingMap<K, V>(private val map: Map<K, V>) {
 
     var text = ""

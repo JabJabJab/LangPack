@@ -126,7 +126,7 @@ class SpigotActionText : ActionText {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(pack: SpigotLangPack, vararg args: LangArg) {
-        val cache = EnumMap<Language, TextComponent>(Language::class.java)
+        val cache = HashMap<Language, TextComponent>()
         for (player in Bukkit.getOnlinePlayers()) {
             val textComponent: TextComponent
             val lang = pack.getLanguage(player)
@@ -147,7 +147,7 @@ class SpigotActionText : ActionText {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(world: World, pack: SpigotLangPack, vararg args: LangArg) {
-        val cache = EnumMap<Language, TextComponent>(Language::class.java)
+        val cache = HashMap<Language, TextComponent>()
         for (player in world.players) {
             val textComponent: TextComponent
             val lang = pack.getLanguage(player)

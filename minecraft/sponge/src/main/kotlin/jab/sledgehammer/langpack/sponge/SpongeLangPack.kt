@@ -4,6 +4,7 @@ package jab.sledgehammer.langpack.sponge
 
 import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.Languages
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.LangFile
 import jab.sledgehammer.langpack.core.objects.LangGroup
@@ -20,7 +21,6 @@ import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
 import java.io.File
-import java.util.*
 
 /**
  * **SpongeLangPack** wraps the LangPack class to provide additional support for the Sponge API.
@@ -65,7 +65,7 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
         var langFile = files[lang]
         if (langFile == null) {
             // Check language fallbacks if the file is not defined.
-            val fallBack = lang.getFallback()
+            val fallBack = lang.fallback
             if (fallBack != null) {
                 langFile = files[fallBack]
             }
@@ -110,7 +110,7 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      */
     fun broadcast(query: String, vararg args: LangArg) {
 
-        val cache: EnumMap<Language, Text> = EnumMap<Language, Text>(Language::class.java)
+        val cache = HashMap<Language, Text>()
 
         for (player in Sponge.getServer().onlinePlayers) {
 
@@ -212,14 +212,17 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      *   is returned.
      */
     fun getLanguage(player: Player): Language {
-        var locale = player.locale.language
-        if (player.locale.country != null) locale += "_${player.locale.country}"
-        locale = locale.toLowerCase()
+        return Languages.getClosest(player.locale, defaultLang)
 
-        for (lang in Language.values()) {
-            if (lang.abbreviation.equals(locale, true)) return lang
-        }
-        return defaultLang
+        // OLD ENUM CODE
+        //        var locale = player.locale.language
+        //        if (player.locale.country != null) locale += "_${player.locale.country}"
+        //        locale = locale.toLowerCase()
+        //
+        //        for (lang in LanguageOld.values()) {
+        //            if (lang.abbreviation.equals(locale, true)) return lang
+        //        }
+        //        return defaultLang
     }
 
     companion object {
@@ -231,8 +234,8 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
             // The global 'lang' directory.
             if (!GLOBAL_DIRECTORY.exists()) GLOBAL_DIRECTORY.mkdirs()
             // Store all global lang-files present in the jar.
-            for (lang in Language.values()) {
-                ResourceUtil.saveResource("lang${File.separator}global_${lang.abbreviation}.yml", null)
+            for (lang in Languages.values()) {
+                ResourceUtil.saveResource("lang${File.separator}global_${lang.rawLocale}.yml", null)
             }
             global = SpongeLangPack()
             global!!.append("global", save = true, force = false)

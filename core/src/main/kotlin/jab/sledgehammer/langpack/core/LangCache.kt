@@ -20,9 +20,8 @@ import java.util.*
  */
 open class LangCache<Pack : LangPack>(val pack: Pack) {
 
-    private val cache: EnumMap<Language, HashMap<String, String>> = EnumMap(Language::class.java)
-    private val cacheList: EnumMap<Language, HashMap<String, List<String?>>> = EnumMap(
-        Language::class.java)
+    private val cache = HashMap<Language, HashMap<String, String>>()
+    private val cacheList = HashMap<Language, HashMap<String, List<String?>>>()
 
     override fun toString(): String = "LangCache(pack=$pack, cache=$cache, cacheList=$cacheList)"
 

@@ -4,6 +4,7 @@ package jab.sledgehammer.langpack.spigot
 
 import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.Language
+import jab.sledgehammer.langpack.core.Languages
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.spigot.objects.complex.SpigotActionText
@@ -15,7 +16,6 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.io.File
-import java.util.*
 
 /**
  * **SpigotLangPack** wraps the LangPack class to provide additional support for the Spigot API.
@@ -47,7 +47,7 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      */
     fun broadcast(query: String, vararg args: LangArg) {
 
-        val cache: EnumMap<Language, TextComponent> = EnumMap<Language, TextComponent>(Language::class.java)
+        val cache = HashMap<Language, TextComponent>()
 
         for (player in Bukkit.getOnlinePlayers()) {
 
@@ -150,11 +150,14 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      *   is returned.
      */
     fun getLanguage(player: Player): Language {
-        val locale = player.locale
-        for (lang in Language.values()) {
-            if (lang.abbreviation.equals(locale, true)) return lang
-        }
-        return defaultLang
+        return Languages.getClosest(player.locale, defaultLang)
+
+        // OLD ENUM CODE
+        //        val locale = player.locale
+        //        for (lang in LanguageOld.values()) {
+        //            if (lang.abbreviation.equals(locale, true)) return lang
+        //        }
+        //        return defaultLang
     }
 
     companion object {

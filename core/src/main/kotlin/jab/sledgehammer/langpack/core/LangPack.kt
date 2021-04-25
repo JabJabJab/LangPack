@@ -66,7 +66,7 @@ open class LangPack(
     /**
      * The language file to default to if a raw string cannot be located with another language.
      */
-    var defaultLang: Language = Language.ENGLISH_GENERIC
+    var defaultLang: Language = Languages.ENGLISH_GENERIC
 
     /**
      * [Complex.Loader] instances are stored here to load when reading and loading lang files.
@@ -76,7 +76,7 @@ open class LangPack(
     /**
      * The Map for LanguageFiles, assigned with their Languages.
      */
-    protected val files: EnumMap<Language, LangFile> = EnumMap(Language::class.java)
+    protected val files = HashMap<Language, LangFile>()
 
     /**
      * Simple constructor.
@@ -109,9 +109,10 @@ open class LangPack(
         if (debug) println("[$name] :: append($name)")
 
         // Save any resources detected.
+        // TODO: Make a JAR walker for files in the directory of the classloader. Current method is probably slower. -Jab
         if (save) {
-            for (lang in Language.values()) {
-                val resourcePath = "${dir.path}${File.separator}${name}_${lang.abbreviation}.yml"
+            for (lang in Languages.values()) {
+                val resourcePath = "${dir.path}${File.separator}${name}_${lang.rawLocale}.yml"
                 try {
                     ResourceUtil.saveResource(resourcePath, classLoader, force)
                 } catch (e: Exception) {
@@ -121,9 +122,8 @@ open class LangPack(
             }
         }
 
-        // Search for and load LangFiles for the package.
-        for (lang in Language.values()) {
-            val file = File(dir, "${name}_${lang.abbreviation}.yml")
+        for (lang in Languages.values()) {
+            val file = File(dir, "${name}_${lang.rawLocale}.yml")
             if (file.exists()) {
                 val langFile = files[lang]
                 if (langFile != null) {
@@ -135,6 +135,7 @@ open class LangPack(
         }
 
         walk()
+        print()
 
         return this
     }
@@ -184,7 +185,7 @@ open class LangPack(
 
         fun recurseGroup(group: LangGroup) {
             if (group is LangFile) {
-                line("File(${group.language.abbreviation}) {")
+                line("File(${group.language.rawLocale}) {")
             } else {
                 line("Section(${group.name}) {")
             }
@@ -219,7 +220,7 @@ open class LangPack(
     @JvmOverloads
     open fun resolve(query: String, lang: Language, context: LangGroup? = null): LangDefinition<*>? {
 
-        if (debug) println("[LangPack] :: resolve($query, ${lang.abbreviation}, $context)")
+        if (debug) println("[LangPack] :: resolve($query, ${lang.rawLocale}, $context)")
 
         var raw: LangDefinition<*>? = null
 
@@ -238,7 +239,7 @@ open class LangPack(
         var langFile = files[lang]
         if (langFile == null) {
             // Check language fallbacks if the file is not defined.
-            val fallBack = lang.getFallback()
+            val fallBack = lang.fallback
             if (fallBack != null) {
                 langFile = files[fallBack]
             }
@@ -301,7 +302,7 @@ open class LangPack(
     @JvmOverloads
     open fun getString(query: String, lang: Language, context: LangGroup? = null, vararg args: LangArg): String? {
 
-        if (debug) println("[LangPack] :: getString(query=$query, ${lang.abbreviation}, $context)")
+        if (debug) println("[LangPack] :: getString(query=$query, ${lang.rawLocale}, $context)")
 
         val raw = resolve(query, lang, context) ?: return null
         val value = raw.value ?: return null
@@ -345,7 +346,7 @@ open class LangPack(
         if (entries.isEmpty()) return
 
         // Make sure the language has a file instance before setting anything.
-        files.computeIfAbsent(lang) { LangFile(this, lang, lang.abbreviation) }
+        files.computeIfAbsent(lang) { LangFile(this, lang, lang.rawLocale) }
 
         for (field in entries) {
             set(lang, field.key, field.value)
@@ -360,7 +361,7 @@ open class LangPack(
      * @param value The value to set.
      */
     fun set(lang: Language, key: String, value: Any?) {
-        val file: LangFile = files.computeIfAbsent(lang) { LangFile(this, lang, lang.abbreviation) }
+        val file: LangFile = files.computeIfAbsent(lang) { LangFile(this, lang, lang.rawLocale) }
         if (value != null) {
             if (value is Complex<*>) {
                 file.set(key, ComplexDefinition(this, value))
@@ -447,8 +448,8 @@ open class LangPack(
             if (!GLOBAL_DIRECTORY.exists()) GLOBAL_DIRECTORY.mkdirs()
 
             // Store all global lang-files present in the jar.
-            for (lang in Language.values()) {
-                ResourceUtil.saveResource("lang${File.separator}global_${lang.abbreviation}.yml", null)
+            for (lang in Languages.values()) {
+                ResourceUtil.saveResource("lang${File.separator}global_${lang.rawLocale}.yml", null)
             }
 
             global = LangPack()

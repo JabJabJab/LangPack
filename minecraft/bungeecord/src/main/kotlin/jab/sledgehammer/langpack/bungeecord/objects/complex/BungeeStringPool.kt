@@ -110,7 +110,7 @@ class BungeeStringPool : StringPool {
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun broadcast(pack: BungeeLangPack, vararg args: LangArg) {
-        val cache = EnumMap<Language, String>(Language::class.java)
+        val cache = HashMap<Language, String>()
         val server = ProxyServer.getInstance()
         for (player in server.players) {
             val message: String
