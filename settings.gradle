@@ -2,10 +2,16 @@ rootProject.name = 'LangPack'
 
 include 'core'
 
-// Minecraft
+// MD5 TextComponent API
 include ':minecraft:textcomponent'
+
+// Bukkit
 include ":minecraft:bukkit"
+
+// Bungeecord
 include ":minecraft:bungeecord"
+include ":examples:minecraft:bungeecord:java"
+include ":examples:minecraft:bungeecord:kotlin"
 
 // Spigot
 include ":minecraft:spigot"

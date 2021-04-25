@@ -7,7 +7,7 @@ import jab.sledgehammer.langpack.core.objects.LangArg
 import org.bukkit.entity.Player
 
 /**
- * **BukkitLangPack** wraps the LangCache class to provide additional support for the Bukkit API.
+ * **BukkitLangCache** wraps the LangCache class to provide additional support for the Bukkit API.
  *
  * @author Jab
  *

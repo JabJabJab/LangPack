@@ -13,11 +13,18 @@ import org.spongepowered.api.plugin.Plugin
 import org.spongepowered.api.scheduler.Task
 import java.util.*
 
+/**
+ * **ExamplePlugin**
+ *
+ * TODO: Document.
+ *
+ * @author Jab
+ */
 @Plugin(
     id = "langpack_sponge_example_kotlin",
     name = "LangPack_Sponge_Example_Kotlin",
     version = "1.0.0",
-    dependencies = [Dependency(id="langpack")]
+    dependencies = [Dependency(id = "langpack")]
 )
 class ExamplePlugin {
 
@@ -51,9 +58,26 @@ class ExamplePlugin {
 
     @Listener
     fun on(event: ClientConnectionEvent.Join) {
+        event.isMessageCancelled = true
+
         val player = event.targetEntity
         // !!NOTE: The server executes this event prior to the client sending the locale information.
         //         Log the information to be processed only when the client settings are sent. -Jab
         greetMap[player.uniqueId] = true
+    }
+
+    @Listener
+    fun on(event: ClientConnectionEvent.Disconnect) {
+        event.isMessageCancelled = true
+
+        val player = event.targetEntity
+        val playerId = player.uniqueId
+
+        if (greetMap.containsKey(playerId)) {
+            greetMap.remove(playerId)
+            return
+        }
+
+        pack.broadcast("event.leave_server", LangArg("player", player.name))
     }
 }

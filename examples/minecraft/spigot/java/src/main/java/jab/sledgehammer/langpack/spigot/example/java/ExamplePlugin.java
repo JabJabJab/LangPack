@@ -14,6 +14,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.UUID;
 
+/**
+ * **ExamplePlugin**
+ *
+ * TODO: Document.
+ *
+ * @author Jab
+ */
 public class ExamplePlugin extends JavaPlugin implements Listener {
 
     private final HashMap<UUID, Boolean> greetList = new HashMap<>();
@@ -64,6 +71,8 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
             return;
         }
 
+        event.setJoinMessage(null);
+
         // !!NOTE: The server executes this event prior to the client sending the locale information.
         //         Log the information to be processed only when the client settings are sent. -Jab
         greetList.put(event.getPlayer().getUniqueId(), true);
@@ -75,7 +84,16 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
             return;
         }
 
+        event.setQuitMessage(null);
+
         Player player = event.getPlayer();
+        UUID playerId = player.getUniqueId();
+
+        if (greetList.containsKey(playerId)) {
+            greetList.remove(playerId);
+            return;
+        }
+
         pack.broadcast("event.leave_server", new LangArg("player", player.getDisplayName()));
     }
 }

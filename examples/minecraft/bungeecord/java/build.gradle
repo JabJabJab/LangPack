@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+group "jab.sledgehammer"
+version "1.0.0"
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    mavenLocal()
+}
+
+dependencies {
+    compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
+    compileOnly project(":minecraft:bungeecord")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    baseName "LangPack-Example-Bungeecord-Java"
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
+            exclude "META-INF", "META-INF/**", "**/about.html", "*/about.html", "about.html"
+        }
+    }
+}

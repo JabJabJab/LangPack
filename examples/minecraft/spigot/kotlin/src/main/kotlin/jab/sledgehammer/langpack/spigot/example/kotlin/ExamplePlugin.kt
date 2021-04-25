@@ -12,6 +12,13 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 
+/**
+ * **ExamplePlugin**
+ *
+ * TODO: Document.
+ *
+ * @author Jab
+ */
 class ExamplePlugin : JavaPlugin(), Listener {
 
     private val greetList = HashMap<UUID, Boolean>()
@@ -52,6 +59,7 @@ class ExamplePlugin : JavaPlugin(), Listener {
     @EventHandler
     fun on(event: PlayerJoinEvent) {
         if (!joinMsg) return
+        event.joinMessage = null
         // !!NOTE: The server executes this event prior to the client sending the locale information.
         //         Log the information to be processed only when the client settings are sent. -Jab
         greetList[event.player.uniqueId] = true
@@ -61,8 +69,16 @@ class ExamplePlugin : JavaPlugin(), Listener {
     fun on(event: PlayerQuitEvent) {
         if (!leaveMsg) return
 
-        with(event) {
-            pack.broadcast("event.leave_server", LangArg("player", player.displayName))
+        event.quitMessage = null
+
+        val player = event.player
+        val playerId = player.uniqueId
+
+        if (greetList.containsKey(playerId)) {
+            greetList.remove(playerId)
+            return
         }
+
+        pack.broadcast("event.leave_server", LangArg("player", player.displayName))
     }
 }

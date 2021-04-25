@@ -1,0 +1,5 @@
+name: LangPack-Example-Java
+version: 1.0.0
+author: Jab
+api-version: 1.16
+main: jab.sledgehammer.langpack.bungeecord.example.java.ExamplePlugin

@@ -16,6 +16,13 @@ import org.spongepowered.api.scheduler.Task;
 import java.util.HashMap;
 import java.util.UUID;
 
+/**
+ * **ExamplePlugin**
+ *
+ * TODO: Document.
+ *
+ * @author Jab
+ */
 @Plugin(
         id = "langpack_sponge_example_java",
         name = "LangPack_Sponge_Example_Java",
@@ -53,9 +60,26 @@ public class ExamplePlugin {
 
     @Listener
     public void on(ClientConnectionEvent.Join event) {
+        event.setMessageCancelled(true);
+
         Player player = event.getTargetEntity();
         // !!NOTE: The server executes this event prior to the client sending the locale information.
         //         Log the information to be processed only when the client settings are sent. -Jab
         greetMap.put(player.getUniqueId(), true);
+    }
+
+    @Listener
+    public void on(ClientConnectionEvent.Disconnect event) {
+        event.setMessageCancelled(true);
+
+        Player player = event.getTargetEntity();
+        UUID playerId = player.getUniqueId();
+
+        if (greetMap.containsKey(playerId)) {
+            greetMap.remove(playerId);
+            return;
+        }
+
+        pack.broadcast("event.leave_server", new LangArg("player", player.getName()));
     }
 }
