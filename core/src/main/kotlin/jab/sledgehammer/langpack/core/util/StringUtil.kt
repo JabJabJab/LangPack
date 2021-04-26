@@ -1,10 +1,9 @@
 package jab.sledgehammer.langpack.core.util
 
 import jab.sledgehammer.langpack.core.LangPack.Companion.NEW_LINE
-import java.util.*
 
 /**
- * **StringUtil** houses utilities for management of objects and strings.
+ * **StringUtil** houses utilities for management of Objects and Strings.
  *
  * @author Jab
  */

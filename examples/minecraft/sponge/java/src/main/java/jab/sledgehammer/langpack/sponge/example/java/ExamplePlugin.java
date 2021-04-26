@@ -17,9 +17,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 /**
- * **ExamplePlugin**
- *
- * TODO: Document.
+ * **ExamplePlugin** TODO: Document.
  *
  * @author Jab
  */
@@ -31,8 +29,8 @@ import java.util.UUID;
 )
 public class ExamplePlugin {
 
-    final HashMap<UUID, Boolean> greetMap = new HashMap<>();
-    final SpongeLangPack pack = new SpongeLangPack(getClass().getClassLoader());
+    private final HashMap<UUID, Boolean> greetMap = new HashMap<>();
+    private final SpongeLangPack pack = new SpongeLangPack(getClass().getClassLoader());
 
     @Listener
     public void on(GameInitializationEvent event) {
@@ -61,25 +59,21 @@ public class ExamplePlugin {
     @Listener
     public void on(ClientConnectionEvent.Join event) {
         event.setMessageCancelled(true);
-
         Player player = event.getTargetEntity();
-        // !!NOTE: The server executes this event prior to the client sending the locale information.
-        //         Log the information to be processed only when the client settings are sent. -Jab
+        // The server executes this event prior to the client sending the locale information. Log the information to be
+        // processed only when the client settings are sent. -Jab
         greetMap.put(player.getUniqueId(), true);
     }
 
     @Listener
     public void on(ClientConnectionEvent.Disconnect event) {
         event.setMessageCancelled(true);
-
         Player player = event.getTargetEntity();
         UUID playerId = player.getUniqueId();
-
         if (greetMap.containsKey(playerId)) {
             greetMap.remove(playerId);
             return;
         }
-
         pack.broadcast("event.leave_server", new LangArg("player", player.getName()));
     }
 }

@@ -12,7 +12,7 @@ import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
 import jab.sledgehammer.langpack.sponge.util.text.ClickEvent
 
 /**
- * **CommandText** packages and processes text for [ClickEvent] for [ActionText].
+ * **CommandText** packages and processes text for [ClickEvent] for [SpongeActionText].
  *
  * @author Jab
  *

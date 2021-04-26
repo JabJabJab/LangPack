@@ -27,15 +27,6 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandCallable {
     private val pack = plugin.pack
     private val desc: Optional<Text> = Optional.of(Text.of("Used to test the LangPack API"))
 
-    init {
-        subCommands.add("test")
-        subCommands.add("tests")
-        if (plugin.testsEnabled) {
-            addTest(TestAction(pack.getList("test.action.description")!!))
-            addTest(TestBroadcast(pack.getList("test.broadcast.description")!!))
-        }
-    }
-
     override fun process(source: CommandSource, argsString: String): CommandResult {
         if (source !is Player) return CommandResult.success()
 
@@ -71,6 +62,17 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandCallable {
 
         return CommandResult.success()
     }
+
+    override fun getSuggestions(
+        source: CommandSource,
+        arguments: String,
+        targetPosition: Location<World>?,
+    ): MutableList<String> = Collections.emptyList()
+
+    override fun testPermission(source: CommandSource): Boolean = source.hasPermission("langpack.lang")
+    override fun getShortDescription(source: CommandSource): Optional<Text> = desc
+    override fun getHelp(source: CommandSource): Optional<Text> = Optional.of(Text.of(""))
+    override fun getUsage(source: CommandSource): Text = Text.of("")
 
     private fun onTestCommand(player: Player, args: List<String>) {
 
@@ -154,16 +156,12 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandCallable {
         tests[test.name] = test
     }
 
-    override fun getSuggestions(
-        source: CommandSource,
-        arguments: String,
-        targetPosition: Location<World>?,
-    ): MutableList<String> {
-        return Collections.emptyList()
+    init {
+        subCommands.add("test")
+        subCommands.add("tests")
+        if (plugin.testsEnabled) {
+            addTest(TestAction(pack.getList("test.action.description")!!))
+            addTest(TestBroadcast(pack.getList("test.broadcast.description")!!))
+        }
     }
-
-    override fun testPermission(source: CommandSource): Boolean = source.hasPermission("langpack.lang")
-    override fun getShortDescription(source: CommandSource): Optional<Text> = desc
-    override fun getHelp(source: CommandSource): Optional<Text> = Optional.of(Text.of(""))
-    override fun getUsage(source: CommandSource): Text = Text.of("")
 }

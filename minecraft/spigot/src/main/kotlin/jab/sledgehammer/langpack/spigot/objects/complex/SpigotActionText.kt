@@ -2,6 +2,7 @@
 
 package jab.sledgehammer.langpack.spigot.objects.complex
 
+import jab.sledgehammer.config.ConfigSection
 import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.complex.Complex
@@ -9,15 +10,13 @@ import jab.sledgehammer.langpack.spigot.SpigotLangPack
 import jab.sledgehammer.langpack.textcomponent.objects.complex.ActionText
 import jab.sledgehammer.langpack.textcomponent.objects.complex.CommandText
 import jab.sledgehammer.langpack.textcomponent.objects.complex.HoverText
-import jab.sledgehammer.config.ConfigSection
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
-import java.util.*
 
 /**
- * **SpigotActionText** wraps the ActionText class to provide additional support for the Spigot API.
+ * **SpigotActionText** wraps the [ActionText] class to provide additional support for the Spigot API.
  *
  * @author Jab
  */

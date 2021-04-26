@@ -26,6 +26,8 @@ import net.md_5.bungee.api.chat.hover.content.Text
  */
 class TextComponentProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
 
+    override fun postProcess(string: String): String = ChatColor.translateAlternateColorCodes('&', string)
+
     /**
      * Processes a text component, inserting arguments and fields set in the lang-pack.
      *
@@ -39,7 +41,6 @@ class TextComponentProcessor(formatter: FieldFormatter) : DefaultProcessor(forma
     fun process(
         component: TextComponent, pack: LangPack, lang: Language, context: LangGroup?, vararg args: LangArg,
     ): TextComponent {
-
         // There's no need to slice a component that is only a field.
         val composition = if (!formatter.isField(component.text)) {
             ChatUtil.slice(component, pack.formatter)
@@ -72,7 +73,6 @@ class TextComponentProcessor(formatter: FieldFormatter) : DefaultProcessor(forma
      * @return Returns the processed component.
      */
     fun process(component: TextComponent, vararg args: LangArg): TextComponent {
-
         // There's no need to slice a component that is only a field.
         val composition = if (!formatter.isField(component.text)) {
             ChatUtil.slice(component, formatter)
@@ -98,18 +98,6 @@ class TextComponentProcessor(formatter: FieldFormatter) : DefaultProcessor(forma
         return composition
     }
 
-    /**
-     * TODO: Implement.
-     *
-     * @param string The string to color.
-     * @param colorCode  The alternative color-code to process.
-     *
-     * @return Returns the colored string.
-     */
-    override fun color(string: String, colorCode: Char): String {
-        return ChatColor.translateAlternateColorCodes(colorCode, string)
-    }
-
     private fun processText(
         component: TextComponent,
         pack: LangPack,
@@ -121,7 +109,6 @@ class TextComponentProcessor(formatter: FieldFormatter) : DefaultProcessor(forma
             var eraseText = false
             if (formatter.isField(text)) {
                 val fieldStripped = formatter.strip(text)
-
                 var found = false
                 var field: LangDefinition<*>? = null
                 for (arg in args) {
@@ -160,10 +147,10 @@ class TextComponentProcessor(formatter: FieldFormatter) : DefaultProcessor(forma
                         }
                     }
                 } else {
-                    text = color(formatter.getPlaceholder(text))
+                    text = postProcess(formatter.getPlaceholder(text))
                 }
             } else {
-                text = color(text)
+                text = postProcess(text)
             }
 
             return eraseText
@@ -174,7 +161,6 @@ class TextComponentProcessor(formatter: FieldFormatter) : DefaultProcessor(forma
         with(composition) {
             var eraseText = false
             if (formatter.isField(text)) {
-
                 val fField = formatter.strip(text)
                 var field: Any? = null
                 for (arg in args) {
@@ -208,7 +194,7 @@ class TextComponentProcessor(formatter: FieldFormatter) : DefaultProcessor(forma
                     text = fField
                 }
             } else {
-                text = color(text)
+                text = postProcess(text)
             }
             return eraseText
         }
@@ -314,7 +300,6 @@ class TextComponentProcessor(formatter: FieldFormatter) : DefaultProcessor(forma
     private fun processExtras(component: TextComponent, vararg args: LangArg) {
         with(component) {
             if (extra == null || formatter.isField(text)) return
-
             val newExtras = ArrayList<BaseComponent>()
             for (next in extra) {
                 if (next == null) {

@@ -25,7 +25,7 @@ import java.io.File
  *
  * @author Jab
  *
- * @property pack The lang-pack instance.
+ * @property pack The pack instance.
  * @property language The language that the group belongs to.
  * @property name The name of the group.
  * @property parent (Optional) The parent group.
@@ -153,9 +153,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      */
     fun resolve(query: String): LangDefinition<*>? {
 
-        if (pack.debug) {
-            println("[$name] :: resolve($query)")
-        }
+        if (pack.debug) println("[$name] :: resolve($query)")
 
         if (query.contains(".")) {
 
@@ -173,9 +171,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
                 }
             }
 
-            if (pack.debug) {
-                println("[$name] :: rebuiltQuery: $rebuiltQuery")
-            }
+            if (pack.debug) println("[$name] :: rebuiltQuery: $rebuiltQuery")
 
             return raw.resolve(rebuiltQuery)
 

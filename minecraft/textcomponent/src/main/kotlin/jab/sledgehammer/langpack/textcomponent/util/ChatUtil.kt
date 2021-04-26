@@ -2,6 +2,7 @@ package jab.sledgehammer.langpack.textcomponent.util
 
 import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
+import jab.sledgehammer.langpack.core.util.MultilinePrinter
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.ClickEvent
@@ -17,6 +18,8 @@ import net.md_5.bungee.api.chat.hover.content.Text
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 object ChatUtil {
 
+    private val printer = TextComponentPrinter()
+
     /**
      * Slices a TextComponent into extras with each component being split fields and text.
      *
@@ -26,17 +29,14 @@ object ChatUtil {
      * @return Returns a component with all text & fields sequenced in [BaseComponent.extra].
      */
     fun slice(textComponent: TextComponent, formatter: FieldFormatter): TextComponent {
-
         val composition = TextComponent()
         val text = textComponent.text ?: return TextComponent(textComponent.text)
         if (textComponent.text.isEmpty()) return TextComponent("")
-
         // Make sure that we have fields to sort, otherwise return the color-formatted text.
         val fields = formatter.getFields(text)
         if (fields.isEmpty()) {
             return TextComponent(ChatColor.translateAlternateColorCodes('&', text))
         }
-
         var next = text
         for (field in fields) {
             val offset = next.indexOf(field.raw, 0, true)
@@ -47,10 +47,8 @@ object ChatUtil {
         if (next.isNotEmpty()) {
             composition.addExtra(TextComponent(next))
         }
-
         composition.hoverEvent = textComponent.hoverEvent
         composition.clickEvent = textComponent.clickEvent
-
         return composition
     }
 
@@ -78,12 +76,8 @@ object ChatUtil {
      */
     fun createHoverComponent(text: String, lines: Array<String>): TextComponent {
         val component = TextComponent(text)
-
         var array = emptyList<Text>()
-        for (line in lines) {
-            array = array.plus(Text(line))
-        }
-
+        for (line in lines) array = array.plus(Text(line))
         component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
         return component
     }
@@ -98,12 +92,8 @@ object ChatUtil {
      */
     fun createHoverComponent(text: String, lines: List<String>): TextComponent {
         val component = TextComponent(text)
-
         var array = emptyList<Text>()
-        for (line in lines) {
-            array = array.plus(Text(line))
-        }
-
+        for (line in lines) array = array.plus(Text(line))
         component.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
         return component
     }
@@ -114,18 +104,13 @@ object ChatUtil {
      * @param textComponent The component to color.
      */
     fun spreadColor(textComponent: TextComponent) {
-
         val list = flatten(textComponent)
-
         var last: BaseComponent = list[0]
         last.color = getLastColor(last)
-
         for (index in 1..list.lastIndex) {
             val next = list[index]
-
             val result = getLastColor(last)
             next.color = result
-
             last = next
         }
     }
@@ -138,20 +123,14 @@ object ChatUtil {
      * @return Returns a list of all sequenced base component extras as it would be displayed in chat.
      */
     fun flatten(component: BaseComponent): ArrayList<BaseComponent> {
-
         val list = ArrayList<BaseComponent>()
-
         fun recurse(next: BaseComponent) {
             list.add(next)
             if (next.extra != null && next.extra.isNotEmpty()) {
-                for (n in next.extra) {
-                    recurse(n)
-                }
+                for (n in next.extra) recurse(n)
             }
         }
-
         recurse(component)
-
         return list
     }
 
@@ -162,79 +141,52 @@ object ChatUtil {
      * [BaseComponent.color] is used.
      */
     fun getLastColor(component: BaseComponent): ChatColor {
-
         if (component is TextComponent) {
             if (component.text != null && component.text.isNotEmpty()) {
                 val chars = component.text.toCharArray()
-
                 var index = chars.lastIndex - 1
                 while (index > -1) {
-
                     val next = chars[index]
-                    if (next == ChatColor.COLOR_CHAR) {
-                        return ChatColor.getByChar(chars[index + 1])
-                    }
-
+                    if (next == ChatColor.COLOR_CHAR) return ChatColor.getByChar(chars[index + 1])
                     index--
                 }
             }
         }
-
         return component.color
     }
 
     /**
-     * Displays information on a base component using spacing and lines to read easily in a console.
+     * TODO: Document.
      *
-     * @param component The component to prettify.
-     * @param startingPrefix The indention to use for all lines.
+     * @param component
      *
-     * @return Returns lines of text to display properties of the component.
+     * @return
      */
-    fun pretty(component: BaseComponent, startingPrefix: String): ArrayList<String> {
+    fun print(component: TextComponent): String = printer.print(component)
 
-        val lines = ArrayList<String>()
-        var prefix = startingPrefix
-
-        fun tabIn() {
-            prefix += "  "
-        }
-
-        fun tabOut() {
-            prefix = prefix.substring(0, prefix.length - 2)
-        }
-
-        fun line(string: String) {
-            lines.add("$prefix$string")
-        }
-
-        fun recurse(component: BaseComponent) {
-            line("${component.javaClass.simpleName} {")
-            tabIn()
-            if (component is TextComponent) {
-                with(component) {
-                    if (text != null && text.isNotEmpty()) {
-                        line("""text: "$text${ChatColor.RESET}"""")
-                    }
-                    line("color: ${color.name}${ChatColor.RESET}")
-                    if (clickEvent != null) line("clickEvent: $clickEvent")
-                    if (hoverEvent != null) line("hoverEvent: $hoverEvent")
-                    if (extra != null) {
-                        line("extras: (size: ${extra.size})")
-                        tabIn()
-                        for (extra in extra) {
-                            recurse(extra)
+    private class TextComponentPrinter : MultilinePrinter<TextComponent>() {
+        override fun onPrint(element: TextComponent) {
+            fun recurse(component: BaseComponent) {
+                line("${component.javaClass.simpleName} {")
+                tab()
+                if (component is TextComponent) {
+                    with(component) {
+                        if (text != null && text.isNotEmpty()) line("text: \"$text${ChatColor.RESET}\"")
+                        line("color: ${color.name}${ChatColor.RESET}")
+                        if (clickEvent != null) line("clickEvent: $clickEvent")
+                        if (hoverEvent != null) line("hoverEvent: $hoverEvent")
+                        if (extra != null) {
+                            line("extras: (size: ${extra.size})")
+                            tab()
+                            for (extra in extra) recurse(extra)
+                            unTab()
                         }
-                        tabOut()
                     }
                 }
+                tab()
+                line("}")
             }
-
-            tabOut()
-            line("}")
+            recurse(element)
         }
-
-        recurse(component)
-        return lines
     }
 }

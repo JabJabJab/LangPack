@@ -2,18 +2,19 @@
 
 package jab.sledgehammer.langpack.sponge
 
+import jab.sledgehammer.langpack.core.LangCache
 import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import org.spongepowered.api.entity.living.player.Player
 
 /**
- * **SpongeLangCache** wraps the LangCache class to provide additional support for the Sponge API.
+ * **SpongeLangCache** wraps the [LangCache] class to provide additional support for the Sponge API.
  *
  * @author Jab
  *
  * @param pack The SpongeLangPack instance.
  */
-class SpongeLangCache(pack: SpongeLangPack) : jab.sledgehammer.langpack.core.LangCache<SpongeLangPack>(pack) {
+class SpongeLangCache(pack: SpongeLangPack) : LangCache<SpongeLangPack>(pack) {
 
     /**
      * @see SpongeLangPack.broadcast

@@ -30,13 +30,7 @@ class StringDefinition : LangDefinition<String> {
      */
     constructor(pack: LangPack, value: String) : super(pack, null, value)
 
-    override fun onWalk(): String {
-        return walk(raw)
-    }
-
-    override fun needsWalk(formatter: FieldFormatter): Boolean {
-        return formatter.needsWalk(raw)
-    }
-
+    override fun onWalk(): String = walk(raw)
+    override fun needsWalk(formatter: FieldFormatter): Boolean = formatter.needsWalk(raw)
     override fun toString(): String = "StringDefinition(raw=$raw, value=$value)"
 }

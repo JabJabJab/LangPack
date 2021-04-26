@@ -7,53 +7,26 @@ package jab.sledgehammer.langpack.core.util
  *
  * @author Jab
  */
-class PrettyPrintingMap<K, V>(private val map: Map<K, V>) {
+class MapPrinter<K, V> : MultilinePrinter<Map<K, V>>() {
 
-    var text = ""
-    var prefix = ""
-
-    fun reset() {
-        text = ""
-        prefix = ""
+    override fun onPrint(element: Map<K, V>) {
+        recurse(null, element)
     }
 
-    fun raw(string: String) {
-        text += string
-    }
-
-    fun line(string: String) {
-        text += "$prefix$string\n"
-    }
-
-
-    fun recurse(key: String?, value: Any?) {
-
-        fun tab() {
-            prefix += "  "
-        }
-
-        fun untab() {
-            val index = prefix.lastIndex - 1
-            prefix = if (index < 1) {
-                ""
-            } else {
-                prefix.substring(0, index)
-            }
-        }
-
+    private fun recurse(key: String?, value: Any?) {
         if (value is Map<*, *>) {
             if (key != null) line("$key: {")
             else line("{")
             tab()
             recurseMap(value)
-            untab()
+            unTab()
             line("},")
         } else if (value is List<*>) {
             if (key != null) line("$key: [")
             else line("[")
             tab()
             recurseList(value)
-            untab()
+            unTab()
             line("],")
         } else {
             if (key != null) line("$key: $value")
@@ -61,21 +34,15 @@ class PrettyPrintingMap<K, V>(private val map: Map<K, V>) {
         }
     }
 
-    fun recurseList(list: List<*>) {
+    private fun recurseList(list: List<*>) {
         for ((index, item) in list.withIndex()) {
             recurse("$index", item)
         }
     }
 
-    fun recurseMap(map: Map<*, *>) {
+    private fun recurseMap(map: Map<*, *>) {
         for ((key, value) in map) {
             if (value != null) recurse(key.toString(), value)
         }
-    }
-
-    override fun toString(): String {
-        reset()
-        recurse(null, map)
-        return text
     }
 }

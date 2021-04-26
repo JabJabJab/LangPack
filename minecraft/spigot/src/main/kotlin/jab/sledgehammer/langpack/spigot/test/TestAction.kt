@@ -1,8 +1,9 @@
 package jab.sledgehammer.langpack.spigot.test
 
-import jab.sledgehammer.langpack.spigot.SpigotLangPack
 import jab.sledgehammer.langpack.core.test.LangTest
 import jab.sledgehammer.langpack.core.test.TestResult
+import jab.sledgehammer.langpack.spigot.SpigotLangPack
+import jab.sledgehammer.langpack.textcomponent.objects.complex.ActionText
 import org.bukkit.entity.Player
 
 /**

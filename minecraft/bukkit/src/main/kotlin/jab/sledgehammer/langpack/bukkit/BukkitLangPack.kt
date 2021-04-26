@@ -17,7 +17,7 @@ import org.bukkit.entity.Player
 import java.io.File
 
 /**
- * **BukkitLangPack** wraps the LangPack class to provide additional support for the Bukkit API.
+ * **BukkitLangPack** wraps the [LangPack] class to provide additional support for the Bukkit API.
  *
  * @author Jab
  *
@@ -35,10 +35,6 @@ class BukkitLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      * @param classLoader The classloader to load resources.
      */
     constructor(classLoader: ClassLoader) : this(classLoader, File("lang"))
-
-    init {
-        setBukkitLoaders(loaders)
-    }
 
     /**
      * Broadcasts a message to all online players, checking their locales and sending the corresponding dialog.
@@ -121,14 +117,10 @@ class BukkitLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      * @return Returns the language of the player's [Player.getLocale]. If the locale set is invalid, the fallBack
      *   is returned.
      */
-    fun getLanguage(player: Player): Language {
-        return Languages.getClosest(player.locale, defaultLang)
-        // ENUM Version
-        //        val locale = player.locale
-        //        for (lang in Language.values()) {
-        //            if (lang.abbreviation.equals(locale, true)) return lang
-        //        }
-        //        return defaultLang
+    fun getLanguage(player: Player): Language = Languages.getClosest(player.locale, defaultLang)
+
+    init {
+        setBukkitLoaders(loaders)
     }
 
     companion object {

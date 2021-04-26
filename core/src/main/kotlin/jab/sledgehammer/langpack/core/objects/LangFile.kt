@@ -1,7 +1,7 @@
 package jab.sledgehammer.langpack.core.objects
 
-import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.config.ConfigFile
+import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.Language
 import java.io.File
 
@@ -21,7 +21,7 @@ class LangFile : LangGroup {
     /**
      * Runtime constructor.
      *
-     * @param pack The lang-pack instance.
+     * @param pack The pack instance.
      * @param language The language of the file.
      * @param name The name of the section.
      */
@@ -30,7 +30,7 @@ class LangFile : LangGroup {
     /**
      * File constructor.
      *
-     * @param pack The lang-pack instance.
+     * @param pack The pack instance.
      * @param file The file to read.
      * @param language The language of the file.
      */
@@ -49,13 +49,12 @@ class LangFile : LangGroup {
     fun load(): LangFile {
         // Clear the current entries and reload from file.
         clear()
-
         if (file != null) append(ConfigFile().load(file!!))
         return this
     }
 
     /**
-     * Appends a YAML file to the lang-file.
+     * Appends a YAML file.
      *
      * @param file The file to parse and append.
      *

@@ -1,12 +1,12 @@
 package jab.sledgehammer.langpack.core.objects.complex
 
+import jab.sledgehammer.config.ConfigSection
 import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.LangGroup
 import jab.sledgehammer.langpack.core.objects.definition.LangDefinition
 import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
-import jab.sledgehammer.config.ConfigSection
-import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.processor.LangProcessor
 
 /**

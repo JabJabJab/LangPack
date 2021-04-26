@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import java.util.*
 
 /**
- * **BukkitStringPool** wraps the StringPool class to provide additional support for the Bukkit API.
+ * **BukkitStringPool** wraps the [StringPool] class to provide additional support for the Bukkit API.
  *
  * @author Jab
  */

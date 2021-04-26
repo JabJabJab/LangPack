@@ -9,5 +9,9 @@ package jab.sledgehammer.langpack.core.test
  * @property reason (Optional) The reason the test failed.
  */
 data class TestResult(val success: Boolean, val reason: String? = null) {
+
+    /**
+     * A time variable for displaying test times.
+     */
     var time: Long = 0L
 }

@@ -2,4 +2,5 @@ name: LangPack-Example-Kotlin
 version: 1.0.0
 author: Jab
 api-version: 1.16
+depends: [ LangPack ]
 main: jab.sledgehammer.langpack.bungeecord.example.kotlin.ExamplePlugin

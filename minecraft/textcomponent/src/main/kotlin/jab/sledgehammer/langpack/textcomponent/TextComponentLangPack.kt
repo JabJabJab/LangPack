@@ -19,7 +19,6 @@ import jab.sledgehammer.langpack.core.util.StringUtil
 import jab.sledgehammer.langpack.textcomponent.objects.complex.ActionText
 import jab.sledgehammer.langpack.textcomponent.processor.TextComponentProcessor
 import java.io.File
-import java.util.*
 
 /**
  * TODO: Document.
@@ -37,12 +36,7 @@ open class TextComponentLangPack(classLoader: ClassLoader = this::class.java.cla
     override var processor: LangProcessor = TextComponentProcessor(PercentFormatter())
     override var formatter: FieldFormatter = PercentFormatter()
 
-    init {
-        setDefaultLoaders(loaders)
-    }
-
     override fun resolve(query: String, lang: Language, context: LangGroup?): LangDefinition<*>? {
-
         var raw: LangDefinition<*>? = null
 
         // If a context is provided, try to look up the absolute path + the query first.
@@ -61,9 +55,7 @@ open class TextComponentLangPack(classLoader: ClassLoader = this::class.java.cla
         if (langFile == null) {
             // Check language fallbacks if the file is not defined.
             val fallBack = lang.fallback
-            if (fallBack != null) {
-                langFile = files[fallBack]
-            }
+            if (fallBack != null) langFile = files[fallBack]
         }
 
         if (langFile != null) raw = langFile.resolve(query)
@@ -97,25 +89,29 @@ open class TextComponentLangPack(classLoader: ClassLoader = this::class.java.cla
         }
     }
 
+    init {
+        setDefaultLoaders(loaders)
+    }
+
     companion object {
 
         private val stringPoolLoader = StringPool.Loader()
         private val actionTextLoader = ActionText.Loader()
 
+        fun setDefaultLoaders(map: HashMap<String, Complex.Loader<*>>) {
+            map["pool"] = stringPoolLoader
+            map["action"] = actionTextLoader
+        }
+
         init {
             // The global 'lang' directory.
             if (!GLOBAL_DIRECTORY.exists()) GLOBAL_DIRECTORY.mkdirs()
             // Store all global lang-files present in the jar.
-            for (lang in Languages.values()) {
+            for (lang in Languages.values) {
                 ResourceUtil.saveResource("lang${File.separator}global_${lang.rawLocale}.yml", null)
             }
             global = TextComponentLangPack()
             global!!.append("global", save = true, force = false)
-        }
-
-        fun setDefaultLoaders(map: HashMap<String, Complex.Loader<*>>) {
-            map["pool"] = stringPoolLoader
-            map["action"] = actionTextLoader
         }
     }
 }

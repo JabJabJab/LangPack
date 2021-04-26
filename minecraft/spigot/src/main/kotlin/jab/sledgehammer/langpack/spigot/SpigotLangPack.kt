@@ -35,10 +35,6 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      */
     constructor(classLoader: ClassLoader) : this(classLoader, File("lang"))
 
-    init {
-        setSpigotLoaders(loaders)
-    }
-
     /**
      * Broadcasts a message to all online players, checking their locales and sending the corresponding dialog.
      *
@@ -149,15 +145,10 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      * @return Returns the language of the player's [Player.getLocale]. If the locale set is invalid, the fallBack
      *   is returned.
      */
-    fun getLanguage(player: Player): Language {
-        return Languages.getClosest(player.locale, defaultLang)
+    fun getLanguage(player: Player): Language = Languages.getClosest(player.locale, defaultLang)
 
-        // OLD ENUM CODE
-        //        val locale = player.locale
-        //        for (lang in LanguageOld.values()) {
-        //            if (lang.abbreviation.equals(locale, true)) return lang
-        //        }
-        //        return defaultLang
+    init {
+        setSpigotLoaders(loaders)
     }
 
     companion object {
@@ -193,9 +184,7 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
         fun message(sender: CommandSender, lines: List<String>) {
             // Convert to an array to send all messages at once.
             var array = emptyArray<String>()
-            for (line in lines) {
-                array = array.plus(line)
-            }
+            for (line in lines) array = array.plus(line)
             sender.sendMessage(array)
         }
 
@@ -205,9 +194,7 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
          * @param lines The lines of text to broadcast.
          */
         fun broadcast(lines: Array<String>) {
-            for (line in lines) {
-                Bukkit.broadcastMessage(line)
-            }
+            for (line in lines) Bukkit.broadcastMessage(line)
         }
 
         /**
@@ -216,9 +203,7 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
          * @param lines The lines of text to broadcast.
          */
         fun broadcast(lines: List<String>) {
-            for (line in lines) {
-                Bukkit.broadcastMessage(line)
-            }
+            for (line in lines) Bukkit.broadcastMessage(line)
         }
 
         /**
@@ -229,9 +214,7 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
          * @param lines The lines of text to broadcast.
          */
         fun broadcastSafe(lines: Array<String?>) {
-            for (line in lines) {
-                if (line != null) Bukkit.broadcastMessage(line)
-            }
+            for (line in lines) if (line != null) Bukkit.broadcastMessage(line)
         }
 
         /**
@@ -242,9 +225,7 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
          * @param lines The lines of text to broadcast.
          */
         fun broadcastSafe(lines: List<String?>) {
-            for (line in lines) {
-                if (line != null) Bukkit.broadcastMessage(line)
-            }
+            for (line in lines) if (line != null) Bukkit.broadcastMessage(line)
         }
     }
 }

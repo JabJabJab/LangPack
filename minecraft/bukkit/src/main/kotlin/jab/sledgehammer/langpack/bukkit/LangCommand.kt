@@ -22,32 +22,11 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
     private val tests = HashMap<String, LangTest<BukkitLangPack, Player>>()
     private val emptyList = ArrayList<String>()
     private val subCommands = ArrayList<String>()
-    private val cache = BukkitLangCache(plugin.pack!!)
-    private val pack = plugin.pack!!
-
-    init {
-
-        subCommands.add("test")
-        subCommands.add("tests")
-
-        val command = plugin.getCommand("lang")
-        if (command == null) {
-            System.err.println("The command 'lang' is not registered.")
-        } else {
-            command.setExecutor(this)
-            command.tabCompleter = this
-
-            if (plugin.testsEnabled) {
-                addTest(TestAction(pack.getList("test.action.description")!!))
-                addTest(TestBroadcast(pack.getList("test.broadcast.description")!!))
-            }
-        }
-    }
+    private val cache = BukkitLangCache(plugin.pack)
+    private val pack = plugin.pack
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-
         if (sender !is Player) return true
-
         val player: Player = sender
         var found = false
 
@@ -69,7 +48,6 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
 
         // Display help message if no command is found.
         if (!found) pack.message(player, "command.help")
-
         return true
     }
 
@@ -79,7 +57,6 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         alias: String,
         args: Array<out String>,
     ): MutableList<String> {
-
         if (args.isEmpty() || sender !is Player) return subCommands
 
         val lang = cache.getLanguage(sender)
@@ -122,18 +99,15 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
     }
 
     private fun onTestCommand(player: Player, args: Array<out String>) {
-
         if (!player.hasPermission("langpack.test")) {
             pack.message(player, "permission.deny")
             return
         }
-
         // Make sure that 'tests_enabled' is set to true in the global config.
         if (!plugin.testsEnabled) {
             pack.message(player, "test.disabled")
             return
         }
-
         // Make sure that a test name is provided.
         if (args.size < 2 || args.size > 3) {
             pack.message(player, "test.help")
@@ -155,12 +129,9 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
                 pack.message(player, "test.help")
                 return
             }
-
             pack.message(player, "test.start", argTest)
-
             // Run the test.
             val result = test.test(pack, player)
-
             // Display the result.
             if (result.success) {
                 pack.message(player, "test.success", argTest, LangArg("time", result.time))
@@ -180,14 +151,11 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
     }
 
     private fun onTestsCommand(player: Player) {
-
         if (!player.hasPermission("langpack.test")) {
             pack.message(player, "permission.deny")
             return
         }
-
         pack.message(player, "tests.start", LangArg("test_count", tests.size))
-
         val names = ArrayList<String>(tests.keys)
         if (names.isNotEmpty()) {
             names.sortBy { it }
@@ -195,11 +163,26 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
                 pack.message(player, "tests.line", LangArg("test", test))
             }
         }
-
         pack.message(player, "tests.end")
     }
 
     private fun addTest(test: LangTest<BukkitLangPack, Player>) {
         tests[test.name] = test
+    }
+
+    init {
+        subCommands.add("test")
+        subCommands.add("tests")
+        val command = plugin.getCommand("lang")
+        if (command == null) {
+            System.err.println("The command 'lang' is not registered.")
+        } else {
+            command.setExecutor(this)
+            command.tabCompleter = this
+            if (plugin.testsEnabled) {
+                addTest(TestAction(pack.getList("test.action.description")!!))
+                addTest(TestBroadcast(pack.getList("test.broadcast.description")!!))
+            }
+        }
     }
 }

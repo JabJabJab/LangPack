@@ -1,42 +1,119 @@
-@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+@file:Suppress("unused")
 
 package jab.sledgehammer.langpack.bukkit.objects.complex
 
 import jab.sledgehammer.config.ConfigSection
-import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.bukkit.BukkitLangPack
 import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
-import jab.sledgehammer.langpack.core.objects.LangGroup
 import jab.sledgehammer.langpack.core.objects.complex.Complex
-import jab.sledgehammer.langpack.core.objects.definition.LangDefinition
-import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
+import jab.sledgehammer.langpack.core.objects.complex.LegacyActionText
+import org.bukkit.Bukkit
+import org.bukkit.World
+import org.bukkit.entity.Player
 
 /**
- * **BukkitActionText** replaces the ActionText class to provide legacy support for the Bukkit API.
+ * **BukkitActionText** wraps the [LegacyActionText] class to provide additional support for the Bukkit API.
  *
  * @author Jab
  */
-class BukkitActionText(val text: String) : Complex<String> {
+class BukkitActionText : LegacyActionText {
+
+    constructor(text: String) : super(text)
+    constructor(cfg: ConfigSection) : super(cfg)
 
     /**
-     * Import constructor.
+     * Sends the StringPool to a given player.
      *
-     * @param cfg The YAML to read.
+     * @param player The player to send.
      */
-    constructor(cfg: ConfigSection) : this(cfg.getString("text"))
-
-    override fun walk(definition: LangDefinition<*>): Complex<String> = BukkitActionText(definition.walk(text))
-
-    override fun process(pack: LangPack, lang: Language, context: LangGroup?, vararg args: LangArg): String =
-        pack.processor.process(text, pack, lang, *args)
-
-
-    override fun needsWalk(formatter: FieldFormatter): Boolean = formatter.needsWalk(text)
-
-    override fun get(): String = text
+    fun message(player: Player) {
+        if (!player.isOnline) return
+        player.sendMessage(get())
+    }
 
     /**
-     * **BukkitActionText.Loader** overrides ActionText with [BukkitActionText].
+     * Sends the StringPool as a message to a player.
+     *
+     * @param player The player to receive the message.
+     * @param pack (Optional) The package to process the text.
+     * @param args (Optional) Additional arguments to provide to process the text.
+     */
+    fun send(player: Player, pack: BukkitLangPack? = null, vararg args: LangArg) {
+        val message = if (pack != null) {
+            process(pack, pack.getLanguage(player), null, *args)
+        } else {
+            get()
+        }
+        player.sendMessage(message)
+    }
+
+    /**
+     * Broadcasts the StringPool to all online players on the server.
+     */
+    fun broadcast() {
+        val message = get()
+        for (player in Bukkit.getOnlinePlayers()) {
+            player.sendMessage(message)
+        }
+    }
+
+    /**
+     * Broadcasts the StringPool to all players in a given world.
+     *
+     * @param world The world to broadcast.
+     */
+    fun broadcast(world: World) {
+        val message = get()
+        for (player in world.players) {
+            player.sendMessage(message)
+        }
+    }
+
+    /**
+     * Broadcasts the StringPool to all online players on the server.
+     *
+     * @param pack The package to process the text.
+     * @param args (Optional) Additional arguments to provide to process the text.
+     */
+    fun broadcast(pack: BukkitLangPack, vararg args: LangArg) {
+        val cache = HashMap<Language, String>()
+        for (player in Bukkit.getOnlinePlayers()) {
+            val message: String
+            val lang = pack.getLanguage(player)
+            if (cache[lang] != null) {
+                message = cache[lang]!!
+            } else {
+                message = process(pack, pack.getLanguage(player), null, *args)
+                cache[lang] = message
+            }
+            player.sendMessage(message)
+        }
+    }
+
+    /**
+     * Broadcasts the StringPool to all players in a given world.
+     *
+     * @param pack The package to process the text.
+     * @param args (Optional) Additional arguments to provide to process the text.
+     */
+    fun broadcast(world: World, pack: BukkitLangPack, vararg args: LangArg) {
+        val cache = HashMap<Language, String>()
+        for (player in world.players) {
+            val message: String
+            val lang = pack.getLanguage(player)
+            if (cache[lang] != null) {
+                message = cache[lang]!!
+            } else {
+                message = process(pack, lang, null, *args)
+                cache[lang] = message
+            }
+            player.sendMessage(message)
+        }
+    }
+
+    /**
+     * The **BukkitActionText.Loader** overrides [LegacyActionText] with [BukkitActionText].
      *
      * @author Jab
      */

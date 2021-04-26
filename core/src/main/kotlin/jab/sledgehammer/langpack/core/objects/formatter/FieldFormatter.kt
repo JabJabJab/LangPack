@@ -99,9 +99,7 @@ interface FieldFormatter {
      * @return Returns true if any string in the list contains a field that needs to walk.
      */
     fun needsWalk(list: List<*>): Boolean {
-        for (string in list) {
-            if (string != null && needsWalk(string)) return true
-        }
+        for (string in list) if (string != null && needsWalk(string)) return true
         return false
     }
 
@@ -113,9 +111,7 @@ interface FieldFormatter {
     fun needsWalk(value: Any): Boolean {
         val valueActual = StringUtil.toAString(value)
         val fields = getFields(valueActual)
-        for (field in fields) {
-            if (field.resolve) return true
-        }
+        for (field in fields) if (field.resolve) return true
         return false
     }
 }

@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package jab.sledgehammer.langpack.sponge.processor
 
 import jab.sledgehammer.langpack.core.LangPack
@@ -9,17 +11,20 @@ import jab.sledgehammer.langpack.core.objects.definition.LangDefinition
 import jab.sledgehammer.langpack.core.objects.definition.StringDefinition
 import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
 import jab.sledgehammer.langpack.core.processor.DefaultProcessor
+import jab.sledgehammer.langpack.core.util.StringUtil
 import jab.sledgehammer.langpack.sponge.util.ChatUtil
 import jab.sledgehammer.langpack.sponge.util.text.ClickEvent
 import jab.sledgehammer.langpack.sponge.util.text.HoverEvent
 import jab.sledgehammer.langpack.sponge.util.text.TextComponent
 
 /**
- * **SpongeProcessor** processes queries for the Sponge-version of LangPack.
+ * **SpongeProcessor** processes queries for the Sponge-version of [LangPack].
  *
  *  @author Jab
  */
 class SpongeProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
+
+    override fun postProcess(string: String): String = ChatUtil.color(string, '&')
 
     /**
      * Processes a text component, inserting arguments and fields set in the lang-pack.
@@ -92,8 +97,6 @@ class SpongeProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
         return composition
     }
 
-    override fun color(string: String, colorCode: Char): String = ChatUtil.color(string, colorCode)
-
     private fun processText(
         component: TextComponent,
         pack: LangPack,
@@ -111,7 +114,7 @@ class SpongeProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
                     if (arg.key.equals(fieldStripped, true)) {
                         field = StringDefinition(pack,
                             context,
-                            jab.sledgehammer.langpack.core.util.StringUtil.toAString(arg.value))
+                            StringUtil.toAString(arg.value))
                         found = true
                         break
                     }
@@ -145,10 +148,10 @@ class SpongeProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
                         }
                     }
                 } else {
-                    text = color(formatter.getPlaceholder(text!!))
+                    text = postProcess(formatter.getPlaceholder(text!!))
                 }
             } else {
-                text = color(text!!)
+                text = postProcess(text!!)
             }
 
             return eraseText
@@ -193,7 +196,7 @@ class SpongeProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
                     text = fField
                 }
             } else {
-                text = color(text!!)
+                text = postProcess(text!!)
             }
             return eraseText
         }
@@ -209,9 +212,7 @@ class SpongeProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
         with(component) {
             if (hoverEvent == null) return
             val newContents = ArrayList<String>()
-            for (content in hoverEvent!!.contents) {
-                newContents.add(process(content, pack, lang, context, *args))
-            }
+            for (content in hoverEvent!!.contents) newContents.add(process(content, pack, lang, context, *args))
             hoverEvent = HoverEvent(newContents)
         }
     }
@@ -220,9 +221,7 @@ class SpongeProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
         with(component) {
             if (hoverEvent == null) return
             val newContents = ArrayList<String>()
-            for (content in hoverEvent!!.contents) {
-                newContents.add(process(content, *args))
-            }
+            for (content in hoverEvent!!.contents) newContents.add(process(content, *args))
             hoverEvent = HoverEvent(newContents)
         }
     }
@@ -256,26 +255,20 @@ class SpongeProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
         context: LangGroup?,
         vararg args: LangArg,
     ) {
-        with(component) {
-            if (extra == null || formatter.isField(text)) return
-            val newExtras = ArrayList<TextComponent>()
-            for (next in extra!!) {
-                newExtras.add(process(next, pack, lang, context, *args))
-            }
-            extra!!.clear()
-            extra!!.addAll(newExtras)
-        }
+        if (component.extra == null || formatter.isField(component.text)) return
+        val extra = component.extra!!
+        val newExtras = ArrayList<TextComponent>()
+        for (next in extra) newExtras.add(process(next, pack, lang, context, *args))
+        extra.clear()
+        extra.addAll(newExtras)
     }
 
     private fun processExtras(component: TextComponent, vararg args: LangArg) {
-        with(component) {
-            if (extra == null || formatter.isField(text)) return
-            val newExtras = ArrayList<TextComponent>()
-            for (next in extra!!) {
-                newExtras.add(process(next, *args))
-            }
-            extra!!.clear()
-            extra!!.addAll(newExtras)
-        }
+        if (component.extra == null || formatter.isField(component.text)) return
+        val extra = component.extra!!
+        val newExtras = ArrayList<TextComponent>()
+        for (next in extra) newExtras.add(process(next, *args))
+        extra.clear()
+        extra.addAll(newExtras)
     }
 }

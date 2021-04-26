@@ -10,30 +10,6 @@ import java.net.URL
  */
 object ResourceUtil {
 
-//    fun flatList(directory: File, prefix: String? = null, extension: String? = null): List<File> {
-//        val files = ArrayList<File>()
-//        fun recurse(dir: File) {
-//            val subFiles = dir.listFiles(FileFilter {
-//                it.isFile
-//                        && (prefix == null || it.nameWithoutExtension.startsWith(prefix, true))
-//                        && (extension == null || it.extension.equals(extension, true))
-//            })
-//            if (subFiles != null) files.addAll(subFiles)
-//            val dirs = dir.listFiles(FileFilter {
-//                it.isDirectory
-//                        && !it.name.equals(".")
-//                        && !it.name.equals("..")
-//            })
-//            if (dirs != null) {
-//                for (next in dirs) {
-//                    recurse(dir)
-//                }
-//            }
-//        }
-//        recurse(directory)
-//        return files
-//    }
-
     /**
      * (Modified method from Bukkit to write global files)
      *

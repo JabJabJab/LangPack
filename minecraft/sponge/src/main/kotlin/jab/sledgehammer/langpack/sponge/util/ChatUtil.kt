@@ -2,6 +2,7 @@ package jab.sledgehammer.langpack.sponge.util
 
 import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
+import jab.sledgehammer.langpack.core.util.MultilinePrinter
 import jab.sledgehammer.langpack.sponge.util.text.ClickEvent
 import jab.sledgehammer.langpack.sponge.util.text.HoverEvent
 import jab.sledgehammer.langpack.sponge.util.text.TextComponent
@@ -17,8 +18,7 @@ import org.spongepowered.api.text.format.TextStyles
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 object ChatUtil {
 
-    fun color(string: String, char: Char = '&'): String = string.replace(char, '\u00a7')
-
+    private val printer = TextComponentPrinter()
 
     /**
      * Slices a TextComponent into extras with each component being split fields and text.
@@ -26,19 +26,16 @@ object ChatUtil {
      * @param textComponent The component to split.
      * @param formatter The formatter to identify fields.
      *
-     * @return Returns a component with all text & fields sequenced in [BaseComponent.extra].
+     * @return Returns a component with all text & fields sequenced in [TextComponent.extra].
      */
     fun slice(textComponent: TextComponent, formatter: FieldFormatter): TextComponent {
-
         val composition = TextComponent()
         val text = textComponent.text ?: return TextComponent(textComponent.text)
         if (textComponent.text!!.isEmpty()) return TextComponent("")
 
         // Make sure that we have fields to sort, otherwise return the color-formatted text.
         val fields = formatter.getFields(text)
-        if (fields.isEmpty()) {
-            return TextComponent(color(text))
-        }
+        if (fields.isEmpty()) return TextComponent(color(text))
 
         var next = text
         for (field in fields) {
@@ -47,9 +44,7 @@ object ChatUtil {
             composition.addExtra(TextComponent(field.raw))
             next = next.substring(offset + field.raw.length)
         }
-        if (next.isNotEmpty()) {
-            composition.addExtra(TextComponent(next))
-        }
+        if (next.isNotEmpty()) composition.addExtra(TextComponent(next))
 
         composition.hoverEvent = textComponent.hoverEvent
         composition.clickEvent = textComponent.clickEvent
@@ -124,20 +119,16 @@ object ChatUtil {
      * @return Returns a list of all sequenced base component extras as it would be displayed in chat.
      */
     fun flatten(component: TextComponent): ArrayList<TextComponent> {
-
         val list = ArrayList<TextComponent>()
 
         fun recurse(next: TextComponent) {
             list.add(next)
             if (next.extra != null && next.extra!!.isNotEmpty()) {
-                for (n in next.extra!!) {
-                    recurse(n)
-                }
+                for (n in next.extra!!) recurse(n)
             }
         }
 
         recurse(component)
-
         return list
     }
 
@@ -145,7 +136,7 @@ object ChatUtil {
      * @param component The component to parse.
      *
      * @return Returns the last color-code in the base component. If one isn't in the text, the
-     * [BaseComponent.color] is used.
+     * [TextComponent.color] is used.
      */
     fun getLastColor(component: TextComponent): TextColor {
         if (component.text != null && component.text!!.isNotEmpty()) {
@@ -155,9 +146,7 @@ object ChatUtil {
                 val next = chars[index]
                 if (next == ColorUtil.COLOR_CHAR) {
                     val color = ColorUtil.getByChar(chars[index + 1])
-                    if (color != TextColors.NONE) {
-                        return color
-                    }
+                    if (color != TextColors.NONE) return color
                 }
                 index--
             }
@@ -166,34 +155,27 @@ object ChatUtil {
     }
 
     /**
+     * TODO: Document.
+     *
+     * @param string
+     * @param char
+     */
+    fun color(string: String, char: Char = '&'): String = string.replace(char, '\u00a7')
+
+    /**
      * Displays information on a base component using spacing and lines to read easily in a console.
      *
      * @param component The component to prettify.
-     * @param startingPrefix The indention to use for all lines.
      *
      * @return Returns lines of text to display properties of the component.
      */
-    fun pretty(component: TextComponent, startingPrefix: String): ArrayList<String> {
+    fun pretty(component: TextComponent): String = printer.print(component)
 
-        val lines = ArrayList<String>()
-        var prefix = startingPrefix
-
-        fun tabIn() {
-            prefix += "  "
-        }
-
-        fun tabOut() {
-            prefix = prefix.substring(0, prefix.length - 2)
-        }
-
-        fun line(string: String) {
-            lines.add("$prefix$string")
-        }
-
-        fun recurse(component: TextComponent) {
-            line("${component.javaClass.simpleName} {")
-            tabIn()
-            if (component is TextComponent) {
+    private class TextComponentPrinter : MultilinePrinter<TextComponent>() {
+        override fun onPrint(element: TextComponent) {
+            fun recurse(component: TextComponent) {
+                line("${component.javaClass.simpleName} {")
+                tab()
                 with(component) {
                     if (text != null && text!!.isNotEmpty()) {
                         line("""text: "$text${TextStyles.RESET}"""")
@@ -203,20 +185,15 @@ object ChatUtil {
                     if (hoverEvent != null) line("hoverEvent: $hoverEvent")
                     if (extra != null) {
                         line("extras: (size: ${extra!!.size})")
-                        tabIn()
-                        for (extra in extra!!) {
-                            recurse(extra)
-                        }
-                        tabOut()
+                        tab()
+                        for (extra in extra!!) recurse(extra)
+                        unTab()
                     }
                 }
+                unTab()
+                line("}")
             }
-
-            tabOut()
-            line("}")
+            recurse(element)
         }
-
-        recurse(component)
-        return lines
     }
 }

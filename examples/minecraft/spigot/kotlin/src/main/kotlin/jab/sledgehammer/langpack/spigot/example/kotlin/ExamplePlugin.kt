@@ -13,9 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 
 /**
- * **ExamplePlugin**
- *
- * TODO: Document.
+ * **ExamplePlugin** TODO: Document.
  *
  * @author Jab
  */
@@ -23,23 +21,9 @@ class ExamplePlugin : JavaPlugin(), Listener {
 
     private val greetList = HashMap<UUID, Boolean>()
     private val pack = SpigotLangPack(classLoader)
-    private var joinMsg = false
-    private var leaveMsg = false
 
     override fun onEnable() {
-
-        saveDefaultConfig()
-
-        val cfg = config
-        if (cfg.contains("join_messages") && cfg.isBoolean("join_messages")) {
-            joinMsg = cfg.getBoolean("join_messages")
-        }
-        if (cfg.contains("leave_messages") && cfg.isBoolean("leave_messages")) {
-            leaveMsg = cfg.getBoolean("leave_messages")
-        }
-
         pack.append("lang_example_kotlin", save = true, force = true)
-
         server.pluginManager.registerEvents(this, this)
     }
 
@@ -58,27 +42,21 @@ class ExamplePlugin : JavaPlugin(), Listener {
 
     @EventHandler
     fun on(event: PlayerJoinEvent) {
-        if (!joinMsg) return
         event.joinMessage = null
-        // !!NOTE: The server executes this event prior to the client sending the locale information.
-        //         Log the information to be processed only when the client settings are sent. -Jab
+        // The server executes this event prior to the client sending the locale information. Log the information to be
+        // processed only when the client settings are sent. -Jab
         greetList[event.player.uniqueId] = true
     }
 
     @EventHandler
     fun on(event: PlayerQuitEvent) {
-        if (!leaveMsg) return
-
         event.quitMessage = null
-
         val player = event.player
         val playerId = player.uniqueId
-
         if (greetList.containsKey(playerId)) {
             greetList.remove(playerId)
             return
         }
-
         pack.broadcast("event.leave_server", LangArg("player", player.displayName))
     }
 }

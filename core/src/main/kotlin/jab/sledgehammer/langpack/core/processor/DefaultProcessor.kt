@@ -7,7 +7,7 @@ import jab.sledgehammer.langpack.core.objects.LangGroup
 import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
 
 /**
- * **DefaultProcessor** implements the default field syntax for lang-packs.
+ * **DefaultProcessor** implements the default field syntax for [LangPack].
  *
  *  @author Jab
  */
@@ -22,7 +22,7 @@ open class DefaultProcessor(protected val formatter: FieldFormatter) : LangProce
     ): String {
 
         val fields = formatter.getFields(string)
-        if (fields.isEmpty()) return color(string)
+        if (fields.isEmpty()) return postProcess(string)
 
         var processed = string
 
@@ -56,13 +56,13 @@ open class DefaultProcessor(protected val formatter: FieldFormatter) : LangProce
             processed = processed.replace(field.raw, field.placeholder, true)
         }
 
-        return color(processed)
+        return postProcess(processed)
     }
 
     override fun process(string: String, vararg args: LangArg): String {
 
         val fields = formatter.getFields(string)
-        if (fields.isEmpty()) return color(string)
+        if (fields.isEmpty()) return postProcess(string)
 
         var processedString = string
 
@@ -82,16 +82,8 @@ open class DefaultProcessor(protected val formatter: FieldFormatter) : LangProce
             processedString = processedString.replace(field.raw, field.placeholder)
         }
 
-        return color(processedString)
+        return postProcess(processedString)
     }
 
-    /**
-     * TODO: Implement.
-     *
-     * @param string The string to color.
-     * @param colorCode  The alternative color-code to process.
-     *
-     * @return Returns the colored string.
-     */
-    override fun color(string: String, colorCode: Char): String = string
+    override fun postProcess(string: String): String = string
 }

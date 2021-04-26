@@ -12,9 +12,8 @@ import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.core.objects.complex.StringPool
 import jab.sledgehammer.langpack.core.objects.definition.LangDefinition
 import jab.sledgehammer.langpack.core.processor.LangProcessor
-import jab.sledgehammer.langpack.core.util.ResourceUtil
 import jab.sledgehammer.langpack.core.util.StringUtil
-import jab.sledgehammer.langpack.sponge.objects.complex.ActionText
+import jab.sledgehammer.langpack.sponge.objects.complex.SpongeActionText
 import jab.sledgehammer.langpack.sponge.processor.SpongeProcessor
 import jab.sledgehammer.langpack.sponge.util.text.TextComponent
 import org.spongepowered.api.Sponge
@@ -41,10 +40,6 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      * @param classLoader The classloader to load resources.
      */
     constructor(classLoader: ClassLoader) : this(classLoader, File("lang"))
-
-    init {
-        setSpongeLoaders(loaders)
-    }
 
     override fun resolve(query: String, lang: Language, context: LangGroup?): LangDefinition<*>? {
 
@@ -211,35 +206,16 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      * @return Returns the language of [Player.getLocale]. If the locale set is invalid, the fallBack
      *   is returned.
      */
-    fun getLanguage(player: Player): Language {
-        return Languages.getClosest(player.locale, defaultLang)
+    fun getLanguage(player: Player): Language = Languages.getClosest(player.locale, defaultLang)
 
-        // OLD ENUM CODE
-        //        var locale = player.locale.language
-        //        if (player.locale.country != null) locale += "_${player.locale.country}"
-        //        locale = locale.toLowerCase()
-        //
-        //        for (lang in LanguageOld.values()) {
-        //            if (lang.abbreviation.equals(locale, true)) return lang
-        //        }
-        //        return defaultLang
+    init {
+        setSpongeLoaders(loaders)
     }
 
     companion object {
 
         private val stringPoolLoader = StringPool.Loader()
-        private val actionTextLoader = ActionText.Loader()
-
-        init {
-            // The global 'lang' directory.
-            if (!GLOBAL_DIRECTORY.exists()) GLOBAL_DIRECTORY.mkdirs()
-            // Store all global lang-files present in the jar.
-            for (lang in Languages.values()) {
-                ResourceUtil.saveResource("lang${File.separator}global_${lang.rawLocale}.yml", null)
-            }
-            global = SpongeLangPack()
-            global!!.append("global", save = true, force = false)
-        }
+        private val actionTextLoader = SpongeActionText.Loader()
 
         fun setSpongeLoaders(map: HashMap<String, Complex.Loader<*>>) {
             map["pool"] = stringPoolLoader

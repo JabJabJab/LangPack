@@ -12,7 +12,7 @@ import jab.sledgehammer.langpack.core.LangPack
  * @property name The name of the test.
  * @property description A brief description of what the test does.
  *
- * @param Pack The LangPack wrapper type.
+ * @param Pack The pack type.
  * @param Commander The object of the person orchestrating the test.
  */
 abstract class LangTest<Pack : LangPack, Commander>(val name: String, val description: List<String>) {

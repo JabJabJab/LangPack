@@ -2,21 +2,20 @@
 
 package jab.sledgehammer.langpack.bungeecord.objects.complex
 
+import jab.sledgehammer.config.ConfigSection
 import jab.sledgehammer.langpack.bungeecord.BungeeLangPack
+import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.textcomponent.objects.complex.ActionText
 import jab.sledgehammer.langpack.textcomponent.objects.complex.CommandText
 import jab.sledgehammer.langpack.textcomponent.objects.complex.HoverText
-import jab.sledgehammer.config.ConfigSection
-import jab.sledgehammer.langpack.core.Language
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
-import java.util.*
 
 /**
- * **BungeeActionText** wraps the ActionText class to provide additional support for the BungeeCord API.
+ * **BungeeActionText** wraps the [ActionText] class to provide additional support for the BungeeCord API.
  *
  * @author Jab
  */

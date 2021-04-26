@@ -32,9 +32,7 @@ class HoverText : Complex<HoverEvent> {
      * @param lines The lines of text to display.
      */
     constructor(lines: Collection<*>) {
-
         val packagedLines = ArrayList<Text>()
-
         for (line in lines) {
             if (line == null) {
                 packagedLines.add(Text(" "))
@@ -46,7 +44,6 @@ class HoverText : Complex<HoverEvent> {
                 }
             }
         }
-
         this.lines = packagedLines
     }
 
@@ -57,9 +54,7 @@ class HoverText : Complex<HoverEvent> {
      */
     constructor(vararg lines: Text) {
         val newLines = ArrayList<Text>()
-        for (line in lines) {
-            newLines.add(line)
-        }
+        for (line in lines) newLines.add(line)
         this.lines = newLines
     }
 
@@ -75,9 +70,7 @@ class HoverText : Complex<HoverEvent> {
 
     override fun walk(definition: LangDefinition<*>): HoverText {
         val walkedLines = ArrayList<Text>()
-        for (text in lines) {
-            walkedLines.add(Text(definition.walk(text.value.toString())))
-        }
+        for (text in lines) walkedLines.add(Text(definition.walk(text.value.toString())))
         return HoverText(walkedLines)
     }
 

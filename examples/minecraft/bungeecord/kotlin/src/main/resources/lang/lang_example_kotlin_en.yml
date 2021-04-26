@@ -5,5 +5,8 @@ header:
   error: '&c%header.text%'
 
 event:
-  connect: "%header.info% &6%player% &7connected to the network."
+  connect:
+    type: action
+    text: "%header.info% &6%player% &7connected to the network."
+    hover: "&7Say hi!"
   disconnect: "%header.info% &6%player% &7disconnected from the network."

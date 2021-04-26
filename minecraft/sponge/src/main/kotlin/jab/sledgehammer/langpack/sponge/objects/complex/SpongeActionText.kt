@@ -1,7 +1,8 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
+@file:Suppress("MemberVisibilityCanBePrivate", "unused")
 
 package jab.sledgehammer.langpack.sponge.objects.complex
 
+import jab.sledgehammer.config.ConfigSection
 import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
@@ -10,17 +11,15 @@ import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.core.objects.definition.LangDefinition
 import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
 import jab.sledgehammer.langpack.core.processor.LangProcessor
-
-import jab.sledgehammer.config.ConfigSection
 import jab.sledgehammer.langpack.sponge.util.text.TextComponent
 
 /**
- * **ActionText** packages defined [HoverEvent] and [ClickEvent] as [HoverText] and [CommandText] wrappers.
+ * **ActionText** packages [HoverText] and [CommandText] wrappers.
  * The object is complex and resolvable for [LangProcessor].
  *
  * @author Jab
  */
-open class ActionText : Complex<TextComponent> {
+open class SpongeActionText : Complex<TextComponent> {
 
     /**
      * The text to display for the resolved [TextComponent].
@@ -100,9 +99,7 @@ open class ActionText : Complex<TextComponent> {
      * @param cfg The YAML to read.
      */
     constructor(cfg: ConfigSection) {
-
         val readHoverText = fun(cfg: ConfigSection) {
-
             if (cfg.contains("hover")) {
                 val lines = ArrayList<String>()
                 if (cfg.isList("hover")) {
@@ -139,8 +136,8 @@ open class ActionText : Complex<TextComponent> {
         return component
     }
 
-    override fun walk(definition: LangDefinition<*>): ActionText {
-        val walked = ActionText(definition.walk(text))
+    override fun walk(definition: LangDefinition<*>): SpongeActionText {
+        val walked = SpongeActionText(definition.walk(text))
         if (commandText != null) walked.commandText = commandText!!.walk(definition)
         if (hoverText != null) walked.hoverText = hoverText!!.walk(definition)
         return walked
@@ -161,11 +158,11 @@ open class ActionText : Complex<TextComponent> {
     }
 
     /**
-     * **ActionText.Loader** loads [ActionText] from YAML with the assigned type *action*.
+     * **SpongeActionText.Loader** loads [SpongeActionText] from YAML with the assigned type *action*.
      *
      * @author Jab
      */
-    class Loader : Complex.Loader<ActionText> {
-        override fun load(cfg: ConfigSection): ActionText = ActionText(cfg)
+    class Loader : Complex.Loader<SpongeActionText> {
+        override fun load(cfg: ConfigSection): SpongeActionText = SpongeActionText(cfg)
     }
 }

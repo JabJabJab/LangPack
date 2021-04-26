@@ -13,20 +13,33 @@ import java.util.*
  */
 object Languages {
 
-    private val mapLocale = HashMap<Locale, Language>()
-    private val mapString = HashMap<String, Language>()
-    private var values = emptyList<Language>()
-
     /**
      * TODO: Document.
      */
-    fun getClosest(rawLocale: String, defaultLanguage: Language): Language {
-        val result = getClosest(toLocale(rawLocale), defaultLanguage)
-        return result
-    }
+    var values = emptyList<Language>()
+        private set
+
+    private val mapLocale = HashMap<Locale, Language>()
+    private val mapString = HashMap<String, Language>()
 
     /**
      * TODO: Document.
+     *
+     * @param rawLocale
+     * @param defaultLanguage
+     *
+     * @return
+     */
+    fun getClosest(rawLocale: String, defaultLanguage: Language): Language =
+        getClosest(toLocale(rawLocale), defaultLanguage)
+
+    /**
+     * TODO: Document.
+     *
+     * @param locale
+     * @param defaultLanguage
+     *
+     * @return
      */
     fun getClosest(locale: Locale, defaultLanguage: Language): Language {
         var language: Language? = get(locale)
@@ -47,7 +60,7 @@ object Languages {
         language = search(language = true, region = true)
         if (language != null) return language
 
-        language = search(true)
+        language = search(language = true)
         if (language != null) return language
 
         return defaultLanguage
@@ -78,6 +91,11 @@ object Languages {
 
     /**
      * TODO: Document.
+     *
+     * @param rawLocale
+     * @param rawLocaleFallback
+     *
+     * @return
      */
     fun register(rawLocale: String, rawLocaleFallback: String? = null): Language {
         require(rawLocale.isNotEmpty()) { "The raw locale is empty." }
@@ -92,6 +110,10 @@ object Languages {
 
     /**
      * TODO: Document.
+     *
+     * @param raw
+     *
+     * @return
      */
     fun toLocale(raw: String): Locale {
         return if (raw.contains("_")) {
@@ -104,16 +126,12 @@ object Languages {
 
     /**
      * TODO: Document.
+     *
+     * @param locale
+     * @param fallback
      */
     fun register(locale: Locale, fallback: Language? = null) {
         register(Language(locale, fallback))
-    }
-
-    /**
-     * TODO: Document.
-     */
-    fun buildValues() {
-        values = Collections.unmodifiableList(ArrayList(mapLocale.values))
     }
 
     /**
@@ -137,7 +155,9 @@ object Languages {
     /**
      * TODO: Document.
      */
-    fun values(): List<Language> = values
+    private fun buildValues() {
+        values = Collections.unmodifiableList(ArrayList(mapLocale.values))
+    }
 
     val AFRIKAANS_GENERIC: Language = register("af")
     val AFRIKAANS: Language = register("af_za", "af")

@@ -1,7 +1,7 @@
 package jab.sledgehammer.config
 
 /**
- * TODO: Document.
+ * **CyclicDependencyException** TODO: Document.
  *
  * @author Jab
  *

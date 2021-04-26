@@ -16,16 +16,14 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * **ExamplePlugin**
- *
- * TODO: Document.
+ * **ExamplePlugin** TODO: Document.
  *
  * @author Jab
  */
 public class ExamplePlugin extends Plugin implements Listener {
 
-    HashMap<UUID, Boolean> greetList = new HashMap<>();
-    BungeeLangPack pack = new BungeeLangPack(this.getClass().getClassLoader());
+    private final HashMap<UUID, Boolean> greetList = new HashMap<>();
+    private final BungeeLangPack pack = new BungeeLangPack(this.getClass().getClassLoader());
 
     @Override
     public void onEnable() {

@@ -6,6 +6,7 @@ import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.LangFile
 import jab.sledgehammer.langpack.core.objects.LangGroup
 import jab.sledgehammer.langpack.core.objects.complex.Complex
+import jab.sledgehammer.langpack.core.objects.complex.LegacyActionText
 import jab.sledgehammer.langpack.core.objects.complex.StringPool
 import jab.sledgehammer.langpack.core.objects.definition.ComplexDefinition
 import jab.sledgehammer.langpack.core.objects.definition.LangDefinition
@@ -14,6 +15,7 @@ import jab.sledgehammer.langpack.core.objects.formatter.FieldFormatter
 import jab.sledgehammer.langpack.core.objects.formatter.PercentFormatter
 import jab.sledgehammer.langpack.core.processor.DefaultProcessor
 import jab.sledgehammer.langpack.core.processor.LangProcessor
+import jab.sledgehammer.langpack.core.util.MultilinePrinter
 import jab.sledgehammer.langpack.core.util.ResourceUtil
 import jab.sledgehammer.langpack.core.util.StringUtil
 import java.io.File
@@ -21,12 +23,12 @@ import java.util.*
 
 /**
  * **LangPack** is a utility that stores entries for dialog, separated by language. Files are loaded into the
- * lang-pack as a [LangFile], and queried based on language context when querying dialog.
+ * pack as a [LangFile], and queried based on language context when querying dialog.
  *
- * Text is processed using a [LangProcessor] implementation. By default, lang-packs use the [DefaultProcessor].
+ * Text is processed using a [LangProcessor] implementation. By default, packs use the [DefaultProcessor].
  *
- * LangPack works with contexts, referring to the [defaultLang] property in the lang-pack first, then the global context
- * last when attempting to resolve a query.
+ * LangPack works with contexts, referring to the [defaultLang] property in the pack first, then the global context last
+ * when attempting to resolve a query.
  *
  * Example query: ``command.dialog`` language: ``SPANISH_GENERIC``
  *   - specific langPack -> ``SPANISH_GENERIC``
@@ -59,14 +61,14 @@ open class LangPack(
     open var formatter: FieldFormatter = PercentFormatter()
 
     /**
-     * Set to true to print all debug information to the Java console.
-     */
-    var debug = false
-
-    /**
      * The language file to default to if a raw string cannot be located with another language.
      */
     var defaultLang: Language = Languages.ENGLISH_GENERIC
+
+    /**
+     * Set to true to print all debug information to the Java console.
+     */
+    var debug = false
 
     /**
      * [Complex.Loader] instances are stored here to load when reading and loading lang files.
@@ -79,6 +81,11 @@ open class LangPack(
     protected val files = HashMap<Language, LangFile>()
 
     /**
+     * TODO: Document.
+     */
+    private val printer = LangPackPrinter()
+
+    /**
      * Simple constructor.
      *
      * Use this constructor to define a classloader while still using the default 'Lang' directory in the server folder.
@@ -86,12 +93,6 @@ open class LangPack(
      * @param classLoader The classloader instance to fetch lang resources.
      */
     constructor(classLoader: ClassLoader) : this(classLoader, File("lang"))
-
-    init {
-        setDefaultLoaders(loaders)
-        require(dir.isDirectory) { """The path "$dir" is not a valid directory.""" }
-        if (!dir.exists()) require(dir.mkdirs()) { """The directory "$dir" could not be created.""" }
-    }
 
     /**
      * Appends a pack.
@@ -111,7 +112,7 @@ open class LangPack(
         // Save any resources detected.
         // TODO: Make a JAR walker for files in the directory of the classloader. Current method is probably slower. -Jab
         if (save) {
-            for (lang in Languages.values()) {
+            for (lang in Languages.values) {
                 val resourcePath = "${dir.path}${File.separator}${name}_${lang.rawLocale}.yml"
                 try {
                     ResourceUtil.saveResource(resourcePath, classLoader, force)
@@ -122,7 +123,7 @@ open class LangPack(
             }
         }
 
-        for (lang in Languages.values()) {
+        for (lang in Languages.values) {
             val file = File(dir, "${name}_${lang.rawLocale}.yml")
             if (file.exists()) {
                 val langFile = files[lang]
@@ -138,73 +139,6 @@ open class LangPack(
         print()
 
         return this
-    }
-
-    fun print(): String {
-
-        var text = ""
-        var prefix = ""
-
-        fun raw(string: String) {
-            text += string
-        }
-
-        fun line(string: String) {
-            text += "$prefix$string\n"
-        }
-
-        fun tab() {
-            prefix += "  "
-        }
-
-        fun untab() {
-            val index = prefix.lastIndex - 1
-            prefix = if (index < 1) "" else prefix.substring(0, index)
-        }
-
-        fun recurse(key: String?, value: Any?) {
-            if (value is Map<*, *>) {
-                if (key != null) line("$key: {")
-                else line("{")
-                tab()
-                for ((key2, value2) in value) if (value2 != null) recurse(key2.toString(), value2)
-                untab()
-                line("},")
-            } else if (value is List<*>) {
-                if (key != null) line("$key: [")
-                else line("[")
-                tab()
-                for ((index, item) in value.withIndex()) recurse("$index", item)
-                untab()
-                line("],")
-            } else {
-                if (key != null) line("$key: $value")
-                else line("$value,")
-            }
-        }
-
-        fun recurseGroup(group: LangGroup) {
-            if (group is LangFile) {
-                line("File(${group.language.rawLocale}) {")
-            } else {
-                line("Section(${group.name}) {")
-            }
-            tab()
-            for ((_, value) in group.children) recurseGroup(value)
-            for ((key, value) in group.fields) recurse(key, value)
-            untab()
-            line("},")
-        }
-
-        line("${this::class.java.simpleName} {")
-        tab()
-        for ((_, file) in files) {
-            recurseGroup(file)
-        }
-        untab()
-        line("}")
-
-        return text
     }
 
     /**
@@ -273,7 +207,6 @@ open class LangPack(
      * @return Returns the resolved string-list. If nothing is located at the destination of the query, null is returned.
      */
     open fun getList(query: String, lang: Language, vararg args: LangArg): List<String>? {
-
         val resolved = resolve(query, lang, null) ?: return null
         val rawList = StringUtil.toAList(resolved.value!!)
         val processedList = ArrayList<String>()
@@ -301,7 +234,6 @@ open class LangPack(
      */
     @JvmOverloads
     open fun getString(query: String, lang: Language, context: LangGroup? = null, vararg args: LangArg): String? {
-
         if (debug) println("[LangPack] :: getString(query=$query, ${lang.rawLocale}, $context)")
 
         val raw = resolve(query, lang, context) ?: return null
@@ -319,13 +251,6 @@ open class LangPack(
     fun walk() {
         for ((_, file) in files) file.unWalk()
         for ((_, file) in files) file.walk()
-    }
-
-    /**
-     * Clears all data from the package.
-     */
-    fun clear() {
-        this.files.clear()
     }
 
     /**
@@ -348,9 +273,7 @@ open class LangPack(
         // Make sure the language has a file instance before setting anything.
         files.computeIfAbsent(lang) { LangFile(this, lang, lang.rawLocale) }
 
-        for (field in entries) {
-            set(lang, field.key, field.value)
-        }
+        for (field in entries) set(lang, field.key, field.value)
     }
 
     /**
@@ -412,6 +335,13 @@ open class LangPack(
     fun contains(lang: Language, query: String): Boolean = files[lang]?.contains(query.toLowerCase()) ?: false
 
     /**
+     * Clears all data from the package.
+     */
+    fun clear() {
+        this.files.clear()
+    }
+
+    /**
      * @param lang The language to query.
      * @param query The string to process. The string can be a field or set of fields delimited by a period.
      *
@@ -419,9 +349,30 @@ open class LangPack(
      */
     fun isComplex(lang: Language, query: String): Boolean = files[lang]?.isComplex(query) ?: false
 
+    /**
+     * A pretty print for debugging the pack. Displays [Complex.Loader] and [LangFile] information stored in the pack.
+     *
+     * @param tab The spacing for each tab.
+     */
+    fun print(tab: String = "  "): String = printer.print(this, tab)
+
+    init {
+        setDefaultLoaders(loaders)
+        require(dir.isDirectory) { """The path "$dir" is not a valid directory.""" }
+        if (!dir.exists()) require(dir.mkdirs()) { """The directory "$dir" could not be created.""" }
+    }
+
     companion object {
 
+        /**
+         * TODO: Document.
+         */
         private val stringPoolLoader = StringPool.Loader()
+
+        /**
+         * TODO: Document.
+         */
+        private val legacyActionTextLoader = LegacyActionText.Loader()
 
         /**
          * The global context for all lang-packs to reference for unresolved queries.
@@ -443,26 +394,89 @@ open class LangPack(
          */
         var DEFAULT_RANDOM: Random = Random()
 
-        init {
-            // The global 'lang' directory.
-            if (!GLOBAL_DIRECTORY.exists()) GLOBAL_DIRECTORY.mkdirs()
-
-            // Store all global lang-files present in the jar.
-            for (lang in Languages.values()) {
-                ResourceUtil.saveResource("lang${File.separator}global_${lang.rawLocale}.yml", null)
-            }
-
-            global = LangPack()
-            global!!.append("global", save = true, force = false)
-        }
-
         /**
          * Set the default loaders for all LangPack instances.
          *
          * @param map the map to set the loaders.
          */
         fun setDefaultLoaders(map: HashMap<String, Complex.Loader<*>>) {
+            map["action"] = legacyActionTextLoader
             map["pool"] = stringPoolLoader
+        }
+
+        init {
+            // The global 'lang' directory.
+            if (!GLOBAL_DIRECTORY.exists()) GLOBAL_DIRECTORY.mkdirs()
+
+            // Store all global lang-files present in the jar.
+            for (lang in Languages.values) {
+                ResourceUtil.saveResource("lang${File.separator}global_${lang.rawLocale}.yml", null)
+            }
+
+            global = LangPack()
+            global!!.append("global", save = true, force = false)
+        }
+    }
+
+    /**
+     * **LangPackPrinter** TODO: Document.
+     *
+     * @author Jab
+     */
+    private class LangPackPrinter : MultilinePrinter<LangPack>() {
+        override fun onPrint(element: LangPack) {
+            fun recurse(key: String?, value: Any?) {
+                if (value is Map<*, *>) {
+                    if (key != null) line("$key: {")
+                    else line("{")
+                    tab()
+                    for ((key2, value2) in value) if (value2 != null) recurse(key2.toString(), value2)
+                    unTab()
+                    line("},")
+                } else if (value is List<*>) {
+                    if (key != null) line("$key: [")
+                    else line("[")
+                    tab()
+                    for ((index, item) in value.withIndex()) recurse("$index", item)
+                    unTab()
+                    line("],")
+                } else {
+                    if (key != null) line("$key: $value")
+                    else line("$value,")
+                }
+            }
+
+            fun recurseGroup(group: LangGroup) {
+                if (group is LangFile) {
+                    line("File(${group.language.rawLocale}) {")
+                } else {
+                    line("Section(${group.name}) {")
+                }
+                tab()
+                for ((_, value) in group.children) recurseGroup(value)
+                for ((key, value) in group.fields) recurse(key, value)
+                unTab()
+                line("},")
+            }
+
+            line("${element::class.java.simpleName} {")
+            tab()
+
+            // Display any loaders in the pack.
+            line("loaders: [")
+            tab()
+            for ((id, loader) in element.loaders) {
+                line("$id: $loader")
+            }
+            unTab()
+            line("],")
+
+            // Display all files and groups in the pack.
+            for ((_, file) in element.files) {
+                recurseGroup(file)
+            }
+            unTab()
+            line("}")
         }
     }
 }

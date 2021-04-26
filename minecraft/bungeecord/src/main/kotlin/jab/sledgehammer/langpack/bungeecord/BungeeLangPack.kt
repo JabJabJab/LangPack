@@ -17,7 +17,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 import java.io.File
 
 /**
- * **BungeeLangPack** wraps the LangPack class to provide additional support for the BungeeCord API.
+ * **BungeeLangPack** wraps the [LangPack] class to provide additional support for the BungeeCord API.
  *
  * @author Jab
  *
@@ -33,10 +33,6 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      * @param classLoader The classloader to load resources.
      */
     constructor(classLoader: ClassLoader) : this(classLoader, File("lang"))
-
-    init {
-        setBungeeLoaders(loaders)
-    }
 
     /**
      * Broadcasts a message to all online players, checking their locales and sending the corresponding dialog.
@@ -147,24 +143,10 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      * @return Returns the language of the player's [ProxiedPlayer.getLocale]. If the locale set is invalid, the fallBack
      *   is returned.
      */
-    fun getLanguage(player: ProxiedPlayer): Language {
-        return Languages.getClosest(player.locale, defaultLang)
+    fun getLanguage(player: ProxiedPlayer): Language = Languages.getClosest(player.locale, defaultLang)
 
-        // OLD ENUM CODE
-        //        if (player.locale != null) {
-        //            var locale = player.locale.language
-        //            if (player.locale.country != null) {
-        //                locale += "_${player.locale.country}"
-        //            }
-        //            locale = locale.toLowerCase()
-        //
-        //            for (lang in LanguageOld.values()) {
-        //                if (lang.abbreviation.equals(locale, true)) {
-        //                    return lang
-        //                }
-        //            }
-        //        }
-        //        return defaultLang
+    init {
+        setBungeeLoaders(loaders)
     }
 
     companion object {

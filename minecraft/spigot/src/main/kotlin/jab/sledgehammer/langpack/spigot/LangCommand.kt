@@ -26,10 +26,8 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
     private val pack = plugin.pack!!
 
     init {
-
         subCommands.add("test")
         subCommands.add("tests")
-
         val command = plugin.getCommand("lang")
         if (command == null) {
             System.err.println("The command 'lang' is not registered.")
@@ -45,9 +43,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-
         if (sender !is Player) return true
-
         val player: Player = sender
         var found = false
 
@@ -69,7 +65,6 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
 
         // Display help message if no command is found.
         if (!found) pack.message(player, "command.help")
-
         return true
     }
 
@@ -122,7 +117,6 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
     }
 
     private fun onTestCommand(player: Player, args: Array<out String>) {
-
         if (!player.hasPermission("langpack.test")) {
             pack.message(player, "permission.deny")
             return
@@ -180,7 +174,6 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
     }
 
     private fun onTestsCommand(player: Player) {
-
         if (!player.hasPermission("langpack.test")) {
             pack.message(player, "permission.deny")
             return

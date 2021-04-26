@@ -4,7 +4,6 @@ import jab.sledgehammer.langpack.core.LangPack
 import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.LangGroup
-import java.util.ArrayList
 
 /**
  * **LangProcessor** implements syntax formats for use in [LangPack].
@@ -25,9 +24,8 @@ interface LangProcessor {
      *
      * @return Returns the processed string.
      */
-    fun process(string: String, pack: LangPack, lang: Language, vararg args: LangArg): String {
-        return process(string, pack, lang, null, *args)
-    }
+    fun process(string: String, pack: LangPack, lang: Language, vararg args: LangArg): String =
+        process(string, pack, lang, null, *args)
 
     /**
      * Processes a string, inserting arguments and fields set in the lang-pack.
@@ -59,28 +57,24 @@ interface LangProcessor {
     fun process(string: String, vararg args: LangArg): String
 
     /**
-     * Colors a list of strings to the Minecraft color-code specifications using an alternative color-code.
+     * Processes a list of strings.
      *
-     * @param strings The strings to color.
-     * @param colorCode (Default: '&') The alternative color-code to process.
+     * @param strings The strings to process.
      *
-     * @return Returns the colored string.
+     * @return Returns a processed list of strings.
      */
-    fun color(strings: List<String>, colorCode: Char = '&'): List<String> {
-        val coloredList = ArrayList<String>()
-        for (string in strings) {
-            coloredList.add(color(string, colorCode))
-        }
-        return coloredList
+    fun postProcess(strings: List<String>): List<String> {
+        val list = ArrayList<String>()
+        for (string in strings) list.add(postProcess(string))
+        return list
     }
 
     /**
-     * TODO: Implement.
+     * Processes a string.
      *
-     * @param string The string to color.
-     * @param colorCode  The alternative color-code to process.
+     * @param string The string to process.
      *
-     * @return Returns the colored string.
+     * @return Returns a processed string.
      */
-    fun color(string: String, colorCode: Char = '&'): String
+    fun postProcess(string: String): String
 }

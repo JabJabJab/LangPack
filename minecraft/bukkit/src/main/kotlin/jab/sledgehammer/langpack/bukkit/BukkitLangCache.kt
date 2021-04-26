@@ -2,18 +2,19 @@
 
 package jab.sledgehammer.langpack.bukkit
 
+import jab.sledgehammer.langpack.core.LangCache
 import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import org.bukkit.entity.Player
 
 /**
- * **BukkitLangCache** wraps the LangCache class to provide additional support for the Bukkit API.
+ * **BukkitLangCache** wraps the [LangCache] class to provide additional support for the Bukkit API.
  *
  * @author Jab
  *
  * @param pack The BukkitLangPack instance.
  */
-class BukkitLangCache(pack: BukkitLangPack) : jab.sledgehammer.langpack.core.LangCache<BukkitLangPack>(pack) {
+class BukkitLangCache(pack: BukkitLangPack) : LangCache<BukkitLangPack>(pack) {
 
     /**
      * @see BukkitLangPack.broadcast

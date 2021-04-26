@@ -23,11 +23,8 @@ internal class LangPlugin : JavaPlugin(), Listener {
     var testsEnabled: Boolean = false
 
     override fun onEnable() {
-
         instance = this
-
         saveDefaultConfig()
-
         testsEnabled = if (config.isBoolean("tests_enabled")) config.getBoolean("tests_enabled") else false
 
         val langDir = File(dataFolder, "lang")

@@ -2,7 +2,9 @@
 
 package jab.sledgehammer.langpack.textcomponent.objects.complex
 
+import jab.sledgehammer.config.ConfigSection
 import jab.sledgehammer.langpack.core.LangPack
+import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.LangGroup
 import jab.sledgehammer.langpack.core.objects.complex.Complex
@@ -13,9 +15,6 @@ import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
-
-import jab.sledgehammer.config.ConfigSection
-import jab.sledgehammer.langpack.core.Language
 
 /**
  * **ActionText** packages defined [HoverEvent] and [ClickEvent] as [HoverText] and [CommandText] wrappers.
@@ -124,10 +123,7 @@ open class ActionText : Complex<TextComponent> {
         }
 
         text = cfg.getString("text")
-        if (cfg.contains("hover")) {
-            readHoverText(cfg)
-        }
-
+        if (cfg.contains("hover")) readHoverText(cfg)
         if (cfg.contains("command")) {
             val line = cfg.getString("command")
             this.commandText = CommandText(line)

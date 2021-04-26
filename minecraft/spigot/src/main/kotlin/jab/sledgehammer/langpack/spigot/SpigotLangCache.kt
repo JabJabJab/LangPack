@@ -2,6 +2,7 @@
 
 package jab.sledgehammer.langpack.spigot
 
+import jab.sledgehammer.langpack.core.LangCache
 import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import org.bukkit.entity.Player
@@ -13,7 +14,7 @@ import org.bukkit.entity.Player
  *
  * @param pack The SpigotLangPack instance.
  */
-class SpigotLangCache(pack: SpigotLangPack) : jab.sledgehammer.langpack.core.LangCache<SpigotLangPack>(pack) {
+class SpigotLangCache(pack: SpigotLangPack) : LangCache<SpigotLangPack>(pack) {
 
     /**
      * @see SpigotLangPack.broadcast

@@ -3,7 +3,6 @@
 package jab.sledgehammer.langpack.core
 
 import jab.sledgehammer.langpack.core.objects.LangArg
-import java.util.*
 
 /**
  * **LangCache** wraps a [LangPack] instance as type **Pack**, storing results from queries. If you need to call
@@ -16,7 +15,7 @@ import java.util.*
  * @author Jab
  *
  * @param Pack The type of LangPack implementation.
- * @property pack The lang-pack instance to call to and cache the results.
+ * @property pack The pack instance to call to and cache the results.
  */
 open class LangCache<Pack : LangPack>(val pack: Pack) {
 
@@ -26,6 +25,43 @@ open class LangCache<Pack : LangPack>(val pack: Pack) {
     override fun toString(): String = "LangCache(pack=$pack, cache=$cache, cacheList=$cacheList)"
 
     /**
+     * @see LangPack.getString
+     */
+    fun getString(query: String, lang: Language = pack.defaultLang, vararg args: LangArg): String {
+        val fieldLower = query.toLowerCase()
+        if (cache.containsKey(lang)) {
+            val cache = cache[lang]!!
+            if (cache.containsKey(fieldLower)) return cache[fieldLower]!!
+        }
+
+        var value = pack.getString(query, lang, null, *args)
+        if (value == null) value = query.toLowerCase()
+
+        val cache = cache.computeIfAbsent(lang) { HashMap() }
+        cache[fieldLower] = value
+        return value
+    }
+
+    /**
+     * @see LangPack.getList
+     */
+    fun getList(query: String, lang: Language = pack.defaultLang, vararg args: LangArg): List<String?>? {
+        val fieldLower = query.toLowerCase()
+        if (cacheList.containsKey(lang)) {
+            val cacheList = cacheList[lang]!!
+            if (cacheList.containsKey(fieldLower)) {
+                return cacheList[fieldLower]
+            }
+        }
+        val value = pack.getList(query, lang, *args)
+        if (value != null) {
+            val cacheList = cacheList.computeIfAbsent(lang) { HashMap() }
+            cacheList[fieldLower] = value
+        }
+        return value
+    }
+
+    /**
      * Clears results stored in the cache. If no arguments are provided, the entire language section of the cache is
      * removed.
      *
@@ -33,14 +69,12 @@ open class LangCache<Pack : LangPack>(val pack: Pack) {
      * @param fields The fields to clear.
      */
     fun clear(lang: Language, vararg fields: String) {
-
         // If no args are provided, remove the language.
         if (fields.isEmpty()) {
             cache.remove(lang)
             cacheList.remove(lang)
             return
         }
-
         for (field in fields) {
             cache[lang]?.remove(field)
             cacheList[lang]?.remove(field)
@@ -53,51 +87,5 @@ open class LangCache<Pack : LangPack>(val pack: Pack) {
     fun clear() {
         cache.clear()
         cacheList.clear()
-    }
-
-    /**
-     * @see LangPack.getString
-     */
-    fun getString(query: String, lang: Language = pack.defaultLang, vararg args: LangArg): String {
-
-        val fieldLower = query.toLowerCase()
-
-        if (cache.containsKey(lang)) {
-            val cache = cache[lang]!!
-            if (cache.containsKey(fieldLower)) {
-                return cache[fieldLower]!!
-            }
-        }
-
-        var value = pack.getString(query, lang, null, *args)
-        if (value == null) value = query.toLowerCase()
-
-        val cache = cache.computeIfAbsent(lang) { HashMap() }
-        cache[fieldLower] = value
-
-        return value
-    }
-
-    /**
-     * @see LangPack.getList
-     */
-    fun getList(query: String, lang: Language = pack.defaultLang, vararg args: LangArg): List<String?>? {
-
-        val fieldLower = query.toLowerCase()
-
-        if (cacheList.containsKey(lang)) {
-            val cacheList = cacheList[lang]!!
-            if (cacheList.containsKey(fieldLower)) {
-                return cacheList[fieldLower]
-            }
-        }
-
-        val value = pack.getList(query, lang, *args)
-        if (value != null) {
-            val cacheList = cacheList.computeIfAbsent(lang) { HashMap() }
-            cacheList[fieldLower] = value
-        }
-
-        return value
     }
 }

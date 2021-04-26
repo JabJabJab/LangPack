@@ -2,17 +2,18 @@
 
 package jab.sledgehammer.langpack.sponge.util.text
 
+import jab.sledgehammer.langpack.core.util.MultilinePrinter
+import jab.sledgehammer.langpack.sponge.objects.complex.SpongeActionText
 import jab.sledgehammer.langpack.sponge.util.ColorUtil
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColor
 import org.spongepowered.api.text.format.TextColors
 import org.spongepowered.api.text.format.TextStyle
 import org.spongepowered.api.text.format.TextStyles
-import jab.sledgehammer.langpack.sponge.objects.complex.ActionText
 
 /**
  * **TextComponent** is a "dummy-wrapper" solution for maintaining a consistency with solutions for
- * cross-server-platform support for [ActionText] objects.
+ * cross-server-platform support for [SpongeActionText] objects.
  *
  * @author Jab
  */
@@ -46,76 +47,63 @@ class TextComponent(var text: String? = "") {
         extra!!.add(component)
     }
 
-    /**
-     * Debug utility function for building texts for Sponge.
-     */
-    @JvmOverloads
-    internal fun toPretty(prefix: String = "", tab: String = "  "): String {
-        var prefixActual = prefix
-        var text = ""
+    fun print(): String = printer.print(this)
 
-        fun line(line: String) {
-            text += "$prefixActual$line\n"
-        }
+    companion object {
+        private val printer = TextComponentPrinter()
+    }
 
-        fun tab() {
-            prefixActual += tab
-        }
+    private class TextComponentPrinter : MultilinePrinter<TextComponent>() {
+        override fun onPrint(element: TextComponent) {
+            val resetColor = ColorUtil.toString(TextColors.WHITE)
 
-        fun unTab() {
-            prefixActual = prefixActual.substring(0, prefixActual.length - tab.length)
-        }
-
-        val resetColor = ColorUtil.toString(TextColors.WHITE)
-
-        fun recurse(component: TextComponent) {
-            line("TextComponent {")
-            tab()
-
-            val formattedColor = ColorUtil.toString(component.color)
-            line("text: \"$formattedColor${component.text}$resetColor\",")
-            line("color: $formattedColor${component.color},")
-
-            if (component.styles.isNotEmpty()) {
-                line("styles: [")
+            fun recurse(component: TextComponent) {
+                line("TextComponent {")
                 tab()
-                for (style in component.styles) {
-                    line("$style,")
+
+                val formattedColor = ColorUtil.toString(component.color)
+                line("text: \"$formattedColor${component.text}$resetColor\",")
+                line("color: $formattedColor${component.color},")
+
+                if (component.styles.isNotEmpty()) {
+                    line("styles: [")
+                    tab()
+                    for (style in component.styles) {
+                        line("$style,")
+                    }
+                    unTab()
+                    line("],")
                 }
-                unTab()
-                line("],")
-            }
-            if (component.clickEvent != null) {
-                line("clickEvent: {")
-                tab()
-                line("value: ${component.clickEvent!!.value}")
-                unTab()
-                line("},")
-            }
-            if (component.hoverEvent != null) {
-                line("hoverEvent: {")
-                tab()
-                line("lines: [")
-                tab()
-                for (line in component.hoverEvent!!.contents) line("$line,")
-                unTab()
-                line("],")
-                unTab()
-                line("},")
-            }
-            if (component.extra != null) {
-                line("extra: {")
-                tab()
-                for (child in component.extra!!) recurse(child)
+                if (component.clickEvent != null) {
+                    line("clickEvent: {")
+                    tab()
+                    line("value: ${component.clickEvent!!.value}")
+                    unTab()
+                    line("},")
+                }
+                if (component.hoverEvent != null) {
+                    line("hoverEvent: {")
+                    tab()
+                    line("lines: [")
+                    tab()
+                    for (line in component.hoverEvent!!.contents) line("$line,")
+                    unTab()
+                    line("],")
+                    unTab()
+                    line("},")
+                }
+                if (component.extra != null) {
+                    line("extra: {")
+                    tab()
+                    for (child in component.extra!!) recurse(child)
+                    unTab()
+                    line("}")
+                }
                 unTab()
                 line("}")
             }
-            unTab()
-            line("}")
+
+            recurse(element)
         }
-
-        recurse(this)
-
-        return text
     }
 }

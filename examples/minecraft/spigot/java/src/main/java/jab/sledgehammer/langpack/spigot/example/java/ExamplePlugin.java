@@ -2,7 +2,6 @@ package jab.sledgehammer.langpack.spigot.example.java;
 
 import jab.sledgehammer.langpack.core.objects.LangArg;
 import jab.sledgehammer.langpack.spigot.SpigotLangPack;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,35 +14,18 @@ import java.util.HashMap;
 import java.util.UUID;
 
 /**
- * **ExamplePlugin**
- *
- * TODO: Document.
+ * **ExamplePlugin** TODO: Document.
  *
  * @author Jab
  */
 public class ExamplePlugin extends JavaPlugin implements Listener {
 
     private final HashMap<UUID, Boolean> greetList = new HashMap<>();
-    private SpigotLangPack pack;
-    private boolean joinMsg = false;
-    private boolean leaveMsg = false;
+    private final SpigotLangPack pack = new SpigotLangPack(getClassLoader());
 
     @Override
     public void onEnable() {
-
-        saveDefaultConfig();
-
-        FileConfiguration cfg = getConfig();
-        if (cfg.contains("join_messages") && cfg.isBoolean("join_messages")) {
-            joinMsg = cfg.getBoolean("join_messages");
-        }
-        if (cfg.contains("leave_messages") && cfg.isBoolean("leave_messages")) {
-            leaveMsg = cfg.getBoolean("leave_messages");
-        }
-
-        pack = new SpigotLangPack(getClassLoader());
         pack.append("lang_example_java", true, true);
-
         getServer().getPluginManager().registerEvents(this, this);
     }
 
@@ -67,33 +49,21 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
 
     @EventHandler
     public void on(PlayerJoinEvent event) {
-        if (!joinMsg) {
-            return;
-        }
-
         event.setJoinMessage(null);
-
-        // !!NOTE: The server executes this event prior to the client sending the locale information.
-        //         Log the information to be processed only when the client settings are sent. -Jab
+        // The server executes this event prior to the client sending the locale information. Log the information to be
+        // processed only when the client settings are sent. -Jab
         greetList.put(event.getPlayer().getUniqueId(), true);
     }
 
     @EventHandler
     public void on(PlayerQuitEvent event) {
-        if (!leaveMsg) {
-            return;
-        }
-
         event.setQuitMessage(null);
-
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
-
         if (greetList.containsKey(playerId)) {
             greetList.remove(playerId);
             return;
         }
-
         pack.broadcast("event.leave_server", new LangArg("player", player.getDisplayName()));
     }
 }

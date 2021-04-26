@@ -33,9 +33,7 @@ abstract class LangDefinition<E>(val pack: LangPack, val parent: LangGroup?, val
      */
     fun walk() {
         if (!walked) {
-            if (needsWalk(pack.formatter)) {
-                value = onWalk()
-            }
+            if (needsWalk(pack.formatter)) value = onWalk()
             walked = true
         }
     }
@@ -90,11 +88,7 @@ abstract class LangDefinition<E>(val pack: LangPack, val parent: LangGroup?, val
 
         for (field in fields) {
 
-            val context = if (field.packageScope) {
-                null
-            } else {
-                parent
-            }
+            val context = if (field.packageScope) null else parent
 
             if (!walkedDefinitions.contains(field.raw)) {
                 val def = pack.resolve(field.name, language, context)
@@ -106,20 +100,15 @@ abstract class LangDefinition<E>(val pack: LangPack, val parent: LangGroup?, val
                 // If the field cannot resolve, set the placeholder.
                 if (!walkedDefinitions.contains(field.raw)) {
                     if (pack.debug) {
-                        println(
-                            """Failed to locate resolve field: "$field". Using placeholder instead: "$field.placeholder"."""
-                        )
+                        println("Failed to locate resolve field: \"$field\". " +
+                                "Using placeholder instead: \"$field.placeholder\".")
                     }
                     value = value.replace(field.raw, field.placeholder)
                     continue
                 }
 
                 val resolved = pack.resolve(field.name, language, context)
-                val result = if (resolved != null) {
-                    StringUtil.toAString(resolved.value!!)
-                } else {
-                    field.placeholder
-                }
+                val result = if (resolved != null) StringUtil.toAString(resolved.value!!) else field.placeholder
 
                 if (pack.debug) println("""Replacing resolve field "$field" with: "$result".""")
                 value = value.replace(field.raw, result)

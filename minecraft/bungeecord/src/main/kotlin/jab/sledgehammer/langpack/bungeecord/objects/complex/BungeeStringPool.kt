@@ -14,7 +14,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 import java.util.*
 
 /**
- * **BungeeStringPool** wraps the StringPool class to provide additional support for the BungeeCord API.
+ * **BungeeStringPool** wraps the [StringPool] class to provide additional support for the BungeeCord API.
  *
  * @author Jab
  */

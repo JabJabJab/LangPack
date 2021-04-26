@@ -2,12 +2,12 @@
 
 package jab.sledgehammer.langpack.spigot.objects.complex
 
+import jab.sledgehammer.config.ConfigSection
 import jab.sledgehammer.langpack.core.Language
 import jab.sledgehammer.langpack.core.objects.LangArg
 import jab.sledgehammer.langpack.core.objects.complex.Complex
 import jab.sledgehammer.langpack.core.objects.complex.StringPool
 import jab.sledgehammer.langpack.spigot.SpigotLangPack
-import jab.sledgehammer.config.ConfigSection
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -94,9 +94,7 @@ class SpigotStringPool : StringPool {
      */
     fun broadcast() {
         val message = get()
-        for (player in Bukkit.getOnlinePlayers()) {
-            player.sendMessage(message)
-        }
+        for (player in Bukkit.getOnlinePlayers()) player.sendMessage(message)
     }
 
     /**
@@ -106,9 +104,7 @@ class SpigotStringPool : StringPool {
      */
     fun broadcast(world: World) {
         val message = get()
-        for (player in world.players) {
-            player.sendMessage(message)
-        }
+        for (player in world.players) player.sendMessage(message)
     }
 
     /**
