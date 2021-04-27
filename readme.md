@@ -1,4 +1,4 @@
-![LangPack](https://github.com/asledgehammer/LangPack/blob/master/media/assets/banner.png?raw=true)
+![LangPack](https://raw.githubusercontent.com/asledgehammer/LangPack/master/assets/media/banner.png)
 
 LangPack is a text externalizer and language library written in Kotlin for Minecraft server plugins. This plugin is a
 solution to externalization of texts for other plugins in a way that gives the plugin developers, the administrators of
