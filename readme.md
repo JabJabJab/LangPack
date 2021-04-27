@@ -1,4 +1,4 @@
-## LangPack
+![LangPack](https://github.com/asledgehammer/LangPack/blob/master/media/assets/banner.png?raw=true)
 
 LangPack is a text externalizer and language library written in Kotlin for Minecraft server plugins. This plugin is a
 solution to externalization of texts for other plugins in a way that gives the plugin developers, the administrators of
@@ -31,6 +31,6 @@ API. Complex implementations can be authored and loaded in packs by third-partie
 
 ### License
 
-The source-code License for LangPack is MIT. LangPack will not force copy-left so that authors can apply this solution
-both privately and commercially.
+The source-code License for LangPack is Apache Commons 2.0. LangPack will not force copy-left so that authors can apply 
+this solution both privately and commercially.
 
