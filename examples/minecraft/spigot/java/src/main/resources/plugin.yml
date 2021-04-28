@@ -2,5 +2,5 @@ name: LangPack-Example-Java
 version: 1.0.0
 author: Jab
 api-version: 1.16
-main: jab.sledgehammer.langpack.spigot.example.java.ExamplePlugin
+main: com.asledgehammer.langpack.spigot.example.java.ExamplePlugin
 depend: [ LangPack ]

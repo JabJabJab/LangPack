@@ -3,4 +3,4 @@ version: 1.0.0
 author: Jab
 api-version: 1.16
 depends: [ LangPack ]
-main: jab.sledgehammer.langpack.bungeecord.example.java.ExamplePlugin
+main: com.asledgehammer.langpack.bungeecord.example.java.ExamplePlugin

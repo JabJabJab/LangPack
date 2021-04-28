@@ -2,6 +2,6 @@ name: LangPack
 version: 1.0.0
 author: Jab
 api-version: 1.14
-main: jab.sledgehammer.langpack.spigot.LangPlugin
+main: com.asledgehammer.langpack.spigot.LangPlugin
 commands:
   lang: { }
