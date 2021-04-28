@@ -14,6 +14,6 @@ import org.bukkit.entity.Player
 class TestAction(description: List<String>) : LangTest<BukkitLangPack, Player>("action", description) {
     override fun run(pack: BukkitLangPack, player: Player): TestResult {
         pack.message(player, "test.action.message")
-        return TestResult(true)
+        return TestResult.success()
     }
 }

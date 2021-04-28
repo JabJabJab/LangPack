@@ -13,6 +13,6 @@ import org.bukkit.entity.Player
 class TestBroadcast(description: List<String>) : LangTest<BukkitLangPack, Player>("broadcast", description) {
     override fun run(pack: BukkitLangPack, player: Player): TestResult {
         pack.broadcast("test.broadcast.message")
-        return TestResult(true)
+        return TestResult.success()
     }
 }
