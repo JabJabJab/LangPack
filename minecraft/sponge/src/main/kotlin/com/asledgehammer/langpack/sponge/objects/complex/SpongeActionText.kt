@@ -8,18 +8,21 @@ import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.objects.LangGroup
 import com.asledgehammer.langpack.core.objects.complex.Complex
+import com.asledgehammer.langpack.core.objects.definition.ComplexDefinition
 import com.asledgehammer.langpack.core.objects.definition.LangDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.processor.LangProcessor
 import com.asledgehammer.langpack.sponge.util.text.TextComponent
 
 /**
- * **ActionText** packages [HoverText] and [CommandText] wrappers.
+ * **ActionText** packages [SpongeHoverText] and [SpongeCommandText] wrappers.
  * The object is complex and resolvable for [LangProcessor].
  *
  * @author Jab
  */
 open class SpongeActionText : Complex<TextComponent> {
+
+    override var definition: ComplexDefinition? = null
 
     /**
      * The text to display for the resolved [TextComponent].
@@ -29,12 +32,12 @@ open class SpongeActionText : Complex<TextComponent> {
     /**
      * The text to display for the resolved [TextComponent] when hovered in chat.
      */
-    var hoverText: HoverText? = null
+    var hoverText: SpongeHoverText? = null
 
     /**
      * The command to execute for resolved [TextComponent] when clicked in chat.
      */
-    var commandText: CommandText? = null
+    var commandText: SpongeCommandText? = null
 
     /**
      * None constructor.
@@ -51,7 +54,7 @@ open class SpongeActionText : Complex<TextComponent> {
      * @param text The text to display.
      * @param hoverText The hover text to display.
      */
-    constructor(text: String, hoverText: HoverText) {
+    constructor(text: String, hoverText: SpongeHoverText) {
         this.text = text
         this.hoverText = hoverText
     }
@@ -64,7 +67,7 @@ open class SpongeActionText : Complex<TextComponent> {
      */
     constructor(text: String, command: String) {
         this.text = text
-        this.commandText = CommandText(command)
+        this.commandText = SpongeCommandText(command)
     }
 
     /**
@@ -76,8 +79,8 @@ open class SpongeActionText : Complex<TextComponent> {
      */
     constructor(text: String, command: String, hover: List<String>) {
         this.text = text
-        this.commandText = CommandText(command)
-        this.hoverText = HoverText(hover)
+        this.commandText = SpongeCommandText(command)
+        this.hoverText = SpongeHoverText(hover)
     }
 
     /**
@@ -87,7 +90,7 @@ open class SpongeActionText : Complex<TextComponent> {
      * @param commandText The command to execute.
      * @param hoverText The hover text to display.
      */
-    constructor(text: String, commandText: CommandText, hoverText: HoverText) {
+    constructor(text: String, commandText: SpongeCommandText, hoverText: SpongeHoverText) {
         this.text = text
         this.commandText = commandText
         this.hoverText = hoverText
@@ -113,7 +116,7 @@ open class SpongeActionText : Complex<TextComponent> {
                 } else {
                     lines.add(cfg.getString("hover"))
                 }
-                hoverText = HoverText(lines)
+                hoverText = SpongeHoverText(lines)
             }
         }
 
@@ -124,7 +127,7 @@ open class SpongeActionText : Complex<TextComponent> {
 
         if (cfg.contains("command")) {
             val line = cfg.getString("command")
-            this.commandText = CommandText(line)
+            this.commandText = SpongeCommandText(line)
         }
     }
 

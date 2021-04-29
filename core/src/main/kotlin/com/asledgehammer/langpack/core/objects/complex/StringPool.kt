@@ -8,6 +8,7 @@ import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.objects.LangGroup
 import com.asledgehammer.langpack.core.objects.complex.StringPool.Mode
+import com.asledgehammer.langpack.core.objects.definition.ComplexDefinition
 import com.asledgehammer.langpack.core.objects.definition.LangDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.util.StringUtil
@@ -19,6 +20,8 @@ import java.util.*
  * @author Jab
  */
 open class StringPool : Complex<String> {
+
+    override var definition: ComplexDefinition? = null
 
     /**
      * The method of polling for the pool.

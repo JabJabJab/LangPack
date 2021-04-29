@@ -70,9 +70,7 @@ class BungeeStringPool : StringPool {
      */
     fun StringPool.message(player: ProxiedPlayer) {
         // Make sure that only online players are processed.
-        if (!player.isConnected) {
-            return
-        }
+        if (!player.isConnected) return
         player.sendMessage(TextComponent(get()))
     }
 
@@ -85,7 +83,7 @@ class BungeeStringPool : StringPool {
      */
     fun StringPool.send(player: ProxiedPlayer, pack: BungeeLangPack? = null, vararg args: LangArg) {
         val message = if (pack != null) {
-            process(pack, pack.getLanguage(player), null, *args)
+            process(pack, pack.getLanguage(player), definition?.parent, *args)
         } else {
             get()
         }
@@ -118,7 +116,7 @@ class BungeeStringPool : StringPool {
             if (cache[lang] != null) {
                 message = cache[lang]!!
             } else {
-                message = process(pack, lang, null, *args)
+                message = process(pack, lang, definition?.parent, *args)
                 cache[lang] = message
             }
             player.sendMessage(TextComponent(message))

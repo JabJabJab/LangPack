@@ -5,6 +5,7 @@ import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.objects.LangGroup
+import com.asledgehammer.langpack.core.objects.definition.ComplexDefinition
 import com.asledgehammer.langpack.core.objects.definition.LangDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.processor.LangProcessor
@@ -18,6 +19,11 @@ import com.asledgehammer.langpack.core.processor.LangProcessor
  * @param E The type to resolve when queried.
  */
 interface Complex<E> {
+
+    /**
+     * TODO: Document.
+     */
+    var definition: ComplexDefinition?
 
     /**
      * Walks the complex object. This is a post-load operation where operations such as resolve-fields are processed.

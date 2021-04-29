@@ -113,4 +113,4 @@ tests:
     message:
       type: action
       text: '%field_1% %~tests.visibility_scope.field_1% %tests.visibility_scope.field_1%'
-      hover: 'This is an example of hover text.'
+      hover: '%field_1% %~tests.visibility_scope.field_1% %tests.visibility_scope.field_1%'

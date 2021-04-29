@@ -7,6 +7,7 @@ import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.objects.LangGroup
+import com.asledgehammer.langpack.core.objects.definition.ComplexDefinition
 import com.asledgehammer.langpack.core.objects.definition.LangDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 
@@ -19,6 +20,8 @@ import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
  * @param text
  */
 open class LegacyActionText(val text: String) : Complex<String> {
+
+    override var definition: ComplexDefinition? = null
 
     /**
      * Import constructor.

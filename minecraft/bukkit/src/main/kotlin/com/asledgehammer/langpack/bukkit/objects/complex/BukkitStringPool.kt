@@ -82,7 +82,7 @@ class BukkitStringPool : StringPool {
      */
     fun send(player: Player, pack: BukkitLangPack? = null, vararg args: LangArg) {
         val message = if (pack != null) {
-            process(pack, pack.getLanguage(player), null, *args)
+            process(pack, pack.getLanguage(player), definition?.parent, *args)
         } else {
             get()
         }
@@ -94,9 +94,7 @@ class BukkitStringPool : StringPool {
      */
     fun broadcast() {
         val message = get()
-        for (player in Bukkit.getOnlinePlayers()) {
-            player.sendMessage(message)
-        }
+        for (player in Bukkit.getOnlinePlayers()) player.sendMessage(message)
     }
 
     /**
@@ -106,9 +104,7 @@ class BukkitStringPool : StringPool {
      */
     fun broadcast(world: World) {
         val message = get()
-        for (player in world.players) {
-            player.sendMessage(message)
-        }
+        for (player in world.players) player.sendMessage(message)
     }
 
     /**
@@ -125,7 +121,7 @@ class BukkitStringPool : StringPool {
             if (cache[lang] != null) {
                 message = cache[lang]!!
             } else {
-                message = process(pack, pack.getLanguage(player), null, *args)
+                message = process(pack, pack.getLanguage(player), definition?.parent, *args)
                 cache[lang] = message
             }
             player.sendMessage(message)
@@ -146,7 +142,7 @@ class BukkitStringPool : StringPool {
             if (cache[lang] != null) {
                 message = cache[lang]!!
             } else {
-                message = process(pack, lang, null, *args)
+                message = process(pack, lang, definition?.parent, *args)
                 cache[lang] = message
             }
             player.sendMessage(message)

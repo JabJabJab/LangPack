@@ -7,20 +7,20 @@ import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.objects.complex.Complex
 import com.asledgehammer.langpack.spigot.SpigotLangPack
-import com.asledgehammer.langpack.textcomponent.objects.complex.ActionText
-import com.asledgehammer.langpack.textcomponent.objects.complex.CommandText
-import com.asledgehammer.langpack.textcomponent.objects.complex.HoverText
+import com.asledgehammer.langpack.textcomponent.objects.complex.TextComponentActionText
+import com.asledgehammer.langpack.textcomponent.objects.complex.TextComponentCommandText
+import com.asledgehammer.langpack.textcomponent.objects.complex.TextComponentHoverText
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
 
 /**
- * **SpigotActionText** wraps the [ActionText] class to provide additional support for the Spigot API.
+ * **SpigotActionText** wraps the [TextComponentActionText] class to provide additional support for the Spigot API.
  *
  * @author Jab
  */
-class SpigotActionText : ActionText {
+class SpigotActionText : TextComponentActionText {
 
     /**
      * None constructor.
@@ -35,7 +35,7 @@ class SpigotActionText : ActionText {
      * @param text The text to display.
      * @param hoverText The hover text to display.
      */
-    constructor(text: String, hoverText: HoverText) : super(text, hoverText)
+    constructor(text: String, hoverText: TextComponentHoverText) : super(text, hoverText)
 
     /**
      * Command constructor.
@@ -61,7 +61,7 @@ class SpigotActionText : ActionText {
      * @param commandText The command to execute.
      * @param hoverText The hover text to display.
      */
-    constructor(text: String, commandText: CommandText, hoverText: HoverText) : super(text, commandText, hoverText)
+    constructor(text: String, commandText: TextComponentCommandText, hoverText: TextComponentHoverText) : super(text, commandText, hoverText)
 
     /**
      * Import constructor.
@@ -89,7 +89,7 @@ class SpigotActionText : ActionText {
      */
     fun send(player: Player, pack: SpigotLangPack? = null, vararg args: LangArg) {
         val textComponent = if (pack != null) {
-            process(pack, pack.getLanguage(player), null, *args)
+            process(pack, pack.getLanguage(player), definition?.parent, *args)
         } else {
             get()
         }
@@ -132,7 +132,7 @@ class SpigotActionText : ActionText {
             if (cache[lang] != null) {
                 textComponent = cache[lang]!!
             } else {
-                textComponent = process(pack, pack.getLanguage(player), null, *args)
+                textComponent = process(pack, pack.getLanguage(player), definition?.parent, *args)
                 cache[lang] = textComponent
             }
             player.spigot().sendMessage(textComponent)
@@ -153,7 +153,7 @@ class SpigotActionText : ActionText {
             if (cache[lang] != null) {
                 textComponent = cache[lang]!!
             } else {
-                textComponent = process(pack, lang, null, *args)
+                textComponent = process(pack, lang, definition?.parent, *args)
                 cache[lang] = textComponent
             }
             player.spigot().sendMessage(textComponent)
@@ -161,7 +161,7 @@ class SpigotActionText : ActionText {
     }
 
     /**
-     * **SpigotActionText.Loader** overrides [ActionText] with [SpigotActionText].
+     * **SpigotActionText.Loader** overrides [TextComponentActionText] with [SpigotActionText].
      *
      * @author Jab
      */

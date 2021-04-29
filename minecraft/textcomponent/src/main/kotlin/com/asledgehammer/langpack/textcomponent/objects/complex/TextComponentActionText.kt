@@ -8,6 +8,7 @@ import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.objects.LangGroup
 import com.asledgehammer.langpack.core.objects.complex.Complex
+import com.asledgehammer.langpack.core.objects.definition.ComplexDefinition
 import com.asledgehammer.langpack.core.objects.definition.LangDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.processor.LangProcessor
@@ -17,12 +18,14 @@ import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
 
 /**
- * **ActionText** packages defined [HoverEvent] and [ClickEvent] as [HoverText] and [CommandText] wrappers.
+ * **ActionText** packages defined [HoverEvent] and [ClickEvent] as [TextComponentHoverText] and [TextComponentCommandText] wrappers.
  * The object is complex and resolvable for [LangProcessor].
  *
  * @author Jab
  */
-open class ActionText : Complex<TextComponent> {
+open class TextComponentActionText : Complex<TextComponent> {
+
+    override var definition: ComplexDefinition? = null
 
     /**
      * The text to display for the resolved [TextComponent].
@@ -32,12 +35,12 @@ open class ActionText : Complex<TextComponent> {
     /**
      * The text to display for the resolved [TextComponent] when hovered in chat.
      */
-    var hoverText: HoverText? = null
+    var hoverText: TextComponentHoverText? = null
 
     /**
      * The command to execute for resolved [TextComponent] when clicked in chat.
      */
-    var commandText: CommandText? = null
+    var commandText: TextComponentCommandText? = null
 
     /**
      * None constructor.
@@ -54,7 +57,7 @@ open class ActionText : Complex<TextComponent> {
      * @param text The text to display.
      * @param hoverText The hover text to display.
      */
-    constructor(text: String, hoverText: HoverText) {
+    constructor(text: String, hoverText: TextComponentHoverText) {
         this.text = text
         this.hoverText = hoverText
     }
@@ -67,7 +70,7 @@ open class ActionText : Complex<TextComponent> {
      */
     constructor(text: String, command: String) {
         this.text = text
-        this.commandText = CommandText(command)
+        this.commandText = TextComponentCommandText(command)
     }
 
     /**
@@ -79,8 +82,8 @@ open class ActionText : Complex<TextComponent> {
      */
     constructor(text: String, command: String, hover: List<String>) {
         this.text = text
-        this.commandText = CommandText(command)
-        this.hoverText = HoverText(hover)
+        this.commandText = TextComponentCommandText(command)
+        this.hoverText = TextComponentHoverText(hover)
     }
 
     /**
@@ -90,7 +93,7 @@ open class ActionText : Complex<TextComponent> {
      * @param commandText The command to execute.
      * @param hoverText The hover text to display.
      */
-    constructor(text: String, commandText: CommandText, hoverText: HoverText) {
+    constructor(text: String, commandText: TextComponentCommandText, hoverText: TextComponentHoverText) {
         this.text = text
         this.commandText = commandText
         this.hoverText = hoverText
@@ -118,7 +121,7 @@ open class ActionText : Complex<TextComponent> {
                 } else {
                     lines.add(Text(cfg.getString("hover")))
                 }
-                hoverText = HoverText(lines)
+                hoverText = TextComponentHoverText(lines)
             }
         }
 
@@ -126,7 +129,7 @@ open class ActionText : Complex<TextComponent> {
         if (cfg.contains("hover")) readHoverText(cfg)
         if (cfg.contains("command")) {
             val line = cfg.getString("command")
-            this.commandText = CommandText(line)
+            this.commandText = TextComponentCommandText(line)
         }
     }
 
@@ -138,8 +141,8 @@ open class ActionText : Complex<TextComponent> {
         return component
     }
 
-    override fun walk(definition: LangDefinition<*>): ActionText {
-        val walked = ActionText(definition.walk(text))
+    override fun walk(definition: LangDefinition<*>): TextComponentActionText {
+        val walked = TextComponentActionText(definition.walk(text))
         if (commandText != null) walked.commandText = commandText!!.walk(definition)
         if (hoverText != null) walked.hoverText = hoverText!!.walk(definition)
         return walked
@@ -160,11 +163,11 @@ open class ActionText : Complex<TextComponent> {
     }
 
     /**
-     * **ActionText.Loader** loads [ActionText] from YAML with the assigned type *action*.
+     * **ActionText.Loader** loads [TextComponentActionText] from YAML with the assigned type *action*.
      *
      * @author Jab
      */
-    class Loader : Complex.Loader<ActionText> {
-        override fun load(cfg: ConfigSection): ActionText = ActionText(cfg)
+    class Loader : Complex.Loader<TextComponentActionText> {
+        override fun load(cfg: ConfigSection): TextComponentActionText = TextComponentActionText(cfg)
     }
 }

@@ -16,7 +16,7 @@ import com.asledgehammer.langpack.core.objects.formatter.PercentFormatter
 import com.asledgehammer.langpack.core.processor.LangProcessor
 import com.asledgehammer.langpack.core.util.ResourceUtil
 import com.asledgehammer.langpack.core.util.StringUtil
-import com.asledgehammer.langpack.textcomponent.objects.complex.ActionText
+import com.asledgehammer.langpack.textcomponent.objects.complex.TextComponentActionText
 import com.asledgehammer.langpack.textcomponent.processor.TextComponentProcessor
 import java.io.File
 
@@ -118,7 +118,7 @@ open class TextComponentLangPack(classLoader: ClassLoader = this::class.java.cla
     companion object {
 
         private val stringPoolLoader = StringPool.Loader()
-        private val actionTextLoader = ActionText.Loader()
+        private val actionTextLoader = TextComponentActionText.Loader()
 
         fun setDefaultLoaders(map: HashMap<String, Complex.Loader<*>>) {
             map["pool"] = stringPoolLoader

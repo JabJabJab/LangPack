@@ -31,6 +31,10 @@ class ComplexDefinition : LangDefinition<Complex<*>> {
      */
     constructor(pack: LangPack, value: Complex<*>) : super(pack, null, value)
 
+    init {
+        value.definition = this
+    }
+
     override fun onWalk(): Complex<*> = value.walk(this)
 
     override fun needsWalk(formatter: FieldFormatter): Boolean = raw.needsWalk(formatter)

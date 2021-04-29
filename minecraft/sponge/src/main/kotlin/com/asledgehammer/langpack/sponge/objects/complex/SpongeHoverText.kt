@@ -1,17 +1,17 @@
 @file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
-package com.asledgehammer.langpack.textcomponent.objects.complex
+package com.asledgehammer.langpack.sponge.objects.complex
 
 import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.objects.LangGroup
 import com.asledgehammer.langpack.core.objects.complex.Complex
+import com.asledgehammer.langpack.core.objects.definition.ComplexDefinition
 import com.asledgehammer.langpack.core.objects.definition.LangDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.util.StringUtil
-import net.md_5.bungee.api.chat.HoverEvent
-import net.md_5.bungee.api.chat.hover.content.Text
+import com.asledgehammer.langpack.sponge.util.text.HoverEvent
 
 /**
  * **HoverText** handles dynamic text, processing into [HoverEvent].
@@ -19,12 +19,14 @@ import net.md_5.bungee.api.chat.hover.content.Text
  *
  * @author Jab
  */
-class HoverText : Complex<HoverEvent> {
+class SpongeHoverText : Complex<HoverEvent> {
+
+    override var definition: ComplexDefinition? = null
 
     /**
      * The lines of text to display.
      */
-    var lines: List<Text>
+    var lines: List<String>
 
     /**
      * Collection constructor.
@@ -32,16 +34,12 @@ class HoverText : Complex<HoverEvent> {
      * @param lines The lines of text to display.
      */
     constructor(lines: Collection<*>) {
-        val packagedLines = ArrayList<Text>()
+        val packagedLines = ArrayList<String>()
         for (line in lines) {
             if (line == null) {
-                packagedLines.add(Text(" "))
+                packagedLines.add(" ")
             } else {
-                if (line is Text) {
-                    packagedLines.add(line)
-                } else {
-                    packagedLines.add(Text(StringUtil.toAString(line)))
-                }
+                packagedLines.add(StringUtil.toAString(line))
             }
         }
         this.lines = packagedLines
@@ -52,29 +50,33 @@ class HoverText : Complex<HoverEvent> {
      *
      * @param lines The lines of text to display.
      */
-    constructor(vararg lines: Text) {
-        val newLines = ArrayList<Text>()
-        for (line in lines) newLines.add(line)
+    constructor(vararg lines: String) {
+        val newLines = ArrayList<String>()
+        for (line in lines) {
+            newLines.add(line)
+        }
         this.lines = newLines
     }
 
     override fun process(pack: LangPack, lang: Language, context: LangGroup?, vararg args: LangArg): HoverEvent {
-        var array = emptyList<Text>()
+        var array = emptyList<String>()
         // Append all lines as one line with the [NEW_LINE] separator. The lang-pack will
         //   interpret the separator and handle this when displayed to the player.
         for (line in lines) {
-            array = array.plus(Text(pack.processor.process(line.value as String, pack, lang, context, *args)))
+            array = array.plus(pack.processor.process(line, pack, lang, context, *args))
         }
-        return HoverEvent(HoverEvent.Action.SHOW_TEXT, array)
+        return HoverEvent(array)
     }
 
-    override fun walk(definition: LangDefinition<*>): HoverText {
-        val walkedLines = ArrayList<Text>()
-        for (text in lines) walkedLines.add(Text(definition.walk(text.value.toString())))
-        return HoverText(walkedLines)
+    override fun walk(definition: LangDefinition<*>): SpongeHoverText {
+        val walkedLines = ArrayList<String>()
+        for (text in lines) {
+            walkedLines.add(definition.walk(text))
+        }
+        return SpongeHoverText(walkedLines)
     }
 
     override fun needsWalk(formatter: FieldFormatter): Boolean = formatter.needsWalk(lines)
 
-    override fun get(): HoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, lines)
+    override fun get(): HoverEvent = HoverEvent(lines)
 }
