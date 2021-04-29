@@ -150,7 +150,14 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      * @return Returns the language of the player's [ProxiedPlayer.getLocale]. If the locale set is invalid, the fallBack
      *   is returned.
      */
-    fun getLanguage(player: ProxiedPlayer): Language = Languages.getClosest(player.locale, defaultLang)
+    fun getLanguage(player: ProxiedPlayer): Language {
+        // When a player is kicked on login, the locale is null. Use default lang if so. -Jab
+        return try {
+            Languages.getClosest(player.locale, defaultLang)
+        } catch (e: Exception) {
+            defaultLang
+        }
+    }
 
     init {
         setBungeeLoaders(loaders)
