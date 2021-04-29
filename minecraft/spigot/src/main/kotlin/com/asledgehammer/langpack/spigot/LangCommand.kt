@@ -2,7 +2,9 @@ package com.asledgehammer.langpack.spigot
 
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.test.LangTest
-import com.asledgehammer.langpack.spigot.test.InvokeActionObjectTest
+import com.asledgehammer.langpack.spigot.test.InvokeActionTest
+import com.asledgehammer.langpack.spigot.test.InvokePoolTest
+import com.asledgehammer.langpack.spigot.test.ResolveFieldTest
 import com.asledgehammer.langpack.spigot.test.SimpleTest
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -40,10 +42,12 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
             addTest("multiline")
             addTest("placeholder")
             addTest("visibility_scope")
+            addTest(ResolveFieldTest(pack))
             addTest("broadcast")
             addTest("action")
-
-            addTest(InvokeActionObjectTest(pack))
+            addTest("pool")
+            addTest(InvokeActionTest(pack))
+            addTest(InvokePoolTest(pack))
         }
     }
 

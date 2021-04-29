@@ -63,37 +63,35 @@ tests:
 
   end: '&7---------------------------------------------------'
 
-  #
   basic:
-    description: ''
+    description: 'TODO: Document.'
     message: '%~header.debug% This is a test.'
 
-  #
   multiline:
-    description: ''
+    description: 'TODO: Document.'
     message:
       - '%~header.debug% This is line 1.'
       - 'This is line 2.'
 
-  #
   placeholder:
-    description: ''
+    description: 'TODO: Document.'
     message: '%player=(An Unknown Player)% is running a test.'
 
-  #
   visibility_scope:
-    description: ''
+    description: 'TODO: Document.'
     field_1: '&7field_1'
     message: '%field_1% %~tests.visibility_scope.field_1% %tests.visibility_scope.field_1%'
 
-  #
+  resolve_field:
+    description: 'TODO: Document.'
+    message: '%~header.debug% &cResolved: %!player=(An Unknown Player)% &dUnresolved: %player=(An Unknown Player)%'
+
   broadcast:
     description:
       - 'This is a test for:'
       - '    &fLangPack.broadcast(&6query&f, &6args&f)'
     message: '%~header.debug% &7This is a test broadcast.'
 
-  #
   action:
     description: '
       This is a simple test for ActionText runtime creation and messaging
@@ -103,14 +101,31 @@ tests:
       text: '%~header.debug% &7This is an example hover ActionText.'
       hover: 'This is an example of hover text.'
 
-  #
-  invoke_action_object:
-    description: '
-        This is a simple test for ActionText runtime creation and messaging
-        of a command and hover setup'
-    field_1: '&7field_1'
+  pool:
+    description: 'TODO: Document.'
+    message:
+      type: pool
+      mode: random
+      pool:
+        - '%~header.debug% This is line 1.'
+        - '%~header.debug% This is line 2.'
+        - '%~header.debug% This is line 3.'
+        - '%~header.debug% This is line 4.'
 
+  invoke_action:
+    description: 'TODO: Document.'
+    field_1: '&7field_1'
     message:
       type: action
-      text: '%field_1% %~tests.visibility_scope.field_1% %tests.visibility_scope.field_1%'
-      hover: '%field_1% %~tests.visibility_scope.field_1% %tests.visibility_scope.field_1%'
+      text: '%~header.debug% %field_1% %~tests.invoke_action.field_1% %tests.invoke_action.field_1%'
+      hover: '%~header.debug% %field_1% %~tests.invoke_action.field_1% %tests.invoke_action.field_1%'
+
+  invoke_pool:
+    description: 'TODO: Document.'
+    field_1: '&7field_1'
+    message:
+      type: pool
+      mode: random
+      pool:
+        - '%~header.debug% %field_1% %~tests.invoke_pool.field_1% %tests.invoke_pool.field_1%'
+        - '%~header.debug% This is a line.'
