@@ -12,7 +12,12 @@ import com.asledgehammer.langpack.core.objects.definition.ComplexDefinition
 import com.asledgehammer.langpack.core.objects.definition.LangDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.processor.LangProcessor
+import com.asledgehammer.langpack.sponge.SpongeLangPack
 import com.asledgehammer.langpack.sponge.util.text.TextComponent
+import org.spongepowered.api.Sponge
+import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.text.Text
+import org.spongepowered.api.world.World
 
 /**
  * **ActionText** packages [SpongeHoverText] and [SpongeCommandText] wrappers.
@@ -158,6 +163,93 @@ open class SpongeActionText : Complex<TextComponent> {
         if (hoverText != null) component.hoverEvent = hoverText!!.get()
         if (commandText != null) component.clickEvent = commandText!!.get()
         return component
+    }
+
+
+    /**
+     * Sends the ActionText to a given player.
+     *
+     * @param player The player to send.
+     */
+    fun message(player: Player) {
+        if (!player.isOnline) return
+        player.sendMessage(Text.of(get()))
+    }
+
+    /**
+     * Sends the ActionText as a message to a player.
+     *
+     * @param player The player to receive the message.
+     * @param pack (Optional) The package to process the text.
+     * @param args (Optional) Additional arguments to provide to process the text.
+     */
+    fun send(player: Player, pack: SpongeLangPack? = null, vararg args: LangArg) {
+        val text = if (pack != null) {
+            process(pack, pack.getLanguage(player), definition?.parent, *args).toText()
+        } else {
+            get().toText()
+        }
+        player.sendMessage(text)
+    }
+
+    /**
+     * Broadcasts the ActionText to all online players on the server.
+     */
+    fun broadcast() {
+        val message = Text.of(get())
+        for (player in Sponge.getServer().onlinePlayers) player.sendMessage(message)
+    }
+
+    /**
+     * Broadcasts the ActionText to all players in a given world.
+     *
+     * @param world The world to broadcast.
+     */
+    fun broadcast(world: World) {
+        val message = Text.of(get())
+        for (player in world.players) player.sendMessage(message)
+    }
+
+    /**
+     * Broadcasts the ActionText to all online players on the server.
+     *
+     * @param pack The package to process the text.
+     * @param args (Optional) Additional arguments to provide to process the text.
+     */
+    fun broadcast(pack: SpongeLangPack, vararg args: LangArg) {
+        val cache = HashMap<Language, Text>()
+        for (player in Sponge.getServer().onlinePlayers) {
+            val text: Text
+            val lang = pack.getLanguage(player)
+            if (cache[lang] != null) {
+                text = cache[lang]!!
+            } else {
+                text = Text.of(process(pack, pack.getLanguage(player), definition?.parent, *args))
+                cache[lang] = text
+            }
+            player.sendMessage(text)
+        }
+    }
+
+    /**
+     * Broadcasts the ActionText to all players in a given world.
+     *
+     * @param pack The package to process the text.
+     * @param args (Optional) Additional arguments to provide to process the text.
+     */
+    fun broadcast(world: World, pack: SpongeLangPack, vararg args: LangArg) {
+        val cache = HashMap<Language, Text>()
+        for (player in world.players) {
+            val text: Text
+            val lang = pack.getLanguage(player)
+            if (cache[lang] != null) {
+                text = cache[lang]!!
+            } else {
+                text = Text.of(process(pack, lang, definition?.parent, *args))
+                cache[lang] = text
+            }
+            player.sendMessage(text)
+        }
     }
 
     /**

@@ -14,6 +14,7 @@ import com.asledgehammer.langpack.core.objects.definition.LangDefinition
 import com.asledgehammer.langpack.core.processor.LangProcessor
 import com.asledgehammer.langpack.core.util.StringUtil
 import com.asledgehammer.langpack.sponge.objects.complex.SpongeActionText
+import com.asledgehammer.langpack.sponge.objects.complex.SpongeStringPool
 import com.asledgehammer.langpack.sponge.processor.SpongeProcessor
 import com.asledgehammer.langpack.sponge.util.text.TextComponent
 import org.spongepowered.api.Sponge
@@ -225,7 +226,7 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
 
     companion object {
 
-        private val stringPoolLoader = StringPool.Loader()
+        private val stringPoolLoader = SpongeStringPool.Loader()
         private val actionTextLoader = SpongeActionText.Loader()
 
         fun setSpongeLoaders(map: HashMap<String, Complex.Loader<*>>) {

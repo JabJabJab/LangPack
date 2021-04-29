@@ -2,8 +2,10 @@ package com.asledgehammer.langpack.sponge
 
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.test.LangTest
-import com.asledgehammer.langpack.sponge.test.TestAction
-import com.asledgehammer.langpack.sponge.test.TestBroadcast
+import com.asledgehammer.langpack.sponge.test.InvokeActionTest
+import com.asledgehammer.langpack.sponge.test.InvokePoolTest
+import com.asledgehammer.langpack.sponge.test.ResolveFieldTest
+import com.asledgehammer.langpack.sponge.test.SimpleTest
 import org.spongepowered.api.command.CommandCallable
 import org.spongepowered.api.command.CommandResult
 import org.spongepowered.api.command.CommandSource
@@ -156,12 +158,24 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandCallable {
         tests[test.id] = test
     }
 
+    private fun addTest(id: String) {
+        addTest(SimpleTest(pack, id))
+    }
+
     init {
-        subCommands.add("test")
-        subCommands.add("tests")
         if (plugin.testsEnabled) {
-            addTest(TestAction(pack.getList("test.action.description")!!))
-            addTest(TestBroadcast(pack.getList("test.broadcast.description")!!))
+            subCommands.add("test")
+            subCommands.add("tests")
+            addTest("basic")
+            addTest("multiline")
+            addTest("placeholder")
+            addTest("visibility_scope")
+            addTest(ResolveFieldTest(pack))
+            addTest("broadcast")
+            addTest("action")
+            addTest("pool")
+            addTest(InvokeActionTest(pack))
+            addTest(InvokePoolTest(pack))
         }
     }
 }

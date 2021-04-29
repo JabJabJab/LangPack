@@ -5,6 +5,13 @@ import com.asledgehammer.langpack.core.test.TestResult
 import com.asledgehammer.langpack.spigot.SpigotLangPack
 import org.bukkit.entity.Player
 
+/**
+ * TODO: Document.
+ *
+ * @author Jab
+ *
+ * @param pack
+ */
 class ResolveFieldTest(pack: SpigotLangPack) : SpigotLangTest(pack, "resolve_field") {
 
     override fun run(pack: SpigotLangPack, player: Player, vararg args: LangArg): TestResult {

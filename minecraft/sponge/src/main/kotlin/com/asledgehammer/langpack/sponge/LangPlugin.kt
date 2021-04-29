@@ -9,7 +9,7 @@ import org.spongepowered.api.plugin.Plugin
 class LangPlugin {
 
     val pack = SpongeLangPack(LangPlugin::class.java.classLoader)
-    val testsEnabled = false
+    val testsEnabled = true
 
     @Listener
     fun on(event: GameInitializationEvent) {

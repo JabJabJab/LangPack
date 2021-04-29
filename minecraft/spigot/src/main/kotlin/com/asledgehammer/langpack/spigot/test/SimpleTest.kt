@@ -5,6 +5,14 @@ import com.asledgehammer.langpack.core.test.TestResult
 import com.asledgehammer.langpack.spigot.SpigotLangPack
 import org.bukkit.entity.Player
 
+/**
+ * TODO: Document.
+ *
+ * @author Jab
+ *
+ * @param pack
+ * @param id
+ */
 class SimpleTest(pack: SpigotLangPack, id: String): SpigotLangTest(pack,id) {
 
     override fun run(pack: SpigotLangPack, player: Player, vararg args: LangArg): TestResult {

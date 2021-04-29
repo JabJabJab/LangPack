@@ -5,3 +5,7 @@
 # コマンド
 header:
   text: '[ラングパック]'
+  info: '&7%!text%'
+  success: '&a%!text%'
+  error: '&c%!text%'
+  debug: '&d%!text%'

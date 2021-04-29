@@ -4,6 +4,14 @@ import com.asledgehammer.langpack.core.test.LangTest
 import com.asledgehammer.langpack.spigot.SpigotLangPack
 import org.bukkit.entity.Player
 
+/**
+ * TODO: Document.
+ *
+ * @author Jab
+ *
+ * @param id
+ * @param description
+ */
 abstract class SpigotLangTest private constructor(id: String, description: List<String>) :
     LangTest<SpigotLangPack, Player>(id, description) {
 

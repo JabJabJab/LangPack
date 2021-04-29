@@ -187,7 +187,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         tests[test.id] = test
     }
 
-    fun addTest(id: String) {
+    private fun addTest(id: String) {
         addTest(SimpleTest(pack, id))
     }
 

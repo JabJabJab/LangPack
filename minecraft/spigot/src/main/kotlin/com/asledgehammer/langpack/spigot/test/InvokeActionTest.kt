@@ -7,6 +7,13 @@ import com.asledgehammer.langpack.spigot.SpigotLangPack
 import com.asledgehammer.langpack.spigot.objects.complex.SpigotActionText
 import org.bukkit.entity.Player
 
+/**
+ * TODO: Document.
+ *
+ * @author Jab
+ *
+ * @param pack
+ */
 class InvokeActionTest(pack: SpigotLangPack) : SpigotLangTest(pack, "invoke_action") {
 
     override fun run(pack: SpigotLangPack, player: Player, vararg args: LangArg): TestResult {
