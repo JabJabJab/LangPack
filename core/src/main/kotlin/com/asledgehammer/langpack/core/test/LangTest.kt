@@ -3,6 +3,7 @@
 package com.asledgehammer.langpack.core.test
 
 import com.asledgehammer.langpack.core.LangPack
+import com.asledgehammer.langpack.core.objects.LangArg
 
 /**
  * **LangTest** is a runtime testing utility for [LangPack].
@@ -25,10 +26,10 @@ abstract class LangTest<Pack : LangPack, Commander>(val id: String, val descript
      *
      * @return Returns the results of the test.
      */
-    fun test(pack: Pack, commander: Commander): TestResult {
+    fun test(pack: Pack, commander: Commander, vararg args: LangArg): TestResult {
         val time = System.currentTimeMillis()
         return try {
-            val result = run(pack, commander)
+            val result = run(pack, commander, *args)
             result.time = System.currentTimeMillis() - time
             result
         } catch (e: Exception) {
@@ -45,5 +46,5 @@ abstract class LangTest<Pack : LangPack, Commander>(val id: String, val descript
      *
      * @return Returns the result of the test.
      */
-    protected abstract fun run(pack: Pack, player: Commander): TestResult
+    protected abstract fun run(pack: Pack, player: Commander, vararg args: LangArg): TestResult
 }
