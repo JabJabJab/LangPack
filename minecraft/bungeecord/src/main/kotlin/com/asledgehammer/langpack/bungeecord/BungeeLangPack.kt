@@ -84,7 +84,11 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
                 component = TextComponent(query)
             }
 
-            val result = (processor as TextComponentProcessor).process(component, this, langPlayer, null, *args)
+            val result = if (resolved != null) {
+                (processor as TextComponentProcessor).process(component, this, langPlayer, resolved.parent, *args)
+            } else {
+                (processor as TextComponentProcessor).process(component, this, langPlayer, null, *args)
+            }
             cache[lang] = result
             cache[langPlayer] = result
 
@@ -132,9 +136,12 @@ class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
             component = TextComponent(query)
         }
 
-        player.sendMessage(
+        val result = if (resolved != null) {
+            (processor as TextComponentProcessor).process(component, this, langPlayer, resolved.parent, *args)
+        } else {
             (processor as TextComponentProcessor).process(component, this, langPlayer, null, *args)
-        )
+        }
+        player.sendMessage(result)
     }
 
     /**

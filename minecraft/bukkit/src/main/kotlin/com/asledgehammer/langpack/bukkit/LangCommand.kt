@@ -143,7 +143,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
             return
         } else {
             pack.message(player, "test.description",
-                LangArg("test", test.name),
+                LangArg("test", test.id),
                 LangArg("description", test.description)
             )
             return
@@ -167,7 +167,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
     }
 
     private fun addTest(test: LangTest<BukkitLangPack, Player>) {
-        tests[test.name] = test
+        tests[test.id] = test
     }
 
     init {

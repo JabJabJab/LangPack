@@ -2,8 +2,8 @@ package com.asledgehammer.langpack.spigot
 
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.test.LangTest
-import com.asledgehammer.langpack.spigot.test.TestAction
-import com.asledgehammer.langpack.spigot.test.TestBroadcast
+import com.asledgehammer.langpack.spigot.test.InvokeActionObjectTest
+import com.asledgehammer.langpack.spigot.test.SimpleTest
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -22,23 +22,28 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
     private val tests = HashMap<String, LangTest<SpigotLangPack, Player>>()
     private val emptyList = ArrayList<String>()
     private val subCommands = ArrayList<String>()
-    private val cache = SpigotLangCache(plugin.pack!!)
-    private val pack = plugin.pack!!
+    private val cache = SpigotLangCache(plugin.pack)
+    private val pack = plugin.pack
 
     init {
-        subCommands.add("test")
-        subCommands.add("tests")
-        val command = plugin.getCommand("lang")
-        if (command == null) {
-            System.err.println("The command 'lang' is not registered.")
-        } else {
-            command.setExecutor(this)
-            command.tabCompleter = this
 
-            if (plugin.testsEnabled) {
-                addTest(TestAction(pack.getList("test.action.description")!!))
-                addTest(TestBroadcast(pack.getList("test.broadcast.description")!!))
-            }
+        val command = plugin.getCommand("lang")
+        require(command != null) { "The command 'lang' is not registered." }
+        command.setExecutor(this)
+        command.tabCompleter = this
+
+        if (plugin.testsEnabled) {
+            subCommands.add("test")
+            subCommands.add("tests")
+
+            addTest("basic")
+            addTest("multiline")
+            addTest("placeholder")
+            addTest("visibility_scope")
+            addTest("broadcast")
+            addTest("action")
+
+            addTest(InvokeActionObjectTest(pack))
         }
     }
 
@@ -166,7 +171,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
             return
         } else {
             pack.message(player, "test.description",
-                LangArg("test", test.name),
+                LangArg("test", test.id),
                 LangArg("description", test.description)
             )
             return
@@ -193,6 +198,10 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
     }
 
     private fun addTest(test: LangTest<SpigotLangPack, Player>) {
-        tests[test.name] = test
+        tests[test.id] = test
+    }
+
+    fun addTest(id: String) {
+        addTest(SimpleTest(pack, id))
     }
 }

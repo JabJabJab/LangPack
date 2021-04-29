@@ -3,7 +3,6 @@ package com.asledgehammer.langpack.spigot
 import com.asledgehammer.langpack.core.LangPack
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
-import java.io.File
 
 /**
  * **LangPlugin** is the Spigot plugin container for [LangPack].
@@ -15,7 +14,7 @@ internal class LangPlugin : JavaPlugin(), Listener {
     /**
      * The default lang-pack instance.
      */
-    var pack: SpigotLangPack? = null
+    val pack: SpigotLangPack = SpigotLangPack(this::class.java.classLoader)
 
     /**
      * If set to true, tests for the spigot module will load and be accessible to authorized players.
@@ -27,11 +26,9 @@ internal class LangPlugin : JavaPlugin(), Listener {
         saveDefaultConfig()
         testsEnabled = if (config.isBoolean("tests_enabled")) config.getBoolean("tests_enabled") else false
 
-        val langDir = File(dataFolder, "lang")
-        if (!langDir.exists()) langDir.mkdirs()
-        pack = SpigotLangPack(this::class.java.classLoader)
-        pack!!.append("lang", save = true)
-        if (testsEnabled) pack!!.append("lang_test", save = true)
+        pack.append("lang", save = true)
+        if (testsEnabled) pack.append("lang_test", save = true, force = true)
+        pack.debug = true
 
         LangCommand(this)
         server.pluginManager.registerEvents(this, this)

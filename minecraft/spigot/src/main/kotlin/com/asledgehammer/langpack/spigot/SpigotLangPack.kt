@@ -86,7 +86,11 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
                 component = TextComponent(query)
             }
 
-            val result = (processor as TextComponentProcessor).process(component, this, langPlayer, null, *args)
+            val result = if (resolved != null) {
+                (processor as TextComponentProcessor).process(component, this, langPlayer, resolved.parent, *args)
+            } else {
+                (processor as TextComponentProcessor).process(component, this, langPlayer, null, *args)
+            }
             cache[lang] = result
             cache[langPlayer] = result
 
@@ -103,6 +107,12 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
      * @param args Additional arguments to apply.
      */
     fun message(player: Player, query: String, vararg args: LangArg) {
+
+        if (debug) {
+            println("""[${this::class.java.simpleName}] 
+                |message(player = ${player.name}, query = $query,
+                |args = {${args.contentToString()})""".trimMargin())
+        }
 
         val langPlayer = getLanguage(player)
         var lang = langPlayer
@@ -134,9 +144,15 @@ class SpigotLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
             component = TextComponent(query)
         }
 
-        player.spigot().sendMessage(
-            (processor as TextComponentProcessor).process(component, this, langPlayer, null, *args)
-        )
+        if (resolved != null) {
+            player.spigot().sendMessage(
+                (processor as TextComponentProcessor).process(component, this, langPlayer, resolved.parent, *args)
+            )
+        } else {
+            player.spigot().sendMessage(
+                (processor as TextComponentProcessor).process(component, this, langPlayer, null, *args)
+            )
+        }
     }
 
     /**

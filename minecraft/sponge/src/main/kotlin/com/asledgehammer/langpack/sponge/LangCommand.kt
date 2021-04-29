@@ -125,7 +125,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandCallable {
             return
         } else {
             pack.message(player, "test.description",
-                LangArg("test", test.name),
+                LangArg("test", test.id),
                 LangArg("description", test.description)
             )
             return
@@ -153,7 +153,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandCallable {
     }
 
     private fun addTest(test: LangTest<SpongeLangPack, Player>) {
-        tests[test.name] = test
+        tests[test.id] = test
     }
 
     init {

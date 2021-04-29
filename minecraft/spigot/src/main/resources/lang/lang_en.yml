@@ -16,3 +16,7 @@ command:
 
   # command -> The command given.
   not_found: '%header.info% &cCommand not found: %command%'
+
+
+test:
+  disabled: '%header.info% &cTests are disabled.'

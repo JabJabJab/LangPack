@@ -37,6 +37,18 @@ open class TextComponentLangPack(classLoader: ClassLoader = this::class.java.cla
     override var formatter: FieldFormatter = PercentFormatter()
 
     override fun resolve(query: String, lang: Language, context: LangGroup?): LangDefinition<*>? {
+
+        if (debug) {
+            println("""[${this::class.java.simpleName}] :: resolve(query = "$query", lang = ${lang.rawLocale}, context = $context)""")
+            // if (context == null) {
+            //     println("### STACKTRACE: ")
+            //     for (element in Thread.currentThread().stackTrace) {
+            //         println(element)
+            //     }
+            //     println()
+            // }
+        }
+
         var raw: LangDefinition<*>? = null
 
         // If a context is provided, try to look up the absolute path + the query first.
@@ -45,7 +57,12 @@ open class TextComponentLangPack(classLoader: ClassLoader = this::class.java.cla
             var nextContext = context
             while (nextContext != null && nextContext !is LangFile) {
                 raw = resolve("${context.getPath()}.$query", lang)
-                if (raw != null) return raw
+                if (raw != null) {
+                    if (debug) {
+                        println("""[${this::class.java.simpleName}] :: resolve(query = "$query", language = $lang, context = "$context") = "$raw""")
+                    }
+                    return raw
+                }
                 nextContext = nextContext.parent
             }
         }
@@ -62,6 +79,11 @@ open class TextComponentLangPack(classLoader: ClassLoader = this::class.java.cla
 
         // Check global last.
         if (raw == null && this != global) raw = global?.resolve(query, lang)
+
+        if (debug) {
+            println("""[${this::class.java.simpleName}] :: resolve(query = "$query", language = $lang, context = "$context") = "$raw"""")
+        }
+
         return raw
     }
 

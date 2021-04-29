@@ -149,7 +149,12 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
                 component = TextComponent(query)
             }
 
-            val result = (processor as SpongeProcessor).process(component, this, langPlayer, null, *args)
+            val result =
+                if (resolved != null) {
+                    (processor as SpongeProcessor).process(component, this, langPlayer, resolved.parent, *args)
+                } else {
+                    (processor as SpongeProcessor).process(component, this, langPlayer, null, *args)
+                }
             val text = result.toText()
             cache[lang] = text
             cache[langPlayer] = text
@@ -196,7 +201,13 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
         } else {
             component = TextComponent(query)
         }
-        val result = (processor as SpongeProcessor).process(component, this, langPlayer, null, *args)
+
+        val result =
+            if (resolved != null) {
+                (processor as SpongeProcessor).process(component, this, langPlayer, resolved.parent, *args)
+            } else {
+                (processor as SpongeProcessor).process(component, this, langPlayer, null, *args)
+            }
         player.sendMessage(result.toText())
     }
 
@@ -253,9 +264,7 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
          */
         fun broadcast(lines: Array<String>) {
             val channel = Sponge.getServer().broadcastChannel
-            for (line in lines) {
-                channel.send(Text.of(line))
-            }
+            for (line in lines) channel.send(Text.of(line))
         }
 
         /**
@@ -265,9 +274,7 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
          */
         fun broadcast(lines: List<String>) {
             val channel = Sponge.getServer().broadcastChannel
-            for (line in lines) {
-                channel.send(Text.of(line))
-            }
+            for (line in lines) channel.send(Text.of(line))
         }
 
         /**
@@ -279,9 +286,7 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
          */
         fun broadcastSafe(lines: Array<String?>) {
             val channel = Sponge.getServer().broadcastChannel
-            for (line in lines) {
-                if (line != null) channel.send(Text.of(line))
-            }
+            for (line in lines) if (line != null) channel.send(Text.of(line))
         }
 
         /**
@@ -293,9 +298,7 @@ class SpongeLangPack(classLoader: ClassLoader = this::class.java.classLoader, di
          */
         fun broadcastSafe(lines: List<String?>) {
             val channel = Sponge.getServer().broadcastChannel
-            for (line in lines) {
-                if (line != null) channel.send(Text.of(line))
-            }
+            for (line in lines) if (line != null) channel.send(Text.of(line))
         }
     }
 }

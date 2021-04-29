@@ -154,7 +154,10 @@ open class LangPack(
     @JvmOverloads
     open fun resolve(query: String, lang: Language, context: LangGroup? = null): LangDefinition<*>? {
 
-        if (debug) println("[LangPack] :: resolve($query, ${lang.rawLocale}, $context)")
+        if (debug) {
+            println("""[${this::class.java.simpleName}] :: 
+                |resolve(query = $query, lang = ${lang.rawLocale}, context = $context)""".trimMargin())
+        }
 
         var raw: LangDefinition<*>? = null
 
@@ -163,8 +166,14 @@ open class LangPack(
         if (context != null && context !is LangFile) {
             var nextContext = context
             while (nextContext != null && nextContext !is LangFile) {
-                raw = resolve("${context.getPath()}.$query", lang)
-                if (raw != null) return raw
+                raw = resolve("${nextContext.getPath()}.$query", lang)
+                if (raw != null) {
+                    if (debug) {
+                        println("""[${this::class.java.simpleName}] :: 
+                            |resolve(query = $query, language = $lang, context = $context) = $raw""".trimMargin())
+                    }
+                    return raw
+                }
                 nextContext = nextContext.parent
             }
         }
@@ -174,16 +183,17 @@ open class LangPack(
         if (langFile == null) {
             // Check language fallbacks if the file is not defined.
             val fallBack = lang.fallback
-            if (fallBack != null) {
-                langFile = files[fallBack]
-            }
+            if (fallBack != null) langFile = files[fallBack]
         }
 
         if (langFile != null) raw = langFile.resolve(query)
 
         // Check global last.
         if (raw == null && this != global) raw = global?.resolve(query, lang)
-        if (debug) println("[LangPack] :: resolve($query, $lang, $context) = $raw")
+        if (debug) {
+            println("""[${this::class.java.simpleName}] :: 
+                            |resolve(query = $query, language = $lang, context = $context) = $raw""".trimMargin())
+        }
         return raw
     }
 

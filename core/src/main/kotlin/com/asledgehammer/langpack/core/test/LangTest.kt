@@ -9,13 +9,13 @@ import com.asledgehammer.langpack.core.LangPack
  *
  * @author Jab
  *
- * @property name The name of the test.
+ * @property id The name of the test.
  * @property description A brief description of what the test does.
  *
  * @param Pack The pack type.
  * @param Commander The object of the person orchestrating the test.
  */
-abstract class LangTest<Pack : LangPack, Commander>(val name: String, val description: List<String>) {
+abstract class LangTest<Pack : LangPack, Commander>(val id: String, val description: List<String>) {
 
     /**
      * Executes the test procedure.
@@ -33,7 +33,7 @@ abstract class LangTest<Pack : LangPack, Commander>(val name: String, val descri
             result
         } catch (e: Exception) {
             e.printStackTrace(System.err)
-            val result = TestResult(false, e.message)
+            val result = TestResult.failure(e.message ?: "The test failed.")
             result.time = System.currentTimeMillis() - time
             result
         }
