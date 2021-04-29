@@ -1,0 +1,11 @@
+# NOTE: I do not speak Japanese. This is just an attempt at showing an example language other than English.
+#
+#  - Jab (Author)
+
+# コマンド
+header:
+  text: '[ラングパック]'
+  info: '&7%!text%'
+  success: '&a%!text%'
+  error: '&c%!text%'
+  debug: '&d%!text%'

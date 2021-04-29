@@ -60,7 +60,9 @@ class BungeeActionText : TextComponentActionText {
      * @param commandText The command to execute.
      * @param hoverText The hover text to display.
      */
-    constructor(text: String, commandText: TextComponentCommandText, hoverText: TextComponentHoverText) : super(text, commandText, hoverText)
+    constructor(text: String, commandText: TextComponentCommandText, hoverText: TextComponentHoverText) : super(text,
+        commandText,
+        hoverText)
 
     /**
      * Import constructor.
@@ -102,9 +104,7 @@ class BungeeActionText : TextComponentActionText {
     fun broadcast() {
         val message = get()
         val server = ProxyServer.getInstance()
-        for (player in server.players) {
-            player.sendMessage(message)
-        }
+        for (player in server.players) player.sendMessage(message)
     }
 
     /**

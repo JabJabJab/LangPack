@@ -11,8 +11,7 @@ permission:
 
 
 command:
-  name: 'lang'
-
+  name: 'blang'
   help: '%header.info% &6/%!name% &7[ &6test&7 | &6tests&7 ]'
 
   # command -> The command given.

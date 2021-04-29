@@ -105,7 +105,7 @@ tests:
     description: 'TODO: Document.'
     message:
       type: pool
-      mode: sequential
+      mode: random
       pool:
         - '%~header.debug% This is line 1.'
         - '%~header.debug% This is line 2.'
@@ -125,7 +125,7 @@ tests:
     field_1: '&7field_1'
     message:
       type: pool
-      mode: sequential
+      mode: random
       pool:
         - '%~header.debug% %field_1% %~tests.invoke_pool.field_1% %tests.invoke_pool.field_1%'
         - '%~header.debug% This is a line.'

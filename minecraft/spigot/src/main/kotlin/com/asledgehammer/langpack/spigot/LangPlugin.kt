@@ -25,10 +25,10 @@ internal class LangPlugin : JavaPlugin(), Listener {
         instance = this
         saveDefaultConfig()
         testsEnabled = if (config.isBoolean("tests_enabled")) config.getBoolean("tests_enabled") else false
+        pack.debug = if (config.isBoolean("debug")) config.getBoolean("debug") else false
 
         pack.append("lang", save = true)
         if (testsEnabled) pack.append("lang_test", save = true, force = true)
-        pack.debug = true
 
         LangCommand(this)
         server.pluginManager.registerEvents(this, this)
