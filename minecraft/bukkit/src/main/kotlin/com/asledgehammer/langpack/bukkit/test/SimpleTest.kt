@@ -2,18 +2,21 @@ package com.asledgehammer.langpack.bukkit.test
 
 import com.asledgehammer.langpack.bukkit.BukkitLangPack
 import com.asledgehammer.langpack.core.objects.LangArg
-import com.asledgehammer.langpack.core.test.LangTest
 import com.asledgehammer.langpack.core.test.TestResult
 import org.bukkit.entity.Player
 
 /**
- * **TestBroadcast** tests a basic broadcast call to [BukkitLangPack].
+ * TODO: Document.
  *
  * @author Jab
+ *
+ * @param pack
+ * @param id
  */
-class TestBroadcast(description: List<String>) : LangTest<BukkitLangPack, Player>("broadcast", description) {
+class SimpleTest(pack: BukkitLangPack, id: String) : SpigotLangTest(pack, id) {
+
     override fun run(pack: BukkitLangPack, player: Player, vararg args: LangArg): TestResult {
-        pack.broadcast("test.broadcast.message", *args)
+        pack.message(player, "tests.$id.message", *args)
         return TestResult.success()
     }
 }

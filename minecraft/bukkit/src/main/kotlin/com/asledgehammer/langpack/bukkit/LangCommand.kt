@@ -1,7 +1,9 @@
 package com.asledgehammer.langpack.bukkit
 
-import com.asledgehammer.langpack.bukkit.test.TestAction
-import com.asledgehammer.langpack.bukkit.test.TestBroadcast
+import com.asledgehammer.langpack.bukkit.test.InvokeActionTest
+import com.asledgehammer.langpack.bukkit.test.InvokePoolTest
+import com.asledgehammer.langpack.bukkit.test.ResolveFieldTest
+import com.asledgehammer.langpack.bukkit.test.SimpleTest
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.test.LangTest
 import org.bukkit.command.Command
@@ -57,6 +59,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         alias: String,
         args: Array<out String>,
     ): MutableList<String> {
+
         if (args.isEmpty() || sender !is Player) return subCommands
 
         val lang = cache.getLanguage(sender)
@@ -103,11 +106,13 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
             pack.message(player, "permission.deny")
             return
         }
+
         // Make sure that 'tests_enabled' is set to true in the global config.
         if (!plugin.testsEnabled) {
             pack.message(player, "test.disabled")
             return
         }
+
         // Make sure that a test name is provided.
         if (args.size < 2 || args.size > 3) {
             pack.message(player, "test.help")
@@ -129,9 +134,12 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
                 pack.message(player, "test.help")
                 return
             }
+
             pack.message(player, "test.start", argTest)
+
             // Run the test.
             val result = test.test(pack, player)
+
             // Display the result.
             if (result.success) {
                 pack.message(player, "test.success", argTest, LangArg("time", result.time))
@@ -155,7 +163,15 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
             pack.message(player, "permission.deny")
             return
         }
+
+        // Make sure that 'tests_enabled' is set to true in the global config.
+        if (!plugin.testsEnabled) {
+            pack.message(player, "test.disabled")
+            return
+        }
+
         pack.message(player, "tests.start", LangArg("test_count", tests.size))
+
         val names = ArrayList<String>(tests.keys)
         if (names.isNotEmpty()) {
             names.sortBy { it }
@@ -163,6 +179,7 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
                 pack.message(player, "tests.line", LangArg("test", test))
             }
         }
+
         pack.message(player, "tests.end")
     }
 
@@ -170,19 +187,29 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandExecutor, Ta
         tests[test.id] = test
     }
 
+    private fun addTest(id: String) {
+        addTest(SimpleTest(pack, id))
+    }
+
     init {
-        subCommands.add("test")
-        subCommands.add("tests")
         val command = plugin.getCommand("lang")
-        if (command == null) {
-            System.err.println("The command 'lang' is not registered.")
-        } else {
-            command.setExecutor(this)
-            command.tabCompleter = this
-            if (plugin.testsEnabled) {
-                addTest(TestAction(pack.getList("test.action.description")!!))
-                addTest(TestBroadcast(pack.getList("test.broadcast.description")!!))
-            }
+        require(command != null) { "The command 'lang' is not registered." }
+        command.setExecutor(this)
+        command.tabCompleter = this
+
+        if (plugin.testsEnabled) {
+            subCommands.add("test")
+            subCommands.add("tests")
+            addTest("basic")
+            addTest("multiline")
+            addTest("placeholder")
+            addTest("visibility_scope")
+            addTest(ResolveFieldTest(pack))
+            addTest("broadcast")
+            addTest("action")
+            addTest("pool")
+            addTest(InvokeActionTest(pack))
+            addTest(InvokePoolTest(pack))
         }
     }
 }

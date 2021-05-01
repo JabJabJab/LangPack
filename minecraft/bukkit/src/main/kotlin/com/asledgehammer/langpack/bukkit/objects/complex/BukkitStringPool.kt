@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import java.util.*
 
 /**
- * **BukkitStringPool** wraps the [StringPool] class to provide additional support for the Bukkit API.
+ * **BukkitStringPool** wraps the StringPool class to provide additional support for the Bukkit API.
  *
  * @author Jab
  */
@@ -64,7 +64,7 @@ class BukkitStringPool : StringPool {
     constructor(cfg: ConfigSection) : super(cfg)
 
     /**
-     * Sends the StringPool to a given player.
+     * Sends the ActionText to a given player.
      *
      * @param player The player to send.
      */
@@ -74,23 +74,23 @@ class BukkitStringPool : StringPool {
     }
 
     /**
-     * Sends the StringPool as a message to a player.
+     * Sends the ActionText as a message to a player.
      *
      * @param player The player to receive the message.
      * @param pack (Optional) The package to process the text.
      * @param args (Optional) Additional arguments to provide to process the text.
      */
     fun send(player: Player, pack: BukkitLangPack? = null, vararg args: LangArg) {
-        val message = if (pack != null) {
+        val text = if (pack != null) {
             process(pack, pack.getLanguage(player), definition?.parent, *args)
         } else {
             get()
         }
-        player.sendMessage(message)
+        player.sendMessage(text)
     }
 
     /**
-     * Broadcasts the StringPool to all online players on the server.
+     * Broadcasts the ActionText to all online players on the server.
      */
     fun broadcast() {
         val message = get()
@@ -98,7 +98,7 @@ class BukkitStringPool : StringPool {
     }
 
     /**
-     * Broadcasts the StringPool to all players in a given world.
+     * Broadcasts the ActionText to all players in a given world.
      *
      * @param world The world to broadcast.
      */
@@ -108,7 +108,7 @@ class BukkitStringPool : StringPool {
     }
 
     /**
-     * Broadcasts the StringPool to all online players on the server.
+     * Broadcasts the ActionText to all online players on the server.
      *
      * @param pack The package to process the text.
      * @param args (Optional) Additional arguments to provide to process the text.
@@ -116,20 +116,20 @@ class BukkitStringPool : StringPool {
     fun broadcast(pack: BukkitLangPack, vararg args: LangArg) {
         val cache = HashMap<Language, String>()
         for (player in Bukkit.getOnlinePlayers()) {
-            val message: String
+            val text: String
             val lang = pack.getLanguage(player)
             if (cache[lang] != null) {
-                message = cache[lang]!!
+                text = cache[lang]!!
             } else {
-                message = process(pack, pack.getLanguage(player), definition?.parent, *args)
-                cache[lang] = message
+                text = process(pack, pack.getLanguage(player), definition?.parent, *args)
+                cache[lang] = text
             }
-            player.sendMessage(message)
+            player.sendMessage(text)
         }
     }
 
     /**
-     * Broadcasts the StringPool to all players in a given world.
+     * Broadcasts the ActionText to all players in a given world.
      *
      * @param pack The package to process the text.
      * @param args (Optional) Additional arguments to provide to process the text.
@@ -137,20 +137,20 @@ class BukkitStringPool : StringPool {
     fun broadcast(world: World, pack: BukkitLangPack, vararg args: LangArg) {
         val cache = HashMap<Language, String>()
         for (player in world.players) {
-            val message: String
+            val text: String
             val lang = pack.getLanguage(player)
             if (cache[lang] != null) {
-                message = cache[lang]!!
+                text = cache[lang]!!
             } else {
-                message = process(pack, lang, definition?.parent, *args)
-                cache[lang] = message
+                text = process(pack, lang, definition?.parent, *args)
+                cache[lang] = text
             }
-            player.sendMessage(message)
+            player.sendMessage(text)
         }
     }
 
     /**
-     * The **BukkitStringPool.Loader** overrides [StringPool] with [BukkitStringPool].
+     * The **SpongeStringPool.Loader** overrides [StringPool] with [BukkitStringPool].
      *
      * @author Jab
      */

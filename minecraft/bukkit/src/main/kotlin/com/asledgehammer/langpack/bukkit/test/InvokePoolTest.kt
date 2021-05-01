@@ -1,11 +1,11 @@
-package com.asledgehammer.langpack.bungeecord.test
+package com.asledgehammer.langpack.bukkit.test
 
-import com.asledgehammer.langpack.bungeecord.BungeeLangPack
-import com.asledgehammer.langpack.bungeecord.objects.complex.BungeeStringPool
+import com.asledgehammer.langpack.bukkit.BukkitLangPack
+import com.asledgehammer.langpack.bukkit.objects.complex.BukkitStringPool
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.objects.definition.ComplexDefinition
 import com.asledgehammer.langpack.core.test.TestResult
-import net.md_5.bungee.api.connection.ProxiedPlayer
+import org.bukkit.entity.Player
 
 /**
  * TODO: Document.
@@ -14,12 +14,12 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
  *
  * @param pack
  */
-class InvokePoolTest(pack: BungeeLangPack) : BungeeLangTest(pack, "invoke_pool") {
+class InvokePoolTest(pack: BukkitLangPack) : SpigotLangTest(pack, "invoke_pool") {
 
-    override fun run(pack: BungeeLangPack, player: ProxiedPlayer, vararg args: LangArg): TestResult {
+    override fun run(pack: BukkitLangPack, player: Player, vararg args: LangArg): TestResult {
         val lang = pack.getLanguage(player)
         val def = pack.resolve("tests.$id.message", lang)!! as ComplexDefinition
-        val stringPool = def.value as BungeeStringPool
+        val stringPool = def.value as BukkitStringPool
         stringPool.send(player, pack, *args)
         stringPool.send(player, pack, *args)
         return TestResult.success()

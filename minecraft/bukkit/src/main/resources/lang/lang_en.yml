@@ -11,8 +11,13 @@ permission:
 
 
 command:
+  name: 'lang'
 
-  help: '%header.info% &6/lang &7[ &6test&7 | &6tests&7 ]'
+  help: '%header.info% &6/%!name% &7[ &6test&7 | &6tests&7 ]'
 
   # command -> The command given.
   not_found: '%header.info% &cCommand not found: %command%'
+
+
+test:
+  disabled: '%header.info% &cTests are disabled.'

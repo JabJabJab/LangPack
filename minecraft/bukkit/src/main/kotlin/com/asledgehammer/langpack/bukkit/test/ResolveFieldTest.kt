@@ -1,20 +1,21 @@
 package com.asledgehammer.langpack.bukkit.test
 
 import com.asledgehammer.langpack.bukkit.BukkitLangPack
-import com.asledgehammer.langpack.bukkit.objects.complex.BukkitActionText
 import com.asledgehammer.langpack.core.objects.LangArg
-import com.asledgehammer.langpack.core.test.LangTest
 import com.asledgehammer.langpack.core.test.TestResult
 import org.bukkit.entity.Player
 
 /**
- * **TestAction** tests a basic [BukkitActionText].
+ * TODO: Document.
  *
  * @author Jab
+ *
+ * @param pack
  */
-class TestAction(description: List<String>) : LangTest<BukkitLangPack, Player>("action", description) {
+class ResolveFieldTest(pack: BukkitLangPack) : SpigotLangTest(pack, "resolve_field") {
+
     override fun run(pack: BukkitLangPack, player: Player, vararg args: LangArg): TestResult {
-        pack.message(player, "test.action.message", *args)
+        pack.message(player, "tests.$id.message", LangArg("player", player.name))
         return TestResult.success()
     }
 }
