@@ -429,8 +429,6 @@ open class LangPack(
     }
 
     /**
-     * **LangPackPrinter** TODO: Document.
-     *
      * @author Jab
      */
     private class LangPackPrinter : MultilinePrinter<LangPack>() {

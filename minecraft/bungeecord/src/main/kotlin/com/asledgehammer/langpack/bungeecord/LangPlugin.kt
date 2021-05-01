@@ -17,8 +17,8 @@ import java.nio.file.Files
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 internal class LangPlugin : Plugin() {
 
-    var testsEnabled = true
-    val pack = BungeeLangPack(this::class.java.classLoader)
+    internal var testsEnabled = true
+    internal val pack = BungeeLangPack(this::class.java.classLoader)
     private val configProvider = ConfigurationProvider.getProvider(YamlConfiguration::class.java)
     private var config: Configuration? = null
 

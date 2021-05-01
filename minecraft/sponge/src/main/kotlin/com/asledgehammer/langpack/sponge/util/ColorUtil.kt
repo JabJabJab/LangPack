@@ -12,6 +12,9 @@ import org.spongepowered.api.text.format.TextColors
  */
 object ColorUtil {
 
+    /**
+     * TODO: Document.
+     */
     const val COLOR_CHAR = '\u00a7'
     private const val ALL_CODES = "0123456789AaBbCcDdEeFf"
     private val COLORS = HashMap<Char, TextColor>()

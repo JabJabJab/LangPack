@@ -40,13 +40,6 @@ open class TextComponentLangPack(classLoader: ClassLoader = this::class.java.cla
 
         if (debug) {
             println("""[${this::class.java.simpleName}] :: resolve(query = "$query", lang = ${lang.rawLocale}, context = $context)""")
-            // if (context == null) {
-            //     println("### STACKTRACE: ")
-            //     for (element in Thread.currentThread().stackTrace) {
-            //         println(element)
-            //     }
-            //     println()
-            // }
         }
 
         var raw: LangDefinition<*>? = null
