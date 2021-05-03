@@ -7,19 +7,23 @@ import org.yaml.snakeyaml.Yaml
 import java.io.*
 
 /**
- * TODO: Document.
+ * **ConfigFile** wraps ConfigSection, parsing and writing YAML data.
  *
  * @author Jab
  */
 class ConfigFile : ConfigSection("") {
 
     /**
-     * TODO: Document.
+     * Parse and read from a YAML file.
+     *
+     * @param file The file to process.
      */
     fun load(file: File): ConfigFile = load(FileInputStream(file))
 
     /**
-     * TODO: Document.
+     * Parse and read from a InputStream.
+     *
+     * @param inputStream The stream to parse and read.
      */
     fun load(inputStream: InputStream): ConfigFile {
         @Suppress("UNCHECKED_CAST")
@@ -28,7 +32,10 @@ class ConfigFile : ConfigSection("") {
     }
 
     /**
-     * TODO: Document.
+     * Writes the section to a YAML file.
+     *
+     * @param file The file to write.
+     * @param overwrite Set this to true to overwrite a file if it already exists.
      */
     fun save(file: File, overwrite: Boolean = false) {
         if (!overwrite && file.exists()) return
@@ -62,7 +69,7 @@ class ConfigFile : ConfigSection("") {
     companion object {
 
         /**
-         * TODO: Document.
+         * The SnakeYAML API to parse and compile YAML.
          */
         val yaml: Yaml
 
