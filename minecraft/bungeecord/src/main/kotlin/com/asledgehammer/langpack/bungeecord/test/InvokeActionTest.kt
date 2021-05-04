@@ -8,11 +8,11 @@ import com.asledgehammer.langpack.core.test.TestResult
 import net.md_5.bungee.api.connection.ProxiedPlayer
 
 /**
- * TODO: Document.
+ * **InvokeActionTest** tests the integrity of [BungeeActionText] through the API calls through the Bungeecord wrapper.
  *
  * @author Jab
  *
- * @param pack
+ * @param pack The pack instance.
  */
 class InvokeActionTest(pack: BungeeLangPack) : BungeeLangTest(pack, "invoke_action") {
 

@@ -8,11 +8,11 @@ import com.asledgehammer.langpack.sponge.objects.complex.SpongeStringPool
 import org.spongepowered.api.entity.living.player.Player
 
 /**
- * TODO: Document.
+ * **InvokePoolTest** tests the integrity of [SpongeStringPool] through the API calls through the Sponge wrapper.
  *
  * @author Jab
  *
- * @param pack
+ * @param pack The pack instance.
  */
 class InvokePoolTest(pack: SpongeLangPack) : SpongeLangTest(pack, "invoke_pool") {
 

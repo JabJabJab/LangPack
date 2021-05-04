@@ -8,11 +8,11 @@ import com.asledgehammer.langpack.spigot.objects.complex.SpigotActionText
 import org.bukkit.entity.Player
 
 /**
- * TODO: Document.
+ * **InvokeActionTest** tests the integrity of [SpigotActionText] through the API calls through the Spigot wrapper.
  *
  * @author Jab
  *
- * @param pack
+ * @param pack The pack instance.
  */
 class InvokeActionTest(pack: SpigotLangPack) : SpigotLangTest(pack, "invoke_action") {
 

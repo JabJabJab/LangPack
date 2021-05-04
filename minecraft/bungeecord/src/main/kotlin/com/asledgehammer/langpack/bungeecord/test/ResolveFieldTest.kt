@@ -6,11 +6,11 @@ import com.asledgehammer.langpack.core.test.TestResult
 import net.md_5.bungee.api.connection.ProxiedPlayer
 
 /**
- * TODO: Document.
+ * **ResolveFieldTest** tests the integrity of relative and absolute look-ups in lang files.
  *
  * @author Jab
  *
- * @param pack
+ * @param pack The pack instance.
  */
 class ResolveFieldTest(pack: BungeeLangPack) : BungeeLangTest(pack, "resolve_field") {
 

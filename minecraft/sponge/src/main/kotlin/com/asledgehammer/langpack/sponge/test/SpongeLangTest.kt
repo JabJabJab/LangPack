@@ -5,16 +5,20 @@ import com.asledgehammer.langpack.sponge.SpongeLangPack
 import org.spongepowered.api.entity.living.player.Player
 
 /**
- * TODO: Document.
+ * **SpongeLangTest** is a Sponge-specific abstraction to test API through [SpongeLangTest].
  *
  * @author Jab
  *
- * @param id
- * @param description
+ * @param id The id of the test.
+ * @param description The description of the test.
  */
 abstract class SpongeLangTest private constructor(id: String, description: List<String>) :
     LangTest<SpongeLangPack, Player>(id, description) {
 
+    /**
+     * @param pack The pack instance.
+     * @param id The id of the test.
+     */
     constructor(pack: SpongeLangPack, id: String) : this(id, getDescription(id, pack))
 
     companion object {

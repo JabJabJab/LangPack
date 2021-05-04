@@ -6,12 +6,12 @@ import com.asledgehammer.langpack.core.test.TestResult
 import net.md_5.bungee.api.connection.ProxiedPlayer
 
 /**
- * TODO: Document.
+ * **SimpleTest** is a implementation to test a field in a lang file in a simpler way.
  *
  * @author Jab
  *
- * @param pack
- * @param id
+ * @param pack The pack instance.
+ * @param id The id of the test.
  */
 class SimpleTest(pack: BungeeLangPack, id: String): BungeeLangTest(pack,id) {
 

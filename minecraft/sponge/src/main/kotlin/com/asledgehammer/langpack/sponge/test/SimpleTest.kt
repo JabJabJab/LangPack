@@ -6,12 +6,12 @@ import com.asledgehammer.langpack.sponge.SpongeLangPack
 import org.spongepowered.api.entity.living.player.Player
 
 /**
- * TODO: Document.
+ * **SimpleTest** is a implementation to test a field in a lang file in a simpler way.
  *
  * @author Jab
  *
- * @param pack
- * @param id
+ * @param pack The pack instance.
+ * @param id The id of the test.
  */
 class SimpleTest(pack: SpongeLangPack, id: String) : SpongeLangTest(pack, id) {
 

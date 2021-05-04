@@ -5,16 +5,20 @@ import com.asledgehammer.langpack.spigot.SpigotLangPack
 import org.bukkit.entity.Player
 
 /**
- * TODO: Document.
+ * **SpigotLangTest** is a Spigot-specific abstraction to test API through [SpigotLangPack].
  *
  * @author Jab
  *
- * @param id
- * @param description
+ * @param id The id of the test.
+ * @param description The description of the test.
  */
 abstract class SpigotLangTest private constructor(id: String, description: List<String>) :
     LangTest<SpigotLangPack, Player>(id, description) {
 
+    /**
+     * @param pack The pack instance.
+     * @param id The id of the test.
+     */
     constructor(pack: SpigotLangPack, id: String) : this(id, getDescription(id, pack))
 
     companion object {

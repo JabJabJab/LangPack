@@ -6,14 +6,14 @@ import com.asledgehammer.langpack.core.test.TestResult
 import org.bukkit.entity.Player
 
 /**
- * TODO: Document.
+ * **SimpleTest** is a implementation to test a field in a lang file in a simpler way.
  *
  * @author Jab
  *
- * @param pack
- * @param id
+ * @param pack The pack instance.
+ * @param id The id of the test.
  */
-class SimpleTest(pack: BukkitLangPack, id: String) : SpigotLangTest(pack, id) {
+class SimpleTest(pack: BukkitLangPack, id: String) : BukkitLangTest(pack, id) {
 
     override fun run(pack: BukkitLangPack, player: Player, vararg args: LangArg): TestResult {
         pack.message(player, "tests.$id.message", *args)

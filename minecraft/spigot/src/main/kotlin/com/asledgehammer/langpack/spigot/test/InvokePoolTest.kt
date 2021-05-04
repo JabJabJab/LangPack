@@ -8,11 +8,11 @@ import com.asledgehammer.langpack.spigot.objects.complex.SpigotStringPool
 import org.bukkit.entity.Player
 
 /**
- * TODO: Document.
+ * **InvokePoolTest** tests the integrity of [SpigotStringPool] through the API calls through the Spigot wrapper.
  *
  * @author Jab
  *
- * @param pack
+ * @param pack The pack instance.
  */
 class InvokePoolTest(pack: SpigotLangPack) : SpigotLangTest(pack, "invoke_pool") {
 

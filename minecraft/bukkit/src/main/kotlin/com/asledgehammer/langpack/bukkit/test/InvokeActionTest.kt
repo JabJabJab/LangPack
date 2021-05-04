@@ -8,13 +8,13 @@ import com.asledgehammer.langpack.core.test.TestResult
 import org.bukkit.entity.Player
 
 /**
- * TODO: Document.
+ * **InvokeActionTest** tests the integrity of [BukkitActionText] through the API calls through the Bukkit wrapper.
  *
  * @author Jab
  *
- * @param pack
+ * @param pack The pack instance.
  */
-class InvokeActionTest(pack: BukkitLangPack) : SpigotLangTest(pack, "invoke_action") {
+class InvokeActionTest(pack: BukkitLangPack) : BukkitLangTest(pack, "invoke_action") {
 
     override fun run(pack: BukkitLangPack, player: Player, vararg args: LangArg): TestResult {
         val lang = pack.getLanguage(player)

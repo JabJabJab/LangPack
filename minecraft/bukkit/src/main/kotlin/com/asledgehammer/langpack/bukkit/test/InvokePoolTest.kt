@@ -8,13 +8,13 @@ import com.asledgehammer.langpack.core.test.TestResult
 import org.bukkit.entity.Player
 
 /**
- * TODO: Document.
+ * **InvokePoolTest** tests the integrity of [BukkitStringPool] through the API calls through the Bukkit wrapper.
  *
  * @author Jab
  *
- * @param pack
+ * @param pack The pack instance.
  */
-class InvokePoolTest(pack: BukkitLangPack) : SpigotLangTest(pack, "invoke_pool") {
+class InvokePoolTest(pack: BukkitLangPack) : BukkitLangTest(pack, "invoke_pool") {
 
     override fun run(pack: BukkitLangPack, player: Player, vararg args: LangArg): TestResult {
         val lang = pack.getLanguage(player)

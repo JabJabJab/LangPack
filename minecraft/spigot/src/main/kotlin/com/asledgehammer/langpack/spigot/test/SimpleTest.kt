@@ -6,12 +6,12 @@ import com.asledgehammer.langpack.spigot.SpigotLangPack
 import org.bukkit.entity.Player
 
 /**
- * TODO: Document.
+ * **SimpleTest** is a implementation to test a field in a lang file in a simpler way.
  *
  * @author Jab
  *
- * @param pack
- * @param id
+ * @param pack The pack instance.
+ * @param id The id of the test.
  */
 class SimpleTest(pack: SpigotLangPack, id: String): SpigotLangTest(pack,id) {
 

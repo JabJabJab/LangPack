@@ -6,13 +6,13 @@ import com.asledgehammer.langpack.core.test.TestResult
 import org.bukkit.entity.Player
 
 /**
- * TODO: Document.
+ * **ResolveFieldTest** tests the integrity of relative and absolute look-ups in lang files.
  *
  * @author Jab
  *
- * @param pack
+ * @param pack The pack instance.
  */
-class ResolveFieldTest(pack: BukkitLangPack) : SpigotLangTest(pack, "resolve_field") {
+class ResolveFieldTest(pack: BukkitLangPack) : BukkitLangTest(pack, "resolve_field") {
 
     override fun run(pack: BukkitLangPack, player: Player, vararg args: LangArg): TestResult {
         pack.message(player, "tests.$id.message", LangArg("player", player.name))

@@ -6,11 +6,11 @@ import com.asledgehammer.langpack.sponge.SpongeLangPack
 import org.spongepowered.api.entity.living.player.Player
 
 /**
- * TODO: Document.
+ * **ResolveFieldTest** tests the integrity of relative and absolute look-ups in lang files.
  *
  * @author Jab
  *
- * @param pack
+ * @param pack The pack instance.
  */
 class ResolveFieldTest(pack: SpongeLangPack) : SpongeLangTest(pack, "resolve_field") {
 

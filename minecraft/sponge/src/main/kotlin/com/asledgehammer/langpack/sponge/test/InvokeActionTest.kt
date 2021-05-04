@@ -8,11 +8,11 @@ import com.asledgehammer.langpack.sponge.objects.complex.SpongeActionText
 import org.spongepowered.api.entity.living.player.Player
 
 /**
- * TODO: Document.
+ * **InvokeActionTest** tests the integrity of [SpongeActionText] through the API calls through the Sponge wrapper.
  *
  * @author Jab
  *
- * @param pack
+ * @param pack The pack instance.
  */
 class InvokeActionTest(pack: SpongeLangPack) : SpongeLangTest(pack, "invoke_action") {
 
