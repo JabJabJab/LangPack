@@ -23,14 +23,14 @@ open class ConfigSection internal constructor(val name: String) {
         /**
          * @param value The section to set.
          *
-         * @throws CyclicDependencyException Thrown if the value is a child or itself.
+         * @throws CyclicException Thrown if the value is a child or itself.
          */
         set(value) {
             if (value != null) {
                 if (value == this) {
-                    throw CyclicDependencyException("Cannot set parent as self.")
+                    throw CyclicException("Cannot set parent as self.")
                 } else if (value.isChildOf(this)) {
-                    throw CyclicDependencyException("Parent section is a child of the section.")
+                    throw CyclicException("Parent section is a child of the section.")
                 }
             }
             field = value
@@ -157,7 +157,7 @@ open class ConfigSection internal constructor(val name: String) {
     private fun setLocal(query: String, value: Any?) {
         val lQuery = query.toLowerCase().trim()
         if (value is ConfigSection) {
-            if (isChildOf(value)) throw CyclicDependencyException("Cannot set parent as child.")
+            if (isChildOf(value)) throw CyclicException("Cannot set parent as child.")
             children[lQuery] = value
         } else {
             if (value != null) {
