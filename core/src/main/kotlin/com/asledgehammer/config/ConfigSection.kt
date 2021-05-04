@@ -5,53 +5,82 @@ package com.asledgehammer.config
 import java.util.*
 
 /**
- * TODO: Document.
+ * **ConfigSection** is a hierarchical, mutable collection of standard Java primitives and objects.
+ *
+ * ConfigSection implements a strict API when checking, querying, and setting values. Utilizing internal checks ensures
+ * better coding practices alongside both Kotlin and Java usage of the library.
  *
  * @author Jab
  *
- * @property name
+ * @property name The name of the section, as to be referenced in the hierarchy when querying.
  */
 open class ConfigSection internal constructor(val name: String) {
 
     /**
-     * TODO: Document.
+     * The parent of the section.
      */
     var parent: ConfigSection? = null
+        /**
+         * @param value The section to set.
+         *
+         * @throws CyclicDependencyException Thrown if the value is a child or itself.
+         */
         set(value) {
-            if (value != null && value.isChildOf(this)) {
-                throw CyclicDependencyException("Parent section is a child of the section.")
+            if (value != null) {
+                if (value == this) {
+                    throw CyclicDependencyException("Cannot set parent as self.")
+                } else if (value.isChildOf(this)) {
+                    throw CyclicDependencyException("Parent section is a child of the section.")
+                }
             }
             field = value
         }
 
     /**
-     * TODO: Document.
+     * Returns a immutable collection of both children keys and field keys in the section.
+     */
+    val allKeys: List<String>
+        get() {
+            val list = ArrayList(children.keys)
+            list.addAll(fields.keys)
+            return Collections.unmodifiableList(list)
+        }
+
+    /**
+     * Returns a immutable collection of children keys in the section.
+     */
+    val childKeys: List<String>
+        get() = Collections.unmodifiableList(ArrayList(children.keys))
+
+    /**
+     * Returns a immutable collection of field keys in the section.
+     */
+    val fieldKeys: List<String>
+        get() = Collections.unmodifiableList(ArrayList(fields.keys))
+
+    /**
+     * An immutable map of the children of the section.
      */
     val sections: Map<String, ConfigSection> get() = Collections.unmodifiableMap(HashMap(children))
 
     /**
-     * TODO: Document.
+     * If the section does not have a parent, ***true*** is returned.
      */
     val orphaned: Boolean get() = this !is ConfigFile && parent == null
 
-    /**
-     * TODO: Document.
-     */
     internal val children = HashMap<String, ConfigSection>()
 
-    /**
-     * TODO: Document.
-     */
     internal val fields = HashMap<String, Any>()
 
     /**
-     * TODO: Document.
+     * @param query The query to test.
      *
-     * @param query
-     *
-     * @return
+     * @return Returns ***true*** if the query resolves as a non-null value.
      */
     fun contains(query: String): Boolean {
+        require(query.isNotEmpty()) {
+            "The query is empty."
+        }
         if (query.contains(SEPARATOR)) {
             val split = query.split(SEPARATOR)
             val childQuery = split[0].toLowerCase().trim()
@@ -66,13 +95,17 @@ open class ConfigSection internal constructor(val name: String) {
     }
 
     /**
-     * TODO: Document.
+     * @param query The query to resolve.
      *
-     * @param query
+     * @return Returns the resolved query.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve.
      */
     fun get(query: String): Any {
+        require(query.isNotEmpty()) {
+            "The query is empty."
+        }
         if (query.contains(SEPARATOR)) {
             val split = query.split(SEPARATOR)
             val childQuery = split[0].toLowerCase().trim()
@@ -87,12 +120,23 @@ open class ConfigSection internal constructor(val name: String) {
     }
 
     /**
-     * TODO: Document.
+     * Sets a value for the query.
      *
-     * @param query
-     * @param value
+     * If the value is stored directly in this section, simply use the name of the value. If the value is stored in a
+     * child section, make sure to delimit each child in the hierarchy with a period. **E.G:** **child.value**
+     *
+     * **NOTE:** If the section does not exist, make sure to create it before setting the value.
+     *
+     * @param query The query to resolve.
+     * @param value The value to set for the query.
+     *
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if a sub-section in the query does not exist.
      */
     fun set(query: String, value: Any?) {
+        require(query.isNotEmpty()) {
+            "The query is empty."
+        }
         if (query.contains(SEPARATOR)) {
             val split = query.split(SEPARATOR)
             val childQuery = split[0].toLowerCase().trim()
@@ -108,10 +152,7 @@ open class ConfigSection internal constructor(val name: String) {
     }
 
     /**
-     * TODO: Document.
-     *
-     * @param query
-     * @param value
+     * This is a cleaner solution to isolate discovery-query code from application of values.
      */
     private fun setLocal(query: String, value: Any?) {
         val lQuery = query.toLowerCase().trim()
@@ -129,16 +170,30 @@ open class ConfigSection internal constructor(val name: String) {
     }
 
     /**
-     * TODO: Document.
+     * Creates a child section and appends to the invoked section.
      *
-     * @param name
+     * @param name The name of the new section.
      *
-     * @return
+     * @return Returns the new section.
+     *
+     * @throws IllegalArgumentException Thrown if the name is empty.
+     * @throws FieldExistsException Thrown if the name is already used by a section or field.
      */
     fun createSection(name: String): ConfigSection {
+        require(name.isNotEmpty()) {
+            "The name given is empty."
+        }
         require(children[name] == null) {
             "A section already exists with the name: $name"
         }
+        if (contains(name)) {
+            if (isSection(name)) {
+                throw FieldExistsException("The section \"$name\" exists in \"${this.name}\".")
+            } else {
+                throw FieldExistsException("The field \"$name\" exists in \"${this.name}\".")
+            }
+        }
+
         val section = ConfigSection(name)
         section.parent = this
         children[name] = section
@@ -146,21 +201,8 @@ open class ConfigSection internal constructor(val name: String) {
     }
 
     /**
-     * TODO: Document.
-     *
-     * @return
-     */
-    fun getKeys(): List<String> {
-        val list = ArrayList<String>()
-        list.addAll(children.keys)
-        list.addAll(fields.keys)
-        return Collections.unmodifiableList(list)
-    }
-
-    /**
-     * TODO: Document.
-     *
-     * @return
+     * @return Returns a deep-copy of the section and all children with their fields as a map.
+     * Sections are Map<String, Object>. Values are generic.
      */
     fun toMap(): Map<String, Any> {
         val map = HashMap<String, Any>()
@@ -170,11 +212,14 @@ open class ConfigSection internal constructor(val name: String) {
     }
 
     /**
-     * TODO: Document.
+     * @param query The query to resolve.
      *
-     * @param query
+     * @return Returns a List of Long values.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
+     * @throws NumberFormatException Thrown if the resolved List contains a value that is not a Long.
      */
     fun getLongList(query: String): List<Long> {
         val rawList = getList(query)
@@ -184,11 +229,14 @@ open class ConfigSection internal constructor(val name: String) {
     }
 
     /**
-     * TODO: Document.
+     * @param query The query to resolve.
      *
-     * @param query
+     * @return Returns a list of double values.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
+     * @throws NumberFormatException Thrown if the resolved list contains a value that is not a double.
      */
     fun getDoubleList(query: String): List<Double> {
         val rawList = getList(query)
@@ -198,11 +246,14 @@ open class ConfigSection internal constructor(val name: String) {
     }
 
     /**
-     * TODO: Document.
+     * @param query The query to resolve.
      *
-     * @param query
+     * @return Returns a list of integer values.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
+     * @throws NumberFormatException Thrown if the resolved list contains a value that is not a integer.
      */
     fun getIntList(query: String): List<Int> {
         val rawList = getList(query)
@@ -212,11 +263,14 @@ open class ConfigSection internal constructor(val name: String) {
     }
 
     /**
-     * TODO: Document.
+     * @param query The query to resolve.
      *
-     * @param query
+     * @return Returns a list of boolean values.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
+     * @throws NumberFormatException Thrown if the resolved list contains a value that is not a boolean.
      */
     fun getBooleanList(query: String): List<Boolean> {
         val rawList = getList(query)
@@ -226,11 +280,13 @@ open class ConfigSection internal constructor(val name: String) {
     }
 
     /**
-     * TODO: Document.
+     * @param query The query to resolve.
      *
-     * @param query
+     * @return Returns a list of strings.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getStringList(query: String): List<String> {
         val rawList = getList(query)
@@ -240,16 +296,14 @@ open class ConfigSection internal constructor(val name: String) {
     }
 
     /**
-     * TODO: Document.
+     * @param section The section to test.
      *
-     * @param parent
-     *
-     * @return
+     * @return Returns ***true*** if this section is a child of the given section.
      */
-    fun isChildOf(parent: ConfigSection): Boolean {
+    fun isChildOf(section: ConfigSection): Boolean {
         if (this.parent == null) return false
-        if (this.parent == parent) return true
-        return this.parent!!.isChildOf(parent)
+        if (this.parent == section) return true
+        return this.parent!!.isChildOf(section)
     }
 
     /**
@@ -259,151 +313,185 @@ open class ConfigSection internal constructor(val name: String) {
      * @param clazz The class of the type to test.
      *
      * @return Returns true if the resolved query is the type given. If the query does not resolve, false is returned.
+     *
+     * @throws IllegalArgumentException Thrown if the query is empty.
      */
     fun <E> isType(query: String, clazz: Class<E>): Boolean =
         contains(query) && clazz.isAssignableFrom(get(query)::class.java)
 
     /**
-     * TODO: Document.
+     * Resolves a query into a type-casted value.
      *
-     * @param query
-     * @param clazz
+     * @param query The query to resolve.
+     * @param clazz The type of class to cast.
      *
-     * @return
+     * @return Returns the resolved query.
+     *
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     @Suppress("UNCHECKED_CAST", "UNUSED_PARAMETER")
     fun <E> get(query: String, clazz: Class<E>): E = get(query) as E
 
     /**
-     * TODO: Document.
+     * @param query The query to test.
      *
-     * @param query
+     * @return Returns true if the query resolves and the resolved value is a section.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
      */
     fun isSection(query: String): Boolean = isType(query, ConfigSection::class.java)
 
     /**
-     * TODO: Document.
+     * Resolves a query as a section.
      *
-     * @param query
+     * @param query The query to resolve.
      *
-     * @return
+     * @return Returns the resolved section.
+     *
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getSection(query: String): ConfigSection = get(query, ConfigSection::class.java)
 
     /**
-     * TODO: Document.
+     * @param query The query to test.
      *
-     * @param query
+     * @return Returns true if the query resolves and the resolved value is a string.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
      */
     fun isString(query: String): Boolean = isType(query, String::class.java)
 
     /**
-     * TODO: Document.
+     * Resolves a query into a string.
      *
-     * @param query
+     * @param query The query to resolve.
      *
-     * @return
+     * @return Returns the resolved string.
+     *
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getString(query: String): String = get(query).toString()
 
     /**
-     * TODO: Document.
+     * @param query The query to test.
      *
-     * @param query
+     * @return Returns true if the query resolves and the resolved value is a boolean.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
      */
     fun isBoolean(query: String): Boolean = isType(query, Boolean::class.java)
 
     /**
-     * TODO: Document.
+     * Resolves a query into a boolean value.
      *
-     * @param query
+     * @param query The query to resolve.
      *
-     * @return
+     * @return Returns the resolved boolean value.
+     *
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getBoolean(query: String): Boolean = get(query, Boolean::class.java)
 
     /**
-     * TODO: Document.
+     * @param query The query to test.
      *
-     * @param query
+     * @return Returns true if the query resolves and the resolved value is a integer value.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
      */
     fun isInt(query: String): Boolean = isType(query, Int::class.java)
 
     /**
-     * TODO: Document.
+     * Resolves a query into a integer value.
      *
-     * @param query
+     * @param query The query to resolve.
      *
-     * @return
+     * @return Returns the resolved integer value.
+     *
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getInt(query: String): Int = get(query, Int::class.java)
 
     /**
-     * TODO: Document.
+     * @param query The query to test.
      *
-     * @param query
+     * @return Returns true if the query resolves and the resolved value is a double value.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
      */
     fun isDouble(query: String): Boolean = isType(query, Double::class.java)
 
     /**
-     * TODO: Document.
+     * Resolves a query into a double value.
      *
-     * @param query
+     * @param query The query to resolve.
      *
-     * @return
+     * @return Returns the resolved double value.
+     *
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getDouble(query: String): Double = get(query, Double::class.java)
 
     /**
-     * TODO: Document.
+     * @param query The query to test.
      *
-     * @param query
+     * @return Returns true if the query resolves and the resolved value is a long value.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
      */
     fun isLong(query: String): Boolean = isType(query, Long::class.java)
 
     /**
-     * TODO: Document.
+     * Resolves a query into a long value.
      *
-     * @param query
+     * @param query The query to resolve.
      *
-     * @return
+     * @return Returns the resolved long value.
+     *
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getLong(query: String): Long = get(query, Long::class.java)
 
     /**
-     * TODO: Document.
+     * @param query The query to test.
      *
-     * @param query
+     * @return Returns true if the query resolves and the resolved value is a list.
      *
-     * @return
+     * @throws IllegalArgumentException Thrown if the query is empty.
      */
     fun isList(query: String): Boolean = isType(query, List::class.java)
 
     /**
-     * TODO: Document.
+     * Resolves a query into a generic list.
      *
-     * @param query
+     * @param query The query to resolve.
      *
-     * @return
+     * @return Returns the resolved list.
+     *
+     * @throws IllegalArgumentException Thrown if the query is empty.
+     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getList(query: String): List<*> = get(query, List::class.java)
 
     companion object {
 
         /**
-         * TODO: Document.
+         * The delimiter for cross-section queries.
          */
         const val SEPARATOR = '.'
     }
