@@ -3,14 +3,15 @@ package com.asledgehammer.langpack.core
 import java.util.*
 
 /**
- * TODO: Document.
+ * **Language** packages [Locale] as convenient ways to identify and handle language-specific tasks for [LangPack].
+ *
  *
  * (Primary identifier is based on Locale objects rather than Strings)
  *
  * @author Jab
  *
- * @property locale
- * @property fallback
+ * @property locale The locale to package.
+ * @property fallback The fallback Language helps with generalizing specific Locales sharing the same language.
  */
 class Language(val locale: Locale, val fallback: Language? = null) {
 
