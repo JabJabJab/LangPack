@@ -80,9 +80,6 @@ open class LangPack(
      */
     protected val files = HashMap<Language, LangFile>()
 
-    /**
-     * TODO: Document.
-     */
     private val printer = LangPackPrinter()
 
     /**
@@ -97,7 +94,7 @@ open class LangPack(
     /**
      * Appends a pack.
      *
-     * > **WARNING:** Not passing the classloader for the plugin calling this method will not save any lang files stored in
+     * **NOTE:** Not passing the classloader for the plugin calling this method will not save any lang files stored in
      * the plugin's JAR file.
      *
      * @param name The name of the package to append.
