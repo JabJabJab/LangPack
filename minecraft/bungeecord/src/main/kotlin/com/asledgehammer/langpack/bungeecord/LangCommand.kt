@@ -6,9 +6,7 @@ import com.asledgehammer.langpack.bungeecord.test.ResolveFieldTest
 import com.asledgehammer.langpack.bungeecord.test.SimpleTest
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.test.LangTest
-import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.CommandSender
-import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Command
 import net.md_5.bungee.api.plugin.TabExecutor
@@ -68,42 +66,59 @@ internal class LangCommand(private val plugin: LangPlugin) : Command("blang"), T
         }
 
         val testName = args[1].toLowerCase()
-        val argTest = LangArg("test", testName)
-
-        // Make sure the test exists.
-        val test = tests[testName]
-        if (test == null) {
-            pack.message(player, "test.not_found", argTest)
-            return
-        }
 
         if (args.size == 3) {
             if (!args[2].equals("run", true)) {
                 pack.message(player, "test.help")
                 return
             }
-
-            pack.message(player, "test.start", argTest)
-
-            // Run the test.
-            val result = test.test(pack, player)
-
-            // Display the result.
-            if (result.success) {
-                pack.message(player, "test.success", argTest, LangArg("time", result.time))
+            if (testName.equals("all", true)) {
+                val names = ArrayList<String>(tests.keys)
+                if (names.isNotEmpty()) {
+                    names.sortBy { it }
+                    for (test in names) runTest(player, test)
+                }
             } else {
-                val argReason = LangArg("reason", result.reason!!)
-                pack.message(player, "test.failure", argTest, argReason)
+                runTest(player, testName)
             }
-            pack.message(player, "test.end")
             return
         } else {
+            val test = tests[testName]
+            if (test == null) {
+                pack.message(player, "test.not_found", LangArg("test", testName))
+                return
+            }
             pack.message(player, "test.description",
                 LangArg("test", test.id),
                 LangArg("description", test.description)
             )
             return
         }
+    }
+
+    private fun runTest(player: ProxiedPlayer, name: String) {
+        val argTest = LangArg("test", name)
+
+        // Make sure the test exists.
+        val test = tests[name]
+        if (test == null) {
+            pack.message(player, "test.not_found", argTest)
+            return
+        }
+
+        pack.message(player, "test.start", argTest)
+
+        // Run the test.
+        val result = test.test(pack, player)
+
+        // Display the result.
+        if (result.success) {
+            pack.message(player, "test.success", argTest, LangArg("time", result.time))
+        } else {
+            val argReason = LangArg("reason", result.reason!!)
+            pack.message(player, "test.failure", argTest, argReason)
+        }
+        pack.message(player, "test.end")
     }
 
     private fun onTestsCommand(player: ProxiedPlayer) {

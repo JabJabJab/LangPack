@@ -77,7 +77,6 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandCallable {
     override fun getUsage(source: CommandSource): Text = Text.of("")
 
     private fun onTestCommand(player: Player, args: List<String>) {
-
         if (!player.hasPermission("langpack.test")) {
             pack.message(player, "permission.deny")
             return
@@ -96,42 +95,59 @@ internal class LangCommand(private val plugin: LangPlugin) : CommandCallable {
         }
 
         val testName = args[1].toLowerCase()
-        val argTest = LangArg("test", testName)
-
-        // Make sure the test exists.
-        val test = tests[testName]
-        if (test == null) {
-            pack.message(player, "test.not_found", argTest)
-            return
-        }
 
         if (args.size == 3) {
             if (!args[2].equals("run", true)) {
                 pack.message(player, "test.help")
                 return
             }
-
-            pack.message(player, "test.start", argTest)
-
-            // Run the test.
-            val result = test.test(pack, player)
-
-            // Display the result.
-            if (result.success) {
-                pack.message(player, "test.success", argTest, LangArg("time", result.time))
+            if (testName.equals("all", true)) {
+                val names = ArrayList(tests.keys)
+                if (names.isNotEmpty()) {
+                    names.sortBy { it }
+                    for (test in names) runTest(player, test)
+                }
             } else {
-                val argReason = LangArg("reason", result.reason!!)
-                pack.message(player, "test.failure", argTest, argReason)
+                runTest(player, testName)
             }
-            pack.message(player, "test.end")
             return
         } else {
+            val test = tests[testName]
+            if (test == null) {
+                pack.message(player, "test.not_found", LangArg("test", testName))
+                return
+            }
             pack.message(player, "test.description",
                 LangArg("test", test.id),
                 LangArg("description", test.description)
             )
             return
         }
+    }
+
+    private fun runTest(player: Player, name: String) {
+        val argTest = LangArg("test", name)
+
+        // Make sure the test exists.
+        val test = tests[name]
+        if (test == null) {
+            pack.message(player, "test.not_found", argTest)
+            return
+        }
+
+        pack.message(player, "test.start", argTest)
+
+        // Run the test.
+        val result = test.test(pack, player)
+
+        // Display the result.
+        if (result.success) {
+            pack.message(player, "test.success", argTest, LangArg("time", result.time))
+        } else {
+            val argReason = LangArg("reason", result.reason!!)
+            pack.message(player, "test.failure", argTest, argReason)
+        }
+        pack.message(player, "test.end")
     }
 
     private fun onTestsCommand(player: Player) {
