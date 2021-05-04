@@ -100,7 +100,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns the resolved query.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve.
+     * @throws UnresolvedException Thrown if the query fails to resolve.
      */
     fun get(query: String): Any {
         require(query.isNotEmpty()) {
@@ -109,14 +109,14 @@ open class ConfigSection internal constructor(val name: String) {
         if (query.contains(SEPARATOR)) {
             val split = query.split(SEPARATOR)
             val childQuery = split[0].toLowerCase().trim()
-            val child = children[childQuery] ?: throw FieldNotFoundException(childQuery)
+            val child = children[childQuery] ?: throw UnresolvedException(childQuery)
             val rebuiltQuery = StringBuilder()
             for (index in 1..split.lastIndex) {
                 rebuiltQuery.append(if (rebuiltQuery.isEmpty()) split[index] else "$SEPARATOR${split[index]}")
             }
             return child.get(rebuiltQuery.toString())
         }
-        return fields[query] ?: children[query] ?: throw FieldNotFoundException(query)
+        return fields[query] ?: children[query] ?: throw UnresolvedException(query)
     }
 
     /**
@@ -131,7 +131,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @param value The value to set for the query.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if a sub-section in the query does not exist.
+     * @throws UnresolvedException Thrown if a sub-section in the query does not exist.
      */
     fun set(query: String, value: Any?) {
         require(query.isNotEmpty()) {
@@ -140,7 +140,7 @@ open class ConfigSection internal constructor(val name: String) {
         if (query.contains(SEPARATOR)) {
             val split = query.split(SEPARATOR)
             val childQuery = split[0].toLowerCase().trim()
-            val child = children[childQuery] ?: throw FieldNotFoundException(childQuery)
+            val child = children[childQuery] ?: throw UnresolvedException(childQuery)
             val rebuiltQuery = StringBuilder()
             for (index in 1..split.lastIndex) {
                 rebuiltQuery.append(if (rebuiltQuery.isEmpty()) split[index] else "$SEPARATOR${split[index]}")
@@ -217,7 +217,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns a List of Long values.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      * @throws NumberFormatException Thrown if the resolved List contains a value that is not a Long.
      */
@@ -234,7 +234,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns a list of double values.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      * @throws NumberFormatException Thrown if the resolved list contains a value that is not a double.
      */
@@ -251,7 +251,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns a list of integer values.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      * @throws NumberFormatException Thrown if the resolved list contains a value that is not a integer.
      */
@@ -268,7 +268,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns a list of boolean values.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      * @throws NumberFormatException Thrown if the resolved list contains a value that is not a boolean.
      */
@@ -285,7 +285,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns a list of strings.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getStringList(query: String): List<String> {
@@ -328,7 +328,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns the resolved query.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     @Suppress("UNCHECKED_CAST", "UNUSED_PARAMETER")
@@ -351,7 +351,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns the resolved section.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getSection(query: String): ConfigSection = get(query, ConfigSection::class.java)
@@ -373,7 +373,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns the resolved string.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getString(query: String): String = get(query).toString()
@@ -395,7 +395,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns the resolved boolean value.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getBoolean(query: String): Boolean = get(query, Boolean::class.java)
@@ -417,7 +417,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns the resolved integer value.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getInt(query: String): Int = get(query, Int::class.java)
@@ -439,7 +439,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns the resolved double value.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getDouble(query: String): Double = get(query, Double::class.java)
@@ -461,7 +461,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns the resolved long value.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getLong(query: String): Long = get(query, Long::class.java)
@@ -483,7 +483,7 @@ open class ConfigSection internal constructor(val name: String) {
      * @return Returns the resolved list.
      *
      * @throws IllegalArgumentException Thrown if the query is empty.
-     * @throws FieldNotFoundException Thrown if the query fails to resolve a value.
+     * @throws UnresolvedException Thrown if the query fails to resolve a value.
      * @throws ClassCastException Thrown if the resolved value is not a list.
      */
     fun getList(query: String): List<*> = get(query, List::class.java)
