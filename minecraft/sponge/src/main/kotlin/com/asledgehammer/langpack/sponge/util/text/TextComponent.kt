@@ -3,6 +3,8 @@
 package com.asledgehammer.langpack.sponge.util.text
 
 import com.asledgehammer.langpack.core.util.MultilinePrinter
+import com.asledgehammer.langpack.minecraft.commons.util.text.ClickEvent
+import com.asledgehammer.langpack.minecraft.commons.util.text.HoverEvent
 import com.asledgehammer.langpack.sponge.objects.complex.SpongeActionText
 import com.asledgehammer.langpack.sponge.util.ColorUtil
 import org.spongepowered.api.text.Text
@@ -42,12 +44,17 @@ class TextComponent(var text: String? = "") {
         return builder.build()
     }
 
-    fun addExtra(component: TextComponent) {
+    /**
+     * Adds children to the text component.
+     *
+     * @param child The child to add.
+     */
+    fun addExtra(child: TextComponent) {
         if (extra == null) extra = ArrayList()
-        extra!!.add(component)
+        extra!!.add(child)
     }
 
-    fun print(): String = printer.print(this)
+    internal fun print(): String = printer.print(this)
 
     companion object {
         private val printer = TextComponentPrinter()

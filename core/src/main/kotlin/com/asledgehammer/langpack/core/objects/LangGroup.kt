@@ -95,20 +95,21 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
             }
         }
 
-        for (key in cfg.getKeys()) {
+        for (key in cfg.childKeys) {
             // Exclude the metadata group.
             if (key.equals("__metadata__", true)) continue
-            if (cfg.isSection(key)) {
-                val group = cfg.getSection(key)
-                if (group.isString("type")) {
-                    readComplex(group)
-                } else {
-                    readGroup(group)
-                }
+
+            val group = cfg.getSection(key)
+            if (group.isString("type")) {
+                readComplex(group)
             } else {
-                val raw = StringUtil.toAString(cfg.get(key))
-                set(key, StringDefinition(pack, this, raw))
+                readGroup(group)
             }
+        }
+
+        for (key in cfg.fieldKeys) {
+            val raw = StringUtil.toAString(cfg.get(key))
+            set(key, StringDefinition(pack, this, raw))
         }
         return this
     }

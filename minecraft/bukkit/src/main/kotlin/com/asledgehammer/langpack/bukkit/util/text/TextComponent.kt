@@ -3,10 +3,13 @@
 package com.asledgehammer.langpack.bukkit.util.text
 
 import com.asledgehammer.langpack.core.util.MultilinePrinter
+import com.asledgehammer.langpack.minecraft.commons.util.text.ClickEvent
+import com.asledgehammer.langpack.minecraft.commons.util.text.HoverEvent
 import org.bukkit.ChatColor
 
 /**
- * TODO: Document.
+ * **TextComponent** is a "dummy-wrapper" solution for maintaining a consistency with solutions for
+ * cross-server-platform support.
  *
  * @author Jab
  */
@@ -18,26 +21,27 @@ class TextComponent(var text: String? = "") {
     var hoverEvent: HoverEvent? = null
 
     /**
-     * TODO: Document.
-     *
-     * @return
+     * Converts the dummy MD5 TextComponent format to the legacy text format.
      */
     fun toLegacyText(): String {
         var text = "$color$text"
         if (extra != null && extra!!.isNotEmpty()) {
-            for (next in extra!!) {
-                text += next.toLegacyText()
-            }
+            for (next in extra!!) text += next.toLegacyText()
         }
         return text
     }
 
-    fun addExtra(component: TextComponent) {
+    /**
+     * Adds children to the text component.
+     *
+     * @param child The child to add.
+     */
+    fun addExtra(child: TextComponent) {
         if (extra == null) extra = ArrayList()
-        extra!!.add(component)
+        extra!!.add(child)
     }
 
-    fun print(): String = printer.print(this)
+    internal fun print(): String = printer.print(this)
 
     companion object {
         private val printer = TextComponentPrinter()

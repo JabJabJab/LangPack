@@ -2,7 +2,6 @@
 
 package com.asledgehammer.langpack.bukkit.objects.complex
 
-import com.asledgehammer.langpack.bukkit.util.text.HoverEvent
 import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
@@ -12,6 +11,7 @@ import com.asledgehammer.langpack.core.objects.definition.ComplexDefinition
 import com.asledgehammer.langpack.core.objects.definition.LangDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.util.StringUtil
+import com.asledgehammer.langpack.minecraft.commons.util.text.HoverEvent
 
 /**
  * **HoverText** handles dynamic text, processing into [HoverEvent].

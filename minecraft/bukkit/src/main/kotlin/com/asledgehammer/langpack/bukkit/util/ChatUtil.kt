@@ -1,11 +1,11 @@
 package com.asledgehammer.langpack.bukkit.util
 
-import com.asledgehammer.langpack.bukkit.util.text.ClickEvent
-import com.asledgehammer.langpack.bukkit.util.text.HoverEvent
 import com.asledgehammer.langpack.bukkit.util.text.TextComponent
 import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.util.MultilinePrinter
+import com.asledgehammer.langpack.minecraft.commons.util.text.ClickEvent
+import com.asledgehammer.langpack.minecraft.commons.util.text.HoverEvent
 import org.bukkit.ChatColor
 
 /**

@@ -11,7 +11,7 @@ import com.asledgehammer.langpack.core.objects.definition.ComplexDefinition
 import com.asledgehammer.langpack.core.objects.definition.LangDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.util.StringUtil
-import com.asledgehammer.langpack.sponge.util.text.HoverEvent
+import com.asledgehammer.langpack.minecraft.commons.util.text.HoverEvent
 
 /**
  * **HoverText** handles dynamic text, processing into [HoverEvent].

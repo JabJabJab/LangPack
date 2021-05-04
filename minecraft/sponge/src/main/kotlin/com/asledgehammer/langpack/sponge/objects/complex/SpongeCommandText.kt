@@ -10,7 +10,7 @@ import com.asledgehammer.langpack.core.objects.complex.Complex
 import com.asledgehammer.langpack.core.objects.definition.ComplexDefinition
 import com.asledgehammer.langpack.core.objects.definition.LangDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
-import com.asledgehammer.langpack.sponge.util.text.ClickEvent
+import com.asledgehammer.langpack.minecraft.commons.util.text.ClickEvent
 
 /**
  * **CommandText** packages and processes text for [ClickEvent] for [SpongeActionText].

@@ -3,8 +3,6 @@
 package com.asledgehammer.langpack.bukkit.processor
 
 import com.asledgehammer.langpack.bukkit.util.ChatUtil
-import com.asledgehammer.langpack.bukkit.util.text.ClickEvent
-import com.asledgehammer.langpack.bukkit.util.text.HoverEvent
 import com.asledgehammer.langpack.bukkit.util.text.TextComponent
 import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.Language
@@ -16,6 +14,8 @@ import com.asledgehammer.langpack.core.objects.definition.StringDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.processor.DefaultProcessor
 import com.asledgehammer.langpack.core.util.StringUtil
+import com.asledgehammer.langpack.minecraft.commons.util.text.ClickEvent
+import com.asledgehammer.langpack.minecraft.commons.util.text.HoverEvent
 import org.bukkit.ChatColor
 
 /**

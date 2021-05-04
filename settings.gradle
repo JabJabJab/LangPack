@@ -5,6 +5,8 @@ include 'core'
 // MD5 TextComponent API
 include ':minecraft:textcomponent'
 
+include ":minecraft:commons"
+
 // Bukkit
 include ":minecraft:bukkit"
 

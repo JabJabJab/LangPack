@@ -1,30 +1,26 @@
-package com.asledgehammer.langpack.bukkit.util.text
+package com.asledgehammer.langpack.minecraft.commons.util.text
 
 /**
- * TODO: Document.
+ * **HoverEvent** stores hover text for ActionText definitions.
  *
  * @author Jab
  */
 class HoverEvent {
 
     /**
-     * TODO: Document.
+     * The hover text, stored as a list.
      */
     val contents = ArrayList<String>()
 
     /**
-     * TODO: Document.
-     *
-     * @param lines
+     * @param lines The lines of text.
      */
     constructor(lines: Array<String>) {
         for (line in lines) this.contents.add(line)
     }
 
     /**
-     * TODO: Document.
-     *
-     * @param lines
+     * @param lines The lines of text.
      */
     constructor(lines: Collection<String>) {
         for (line in lines) this.contents.add(line)

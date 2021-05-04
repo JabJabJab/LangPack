@@ -12,9 +12,9 @@ import com.asledgehammer.langpack.core.objects.definition.StringDefinition
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.processor.DefaultProcessor
 import com.asledgehammer.langpack.core.util.StringUtil
+import com.asledgehammer.langpack.minecraft.commons.util.text.ClickEvent
+import com.asledgehammer.langpack.minecraft.commons.util.text.HoverEvent
 import com.asledgehammer.langpack.sponge.util.ChatUtil
-import com.asledgehammer.langpack.sponge.util.text.ClickEvent
-import com.asledgehammer.langpack.sponge.util.text.HoverEvent
 import com.asledgehammer.langpack.sponge.util.text.TextComponent
 
 /**
