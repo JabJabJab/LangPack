@@ -2,58 +2,27 @@
 
 package com.asledgehammer.langpack.sponge.util
 
+import com.asledgehammer.langpack.minecraft.commons.util.text.ColorUtil
 import org.spongepowered.api.text.format.TextColor
 import org.spongepowered.api.text.format.TextColors
 
 /**
- * **ColorUtil** TODO: Document.
+ * **SpongeColorUtil** Aids in providing utilities for complex processing for the Sponge LangPack plugin.
  *
  * @author Jab
  */
-object ColorUtil {
+object SpongeColorUtil {
 
-    /**
-     * TODO: Document.
-     */
-    const val COLOR_CHAR = '\u00a7'
     private const val ALL_CODES = "0123456789AaBbCcDdEeFf"
     private val COLORS = HashMap<Char, TextColor>()
     private val RAW_COLORS = HashMap<TextColor, Char>()
 
-    /**
-     * TODO: Document.
-     *
-     * @param color
-     *
-     * @return
-     */
     fun getRaw(color: TextColor): Char = RAW_COLORS[color]!!
 
-    /**
-     * TODO: Document.
-     *
-     * @param color
-     *
-     * @return
-     */
-    fun toString(color: TextColor): String = "$COLOR_CHAR${getRaw(color)}"
+    fun toString(color: TextColor): String = "${ColorUtil.COLOR_CHAR}${getRaw(color)}"
 
-    /**
-     * TODO: Document.
-     *
-     * @param char
-     *
-     * @return
-     */
     fun getByChar(char: Char): TextColor = COLORS[char] ?: TextColors.NONE
 
-    /**
-     * TODO: Document.
-     *
-     * @param char
-     *
-     * @return
-     */
     fun isColorCode(char: Char): Boolean = ALL_CODES.contains(char)
 
     private fun register(char: Char, color: TextColor) {

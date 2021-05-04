@@ -155,14 +155,7 @@ object ChatUtil {
         return component.color
     }
 
-    /**
-     * TODO: Document.
-     *
-     * @param component
-     *
-     * @return
-     */
-    fun print(component: TextComponent): String = printer.print(component)
+    internal fun print(component: TextComponent): String = printer.print(component)
 
     private class TextComponentPrinter : MultilinePrinter<TextComponent>() {
         override fun onPrint(element: TextComponent) {

@@ -15,8 +15,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
- * **ExamplePlugin** TODO: Document.
- *
  * @author Jab
  */
 class ExamplePlugin : Plugin(), Listener {

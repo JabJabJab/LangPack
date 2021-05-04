@@ -6,9 +6,7 @@ import org.spongepowered.api.text.action.HoverAction
 import org.spongepowered.api.text.action.TextActions
 
 /**
- * TODO: Document.
- *
- * @return
+ * @return Returns the HoverEvent as a Sponge object.
  */
 fun HoverEvent.toAction(): HoverAction.ShowText {
     val builder = if (contents.isNotEmpty()) Text.builder(contents[0]) else Text.builder()

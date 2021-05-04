@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 /**
- * **ExamplePlugin** TODO: Document.
- *
  * @author Jab
  */
 public class ExamplePlugin extends JavaPlugin implements Listener {

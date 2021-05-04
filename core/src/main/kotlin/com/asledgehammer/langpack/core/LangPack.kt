@@ -43,8 +43,7 @@ import java.util.*
  * @property classLoader (Optional) (Recommended) Pass the plugin classloader instance to use the save features for the
  * library.
  * @property dir (Optional) The File Object for the directory where the LangFiles are stored. DEFAULT: 'lang/'
- * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory. Thrown if
- *      the name given is empty.
+ * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory.
  */
 open class LangPack(
     private val classLoader: ClassLoader = this::class.java.classLoader,
@@ -371,14 +370,7 @@ open class LangPack(
 
     companion object {
 
-        /**
-         * TODO: Document.
-         */
         private val stringPoolLoader = StringPool.Loader()
-
-        /**
-         * TODO: Document.
-         */
         private val legacyActionTextLoader = LegacyActionText.Loader()
 
         /**

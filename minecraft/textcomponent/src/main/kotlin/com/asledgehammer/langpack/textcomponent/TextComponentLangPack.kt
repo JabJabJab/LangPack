@@ -21,12 +21,15 @@ import com.asledgehammer.langpack.textcomponent.processor.TextComponentProcessor
 import java.io.File
 
 /**
- * TODO: Document.
+ * **TextComponentLangPack** extends LangPack to integrate Bungeecord TextComponent API for both the Spigot and Bungeecord
+ * plugins.
  *
  * @author Jab
  *
- * @param classLoader
- * @param dir
+ * @param classLoader (Optional) (Recommended) Pass the plugin classloader instance to use the save features for the
+ * library.
+ * @param dir (Optional) The File Object for the directory where the LangFiles are stored. DEFAULT: 'lang/'
+ * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory.
  */
 open class TextComponentLangPack(classLoader: ClassLoader = this::class.java.classLoader, dir: File = File("lang")) :
     LangPack(classLoader, dir) {

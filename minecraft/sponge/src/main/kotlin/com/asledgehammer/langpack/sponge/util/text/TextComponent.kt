@@ -6,7 +6,7 @@ import com.asledgehammer.langpack.core.util.MultilinePrinter
 import com.asledgehammer.langpack.minecraft.commons.util.text.ClickEvent
 import com.asledgehammer.langpack.minecraft.commons.util.text.HoverEvent
 import com.asledgehammer.langpack.sponge.objects.complex.SpongeActionText
-import com.asledgehammer.langpack.sponge.util.ColorUtil
+import com.asledgehammer.langpack.sponge.util.SpongeColorUtil
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColor
 import org.spongepowered.api.text.format.TextColors
@@ -62,13 +62,13 @@ class TextComponent(var text: String? = "") {
 
     private class TextComponentPrinter : MultilinePrinter<TextComponent>() {
         override fun onPrint(element: TextComponent) {
-            val resetColor = ColorUtil.toString(TextColors.WHITE)
+            val resetColor = SpongeColorUtil.toString(TextColors.WHITE)
 
             fun recurse(component: TextComponent) {
                 line("TextComponent {")
                 tab()
 
-                val formattedColor = ColorUtil.toString(component.color)
+                val formattedColor = SpongeColorUtil.toString(component.color)
                 line("text: \"$formattedColor${component.text}$resetColor\",")
                 line("color: $formattedColor${component.color},")
 

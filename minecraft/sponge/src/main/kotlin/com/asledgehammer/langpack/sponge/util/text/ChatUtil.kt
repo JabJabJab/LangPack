@@ -1,11 +1,12 @@
-package com.asledgehammer.langpack.sponge.util
+package com.asledgehammer.langpack.sponge.util.text
 
 import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.util.MultilinePrinter
 import com.asledgehammer.langpack.minecraft.commons.util.text.ClickEvent
+import com.asledgehammer.langpack.minecraft.commons.util.text.ColorUtil
 import com.asledgehammer.langpack.minecraft.commons.util.text.HoverEvent
-import com.asledgehammer.langpack.sponge.util.text.TextComponent
+import com.asledgehammer.langpack.sponge.util.SpongeColorUtil
 import org.spongepowered.api.text.format.TextColor
 import org.spongepowered.api.text.format.TextColors
 import org.spongepowered.api.text.format.TextStyles
@@ -35,7 +36,8 @@ object ChatUtil {
 
         // Make sure that we have fields to sort, otherwise return the color-formatted text.
         val fields = formatter.getFields(text)
-        if (fields.isEmpty()) return TextComponent(color(text))
+        if (fields.isEmpty()) return TextComponent(com.asledgehammer.langpack.minecraft.commons.util.text.ColorUtil.color(
+            text))
 
         var next = text
         for (field in fields) {
@@ -145,7 +147,7 @@ object ChatUtil {
             while (index > -1) {
                 val next = chars[index]
                 if (next == ColorUtil.COLOR_CHAR) {
-                    val color = ColorUtil.getByChar(chars[index + 1])
+                    val color = SpongeColorUtil.getByChar(chars[index + 1])
                     if (color != TextColors.NONE) return color
                 }
                 index--
@@ -153,14 +155,6 @@ object ChatUtil {
         }
         return component.color
     }
-
-    /**
-     * TODO: Document.
-     *
-     * @param string
-     * @param char
-     */
-    fun color(string: String, char: Char = '&'): String = string.replace(char, '\u00a7')
 
     /**
      * Displays information on a base component using spacing and lines to read easily in a console.

@@ -14,8 +14,6 @@ import org.spongepowered.api.scheduler.Task
 import java.util.*
 
 /**
- * **ExamplePlugin** TODO: Document.
- *
  * @author Jab
  */
 @Plugin(

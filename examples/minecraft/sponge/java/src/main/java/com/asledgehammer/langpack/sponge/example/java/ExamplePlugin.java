@@ -17,8 +17,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 /**
- * **ExamplePlugin** TODO: Document.
- *
  * @author Jab
  */
 @Plugin(

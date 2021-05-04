@@ -21,7 +21,7 @@ import com.asledgehammer.langpack.core.processor.LangProcessor
 interface Complex<E> {
 
     /**
-     * TODO: Document.
+     * 'definition' is a reference point for relative fields when processed.
      */
     var definition: ComplexDefinition?
 

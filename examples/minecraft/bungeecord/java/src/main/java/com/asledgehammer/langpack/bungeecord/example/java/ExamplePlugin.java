@@ -16,8 +16,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * **ExamplePlugin** TODO: Document.
- *
  * @author Jab
  */
 public class ExamplePlugin extends Plugin implements Listener {

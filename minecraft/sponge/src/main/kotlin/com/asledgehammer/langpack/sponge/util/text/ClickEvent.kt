@@ -5,6 +5,6 @@ import org.spongepowered.api.text.action.ClickAction
 import org.spongepowered.api.text.action.TextActions
 
 /**
- * TODO: Document.
+ * @return Returns the ClickEvent as a Sponge object.
  */
 fun ClickEvent.toAction(): ClickAction.RunCommand = TextActions.runCommand(value)

@@ -3,7 +3,7 @@
 package com.asledgehammer.langpack.core.util
 
 /**
- * TODO: Document.
+ * **MapPrinter** is a multiline printer for Java maps.
  *
  * @author Jab
  */

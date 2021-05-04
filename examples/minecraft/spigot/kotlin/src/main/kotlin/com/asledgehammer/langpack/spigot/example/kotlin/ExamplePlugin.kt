@@ -13,8 +13,6 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 
 /**
- * **ExamplePlugin** TODO: Document.
- *
  * @author Jab
  */
 class ExamplePlugin : JavaPlugin(), Listener {

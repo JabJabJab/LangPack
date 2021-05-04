@@ -13,8 +13,9 @@ import com.asledgehammer.langpack.core.objects.formatter.FieldFormatter
 import com.asledgehammer.langpack.core.processor.DefaultProcessor
 import com.asledgehammer.langpack.core.util.StringUtil
 import com.asledgehammer.langpack.minecraft.commons.util.text.ClickEvent
+import com.asledgehammer.langpack.minecraft.commons.util.text.ColorUtil
 import com.asledgehammer.langpack.minecraft.commons.util.text.HoverEvent
-import com.asledgehammer.langpack.sponge.util.ChatUtil
+import com.asledgehammer.langpack.sponge.util.text.ChatUtil
 import com.asledgehammer.langpack.sponge.util.text.TextComponent
 
 /**
@@ -24,7 +25,7 @@ import com.asledgehammer.langpack.sponge.util.text.TextComponent
  */
 class SpongeProcessor(formatter: FieldFormatter) : DefaultProcessor(formatter) {
 
-    override fun postProcess(string: String): String = ChatUtil.color(string, '&')
+    override fun postProcess(string: String): String = ColorUtil.color(string, '&')
 
     /**
      * Processes a text component, inserting arguments and fields set in the lang-pack.

@@ -21,8 +21,10 @@ import java.io.File
  *
  * @author Jab
  *
- * @param classLoader The classloader to load resources.
- * @param dir The directory to handle lang files.
+ * @param classLoader (Optional) (Recommended) Pass the plugin classloader instance to use the save features for the
+ * library.
+ * @param dir (Optional) The File Object for the directory where the LangFiles are stored. DEFAULT: 'lang/'
+ * @throws IllegalArgumentException Thrown if the directory doesn't exist or isn't a valid directory.
  */
 class BungeeLangPack(classLoader: ClassLoader = this::class.java.classLoader, dir: File = File("lang")) :
     TextComponentLangPack(classLoader, dir) {
