@@ -1,7 +1,8 @@
 package com.asledgehammer.config
 
 /**
- * **FieldAlreadyExistsException** TODO: Document.
+ * **FieldAlreadyExistsException** is thrown when a [ConfigSection] attempts to create a child section and a field
+ * already exists with the name.
  *
  * @author Jab
  *
