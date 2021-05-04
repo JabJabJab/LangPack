@@ -5,16 +5,15 @@ package com.asledgehammer.langpack.core
 import java.util.*
 
 /**
- * **Languages**
- *
- * TODO: Document.
+ * **Languages** is a collection-singleton designed to both manage registered [Language] objects for [LangPack].
+ * The option for adding additional languages is supported.
  *
  * @author Jab
  */
 object Languages {
 
     /**
-     * TODO: Document.
+     * An immutable collection of all registered Languages.
      */
     var values = emptyList<Language>()
         private set
@@ -23,55 +22,42 @@ object Languages {
     private val mapString = HashMap<String, Language>()
 
     /**
-     * TODO: Document.
+     * Attempts to resolve a registered language that identifies with a raw locale string. If none identify, the
+     * fallback language passed is returned.
      *
-     * @param rawLocale
-     * @param defaultLanguage
+     * @param rawLocale The raw locale to test. Raw locales are either '**language**' or '**language**_**region**'.
+     * @param fallback The fallback language to use if the rawLocale fails to identify with a registered language.
      *
-     * @return
+     * @return Returns the closest language. If no languages identify with the rawLocale, the defaultLanguage is
+     * returned.
      */
-    fun getClosest(rawLocale: String, defaultLanguage: Language): Language =
-        getClosest(toLocale(rawLocale), defaultLanguage)
+    fun getClosest(rawLocale: String, fallback: Language): Language =
+        getClosest(toLocale(rawLocale), fallback)
 
     /**
-     * TODO: Document.
+     * Attempts to resolve a registered language that identifies with a locale. If none identify, the
+     * fallback language passed is returned.
      *
-     * @param locale
-     * @param defaultLanguage
+     * @param locale  The raw locale to test.
+     * @param fallback The fallback language to use if the rawLocale fails to identify with a registered language.
      *
-     * @return
+     * @return Returns the closest language. If no languages identify with the locale, the defaultLanguage is returned.
      */
-    fun getClosest(locale: Locale, defaultLanguage: Language): Language {
+    fun getClosest(locale: Locale, fallback: Language): Language {
         var language: Language? = get(locale)
         if (language != null) return language
-
-        fun search(language: Boolean, region: Boolean = false): Language? {
-            for ((nextLocale, nextLanguage) in mapLocale) {
-                if (
-                    (!language || nextLocale.language == locale.language)
-                    && (!region || nextLocale.country == locale.country)
-                ) {
-                    return nextLanguage
-                }
-            }
-            return null
-        }
-
-        language = search(language = true, region = true)
+        language = search(locale, language = true, region = true)
         if (language != null) return language
-
-        language = search(language = true)
+        language = search(locale, language = true)
         if (language != null) return language
-
-        return defaultLanguage
+        return fallback
     }
 
     /**
-     * TODO: Document.
+     * @param locale The locale to test.
      *
-     * @param locale
-     *
-     * @return
+     * @return Returns the language that identifies with the locale. If none identifies with the locale, null is
+     * returned.
      */
     fun get(locale: Locale): Language? {
         for ((nextLocale, language) in mapLocale) if (locale == nextLocale) return language
@@ -90,12 +76,15 @@ object Languages {
     }
 
     /**
-     * TODO: Document.
+     * Registers a raw locale string as a [Locale] instance, with a raw locale as a fallback.
      *
-     * @param rawLocale
-     * @param rawLocaleFallback
+     * **NOTE:** Make sure to register the fallback language first before registering sub-languages that fall back on
+     * it.
      *
-     * @return
+     * @param rawLocale The raw locale to register.
+     * @param rawLocaleFallback The raw local of the fallback language to set.
+     *
+     * @return Returns the constructed language.
      */
     fun register(rawLocale: String, rawLocaleFallback: String? = null): Language {
         require(rawLocale.isNotEmpty()) { "The raw locale is empty." }
@@ -109,11 +98,47 @@ object Languages {
     }
 
     /**
-     * TODO: Document.
+     * Registers a locale with a fallback language.
      *
-     * @param raw
+     * @param locale The locale to register.
+     * @param fallback The fallback language to set for the locale.
      *
-     * @return
+     * @return Returns the constructed language.
+     */
+    fun register(locale: Locale, fallback: Language? = null): Language {
+        val language = Language(locale, fallback)
+        register(language)
+        return language
+    }
+
+    /**
+     * Registers a Language instance.
+     *
+     * @param language The language to register.
+     */
+    fun register(language: Language) {
+        mapLocale[language.locale] = language
+        mapString[language.rawLocale.toLowerCase()] = language
+        buildValues()
+    }
+
+//    /**
+//     * Unregisters a language.
+//     *
+//     * @param language
+//     */
+//    fun unregister(language: Language) {
+//        mapLocale.remove(language.locale)
+//        mapString.remove(language.rawLocale.toLowerCase())
+//        buildValues()
+//    }
+
+    /**
+     * Converts a raw locale string into a [Locale] instance.
+     *
+     * @param raw The raw locale string to convert.
+     *
+     * @return Returns the constructed locale instance.
      */
     fun toLocale(raw: String): Locale {
         return if (raw.contains("_")) {
@@ -125,35 +150,26 @@ object Languages {
     }
 
     /**
-     * TODO: Document.
+     * Attempts to locate a language by comparing a locale with registered locales.
      *
-     * @param locale
-     * @param fallback
+     * @param locale the locale to test.
+     * @param language Set this to true to test the language of each registered locale.
+     * @param region Set this to true to test the region of each registered locale.
+     *
+     * @return Returns the first registered language to match the criteria tested. If no matches are found, null is
+     * returned.
      */
-    fun register(locale: Locale, fallback: Language? = null) {
-        register(Language(locale, fallback))
+    private fun search(locale: Locale, language: Boolean, region: Boolean = false): Language? {
+        for ((next, nextLanguage) in mapLocale) {
+            if ((!language || next.language == locale.language) && (!region || next.country == locale.country)) {
+                return nextLanguage
+            }
+        }
+        return null
     }
 
     /**
-     * TODO: Document.
-     */
-    fun register(language: Language) {
-        mapLocale[language.locale] = language
-        mapString[language.rawLocale.toLowerCase()] = language
-        buildValues()
-    }
-
-    /**
-     * TODO: Document.
-     */
-    fun unregister(language: Language) {
-        mapLocale.remove(language.locale)
-        mapString.remove(language.rawLocale.toLowerCase())
-        buildValues()
-    }
-
-    /**
-     * TODO: Document.
+     * (Rebuilds the immutable list for accessing registered languages as a collection.)
      */
     private fun buildValues() {
         values = Collections.unmodifiableList(ArrayList(mapLocale.values))
