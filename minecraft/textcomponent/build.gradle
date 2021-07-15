@@ -1,15 +1,19 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+    id 'maven-publish'
 }
 
-group "jab.sledgehammer"
+group "com.asledgehammer"
 version "1.0.0"
 
 configurations {
     shade
     compile.extendsFrom shade
 }
+
+compileJava.options.encoding = 'UTF-8'
+jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
 repositories {
     mavenCentral()
@@ -35,6 +39,17 @@ jar {
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {
             exclude "META-INF", "META-INF/**", "**/about.html", "*/about.html", "about.html"
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = "com.asledgehammer"
+            artifactId = "LangPack-TextComponent-API"
+            version = "${project.version}"
+            from components.java
         }
     }
 }

@@ -2,7 +2,7 @@
 
 package com.asledgehammer.langpack.core.objects.complex
 
-import com.asledgehammer.config.ConfigSection
+import com.asledgehammer.cfg.CFGSection
 import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
@@ -84,7 +84,7 @@ open class StringPool : Complex<String> {
      *
      * @param cfg The ConfigurationSection to load.
      */
-    constructor(cfg: ConfigSection) {
+    constructor(cfg: CFGSection) {
         var mode: Mode = Mode.RANDOM
         this.random = LangPack.DEFAULT_RANDOM
 
@@ -223,6 +223,6 @@ open class StringPool : Complex<String> {
      * @author Jab
      */
     class Loader : Complex.Loader<StringPool> {
-        override fun load(cfg: ConfigSection): StringPool = StringPool(cfg)
+        override fun load(cfg: CFGSection): StringPool = StringPool(cfg)
     }
 }

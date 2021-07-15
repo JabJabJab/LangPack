@@ -2,7 +2,7 @@
 
 package com.asledgehammer.langpack.bungeecord.objects.complex
 
-import com.asledgehammer.config.ConfigSection
+import com.asledgehammer.cfg.CFGSection
 import com.asledgehammer.langpack.bungeecord.BungeeLangPack
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
@@ -69,7 +69,7 @@ class BungeeActionText : TextComponentActionText {
      *
      * @param cfg The YAML to read.
      */
-    constructor(cfg: ConfigSection) : super(cfg)
+    constructor(cfg: CFGSection) : super(cfg)
 
     /**
      * Sends the ActionText to a given player.
@@ -135,6 +135,6 @@ class BungeeActionText : TextComponentActionText {
      * @author Jab
      */
     class Loader : Complex.Loader<BungeeActionText> {
-        override fun load(cfg: ConfigSection): BungeeActionText = BungeeActionText(cfg)
+        override fun load(cfg: CFGSection): BungeeActionText = BungeeActionText(cfg)
     }
 }

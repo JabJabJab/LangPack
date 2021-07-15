@@ -1,6 +1,6 @@
 package com.asledgehammer.langpack.core.objects.complex
 
-import com.asledgehammer.config.ConfigSection
+import com.asledgehammer.cfg.CFGSection
 import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
@@ -75,6 +75,6 @@ interface Complex<E> {
          *
          * @return Returns the loaded object.
          */
-        fun load(cfg: ConfigSection): E
+        fun load(cfg: CFGSection): E
     }
 }

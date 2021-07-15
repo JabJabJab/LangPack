@@ -2,8 +2,8 @@
 
 package com.asledgehammer.langpack.core.objects
 
-import com.asledgehammer.config.ConfigFile
-import com.asledgehammer.config.ConfigSection
+import com.asledgehammer.cfg.CFGSection
+import com.asledgehammer.cfg.YamlFile
 import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.complex.Complex
@@ -54,7 +54,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      *
      * @return Returns the instance for single-line executions.
      */
-    fun append(cfg: ConfigSection): LangGroup {
+    fun append(cfg: YamlFile): LangGroup {
         append(cfg, meta)
         return this
     }
@@ -67,7 +67,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      *
      * @return Returns the instance for single-line executions.
      */
-    fun append(cfg: ConfigSection, metadata: Metadata = Metadata()): LangGroup {
+    fun append(cfg: CFGSection, metadata: Metadata = Metadata()): LangGroup {
         if (cfg.isSection("__metadata__")) {
             metadata.read(cfg.getSection("__metadata__"))
             // Load imports prior to in-file fields, potentially overriding a import.
@@ -80,7 +80,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
                     var importFile = File(localDir, import)
                     if (importFile.exists()) {
                         if (pack.debug) println("[$name] :: Loading import: ${importFile.path}")
-                        append(ConfigFile().load(importFile))
+                        append(YamlFile(importFile).read())
                         continue
                     }
                     // Try absolute path second.
@@ -90,7 +90,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
                         continue
                     }
                     if (pack.debug) println("[$name] :: Loading import: ${importFile.path}")
-                    append(ConfigFile().load(importFile))
+                    append(YamlFile(importFile).read())
                 }
             }
         }
@@ -119,7 +119,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      *
      * @param cfg The YAML section to read.
      */
-    private fun readGroup(cfg: ConfigSection) {
+    private fun readGroup(cfg: CFGSection) {
         val langSection = LangGroup(pack, language, cfg.name.toLowerCase(), this)
         langSection.append(cfg, Metadata())
         setChild(langSection)
@@ -131,7 +131,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
      *
      * @param cfg The YAML section to read.
      */
-    private fun readComplex(cfg: ConfigSection) {
+    private fun readComplex(cfg: CFGSection) {
         if (!cfg.contains("type") || !cfg.isString("type")) {
             readGroup(cfg)
             return
@@ -386,7 +386,7 @@ open class LangGroup(var pack: LangPack, val language: Language, val name: Strin
          *
          * @param cfg The YAML section to read.
          */
-        fun read(cfg: ConfigSection) {
+        fun read(cfg: CFGSection) {
             if (cfg.contains("imports")) {
                 if (cfg.isList("imports")) {
                     for (next in cfg.getStringList("imports")) {

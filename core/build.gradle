@@ -1,12 +1,14 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+    id 'maven-publish'
 }
 
-compileJava.options.encoding = 'UTF-8'
-
-group "jab.sledgehammer"
+group "com.asledgehammer"
 version "1.0.0"
+
+compileJava.options.encoding = 'UTF-8'
+jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
 configurations {
     shade
@@ -24,6 +26,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     compileOnly 'net.md-5:bungeecord-api:1.16-R0.4'
+    shade 'com.asledgehammer:Framework-Config:1.0.0'
 }
 
 test {
@@ -35,6 +38,17 @@ jar {
     configurations.shade.each { dep ->
         from(project.zipTree(dep)) {
             exclude "META-INF", "META-INF/**", "**/about.html", "*/about.html", "about.html"
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = "com.asledgehammer"
+            artifactId = "LangPack-Core"
+            version = "${project.version}"
+            from components.java
         }
     }
 }

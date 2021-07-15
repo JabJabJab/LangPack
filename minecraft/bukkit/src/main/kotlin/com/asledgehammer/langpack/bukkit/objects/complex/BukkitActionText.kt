@@ -2,7 +2,7 @@
 
 package com.asledgehammer.langpack.bukkit.objects.complex
 
-import com.asledgehammer.config.ConfigSection
+import com.asledgehammer.cfg.CFGSection
 import com.asledgehammer.langpack.bukkit.BukkitLangPack
 import com.asledgehammer.langpack.bukkit.util.text.TextComponent
 import com.asledgehammer.langpack.core.LangPack
@@ -105,8 +105,8 @@ open class BukkitActionText : Complex<TextComponent> {
      *
      * @param cfg The YAML to read.
      */
-    constructor(cfg: ConfigSection) {
-        val readHoverText = fun(cfg: ConfigSection) {
+    constructor(cfg: CFGSection) {
+        val readHoverText = fun(cfg: CFGSection) {
             if (cfg.contains("hover")) {
                 val lines = ArrayList<String>()
                 if (cfg.isList("hover")) {
@@ -257,6 +257,6 @@ open class BukkitActionText : Complex<TextComponent> {
      * @author Jab
      */
     class Loader : Complex.Loader<BukkitActionText> {
-        override fun load(cfg: ConfigSection): BukkitActionText = BukkitActionText(cfg)
+        override fun load(cfg: CFGSection): BukkitActionText = BukkitActionText(cfg)
     }
 }

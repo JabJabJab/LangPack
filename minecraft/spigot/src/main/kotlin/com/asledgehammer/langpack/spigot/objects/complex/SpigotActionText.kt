@@ -2,7 +2,7 @@
 
 package com.asledgehammer.langpack.spigot.objects.complex
 
-import com.asledgehammer.config.ConfigSection
+import com.asledgehammer.cfg.CFGSection
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.objects.complex.Complex
@@ -68,7 +68,7 @@ class SpigotActionText : TextComponentActionText {
      *
      * @param cfg The YAML to read.
      */
-    constructor(cfg: ConfigSection) : super(cfg)
+    constructor(cfg: CFGSection) : super(cfg)
 
     /**
      * Sends the ActionText to a given player.
@@ -166,6 +166,6 @@ class SpigotActionText : TextComponentActionText {
      * @author Jab
      */
     class Loader : Complex.Loader<SpigotActionText> {
-        override fun load(cfg: ConfigSection): SpigotActionText = SpigotActionText(cfg)
+        override fun load(cfg: CFGSection): SpigotActionText = SpigotActionText(cfg)
     }
 }

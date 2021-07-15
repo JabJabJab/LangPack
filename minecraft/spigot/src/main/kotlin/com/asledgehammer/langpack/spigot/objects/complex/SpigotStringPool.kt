@@ -2,7 +2,7 @@
 
 package com.asledgehammer.langpack.spigot.objects.complex
 
-import com.asledgehammer.config.ConfigSection
+import com.asledgehammer.cfg.CFGSection
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.objects.complex.Complex
@@ -61,7 +61,7 @@ class SpigotStringPool : StringPool {
      *
      * @param cfg The ConfigurationSection to load.
      */
-    constructor(cfg: ConfigSection) : super(cfg)
+    constructor(cfg: CFGSection) : super(cfg)
 
     /**
      * Sends the StringPool to a given player.
@@ -155,6 +155,6 @@ class SpigotStringPool : StringPool {
      * @author Jab
      */
     class Loader : Complex.Loader<SpigotStringPool> {
-        override fun load(cfg: ConfigSection): SpigotStringPool = SpigotStringPool(cfg)
+        override fun load(cfg: CFGSection): SpigotStringPool = SpigotStringPool(cfg)
     }
 }

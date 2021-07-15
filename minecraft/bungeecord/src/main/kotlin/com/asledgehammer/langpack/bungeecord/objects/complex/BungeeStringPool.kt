@@ -2,7 +2,7 @@
 
 package com.asledgehammer.langpack.bungeecord.objects.complex
 
-import com.asledgehammer.config.ConfigSection
+import com.asledgehammer.cfg.CFGSection
 import com.asledgehammer.langpack.bungeecord.BungeeLangPack
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
@@ -61,7 +61,7 @@ class BungeeStringPool : StringPool {
      *
      * @param cfg The ConfigurationSection to load.
      */
-    constructor(cfg: ConfigSection) : super(cfg)
+    constructor(cfg: CFGSection) : super(cfg)
 
     /**
      * Sends the StringPool to a given player.
@@ -129,6 +129,6 @@ class BungeeStringPool : StringPool {
      * @author Jab
      */
     class Loader : Complex.Loader<BungeeStringPool> {
-        override fun load(cfg: ConfigSection): BungeeStringPool = BungeeStringPool(cfg)
+        override fun load(cfg: CFGSection): BungeeStringPool = BungeeStringPool(cfg)
     }
 }

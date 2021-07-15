@@ -2,7 +2,7 @@
 
 package com.asledgehammer.langpack.core.objects.complex
 
-import com.asledgehammer.config.ConfigSection
+import com.asledgehammer.cfg.CFGSection
 import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
@@ -28,7 +28,7 @@ open class LegacyActionText(val text: String) : Complex<String> {
      *
      * @param cfg The YAML to read.
      */
-    constructor(cfg: ConfigSection) : this(cfg.getString("text"))
+    constructor(cfg: CFGSection) : this(cfg.getString("text"))
 
     override fun walk(definition: LangDefinition<*>): Complex<String> = LegacyActionText(definition.walk(text))
 
@@ -45,6 +45,6 @@ open class LegacyActionText(val text: String) : Complex<String> {
      * @author Jab
      */
     class Loader : Complex.Loader<LegacyActionText> {
-        override fun load(cfg: ConfigSection): LegacyActionText = LegacyActionText(cfg)
+        override fun load(cfg: CFGSection): LegacyActionText = LegacyActionText(cfg)
     }
 }

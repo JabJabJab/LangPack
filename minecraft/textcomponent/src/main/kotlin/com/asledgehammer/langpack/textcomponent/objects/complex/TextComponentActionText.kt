@@ -2,7 +2,7 @@
 
 package com.asledgehammer.langpack.textcomponent.objects.complex
 
-import com.asledgehammer.config.ConfigSection
+import com.asledgehammer.cfg.CFGSection
 import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
@@ -104,9 +104,9 @@ open class TextComponentActionText : Complex<TextComponent> {
      *
      * @param cfg The YAML to read.
      */
-    constructor(cfg: ConfigSection) {
+    constructor(cfg: CFGSection) {
 
-        val readHoverText = fun(cfg: ConfigSection) {
+        val readHoverText = fun(cfg: CFGSection) {
 
             if (cfg.contains("hover")) {
                 val lines = ArrayList<Text>()
@@ -168,6 +168,6 @@ open class TextComponentActionText : Complex<TextComponent> {
      * @author Jab
      */
     class Loader : Complex.Loader<TextComponentActionText> {
-        override fun load(cfg: ConfigSection): TextComponentActionText = TextComponentActionText(cfg)
+        override fun load(cfg: CFGSection): TextComponentActionText = TextComponentActionText(cfg)
     }
 }

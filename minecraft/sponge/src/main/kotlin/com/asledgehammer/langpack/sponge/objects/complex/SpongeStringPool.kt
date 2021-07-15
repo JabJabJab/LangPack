@@ -2,7 +2,7 @@
 
 package com.asledgehammer.langpack.sponge.objects.complex
 
-import com.asledgehammer.config.ConfigSection
+import com.asledgehammer.cfg.CFGSection
 import com.asledgehammer.langpack.core.Language
 import com.asledgehammer.langpack.core.objects.LangArg
 import com.asledgehammer.langpack.core.objects.complex.Complex
@@ -62,7 +62,7 @@ class SpongeStringPool : StringPool {
      *
      * @param cfg The ConfigurationSection to load.
      */
-    constructor(cfg: ConfigSection) : super(cfg)
+    constructor(cfg: CFGSection) : super(cfg)
 
     /**
      * Sends the ActionText to a given player.
@@ -156,6 +156,6 @@ class SpongeStringPool : StringPool {
      * @author Jab
      */
     class Loader : Complex.Loader<SpongeStringPool> {
-        override fun load(cfg: ConfigSection): SpongeStringPool = SpongeStringPool(cfg)
+        override fun load(cfg: CFGSection): SpongeStringPool = SpongeStringPool(cfg)
     }
 }

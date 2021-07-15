@@ -1,6 +1,7 @@
 package com.asledgehammer.langpack.core.objects
 
-import com.asledgehammer.config.ConfigFile
+import com.asledgehammer.cfg.CFGFile
+import com.asledgehammer.cfg.YamlFile
 import com.asledgehammer.langpack.core.LangPack
 import com.asledgehammer.langpack.core.Language
 import java.io.File
@@ -49,7 +50,7 @@ class LangFile : LangGroup {
     fun load(): LangFile {
         // Clear the current entries and reload from file.
         clear()
-        if (file != null) append(ConfigFile().load(file!!))
+        if (file != null) append(YamlFile(file!!).read())
         return this
     }
 
@@ -61,7 +62,7 @@ class LangFile : LangGroup {
      * @return Returns the instance of the file for single-line executions.
      */
     fun append(file: File): LangFile {
-        append(ConfigFile().load(file))
+        append(YamlFile(file).read())
         return this
     }
 }
